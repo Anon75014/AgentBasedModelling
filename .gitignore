@@ -1,4 +1,5 @@
 Report/Report.fdb_latexmk
+*/__pycache__/
 *.aux
 *.fls
 *.glo
