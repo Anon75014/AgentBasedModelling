@@ -1,5 +1,6 @@
 Report/Report.fdb_latexmk
 *.aux
+*.fls
 *.glo
 *.idx
 *.log
