@@ -1,7 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from itertools import product
-from matplotlib import cm
 import matplotlib.colors as colors
 import matplotlib.patches as mpatches # used for legend in plt plot
 
