@@ -36,7 +36,7 @@ class Farmer(ap.Agent):
         for crop_id in self.model.crop_shop.crops.keys():
             self.stock[crop_id] = 0
 
-    def choose_crop(self, new_id):
+    def choose_crop(self, new_id: int):
         self.crop_id = new_id
         self.crop = self.model.crop_shop.crops[new_id]
         self.budget -= self.crop.seed_cost
@@ -48,9 +48,9 @@ class Farmer(ap.Agent):
         self.stock[self.crop_id] += self.crop.harvest_yield
         print(f"Farmer {self.id} harvested. New Stock: {self.stock}")
 
-    def sell(self, id, amount):
-        if self.stock[id] >= amount:
-            self.stock[id] -= amount
+    def sell(self, crop_id: int, amount: int):
+        if self.stock[crop_id] >= amount:
+            self.stock[crop_id] -= amount
             self.budget += self.crop.sell_price
             print(
                 f"Farmer {self.id} Sold. New Stock: {self.stock}. New Budget: {self.budget}"

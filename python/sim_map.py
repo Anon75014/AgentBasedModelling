@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.patches as mpatches  # used for legend in plt plot
+from typing import List, Tuple
 
 
 class Map:
@@ -11,12 +12,14 @@ class Map:
     Entire map, contains all the catchments
     """
 
-    def __init__(self, low, medium, high):
+    def __init__(self, low: int, medium: int, high: int):
         """
         Initialise the map matrix 'm'. And store colour values.
 
-        Input:
-            high, medium, low = amount of water rows with that water-intensity (per side; its symmetric as of now)
+        Parameters
+        ----------
+        high, medium, low: int
+            Amount of water rows with that water-intensity (per side; its symmetric as of now)
 
         Ideas:
             - alternative for wider rivers and matching dimensions: water = n_land_rows - 2*high - 2*medium - 2*low
@@ -28,7 +31,7 @@ class Map:
         """Set amount of water rows and check, that amount of rows is feasable"""
         n_land_rows = 2 * (low + medium + high)
         water = 1
-        self.m = np.ones((n_land_rows + water, n_land_rows))  # generate matrix
+        self.map_matrix = np.ones((n_land_rows + water, n_land_rows))  # generate matrix
 
         """ These lists have corresponding entries: name (for legend), amount of rows, colour and index"""
         self._plot_names = [
@@ -57,7 +60,7 @@ class Map:
 
         print("Done: Initialised map.")
 
-    def generateMap(self):
+    def generate_map(self):
         """
         Generate the basic map entries based on the specified amounts of water.
         """
@@ -65,16 +68,16 @@ class Map:
         row = 0
 
         """  Set matrix (m) entries as specified """
+        # Aaron: I feel like this doesn't work as you intend it to
         for index, amount in enumerate(self.amounts):
-            for _ in range(amount):
-                self.m[row, :] = self.weights[index]
-                self.m[-(row + 1), :] = self.weights[
-                    index
-                ]  # based on symmetry color two at once
-                row += 1
+            self.map_matrix[row, :] = self.weights[index]
+            self.map_matrix[-(row + 1), :] = self.weights[
+                index
+            ]  # based on symmetry color two at once
+            row += amount
 
         self.reference = np.copy(
-            self.m
+            self.map_matrix
         )  # just so that the initial map is not destroyed by adding farmers; this matrix should never be modified
         # Aaron: I think we can also just color over the map at the farmer positions instead of copying the entire map
         print(self.reference)  # to check that the generation was succesful
@@ -82,19 +85,21 @@ class Map:
 
     def reset_map(self):
         """Used to reset the active matrix (m) back to the reference."""
-        self.m = np.copy(self.reference)
+        self.map_matrix = np.copy(self.reference)
 
-    def add_farmers(self, pos_list):
+    def add_farmers(self, pos_list: List[Tuple[int, int]]):
         """Add locations of farmer into the map
 
-        Input:
-        - pos_list = List of (2-dim) tuples of the farmer position
+        Parameters
+        ----------
+        pos_list: List[Tuple[int, int]]
+            List of (2-dim) tuples of the farmer position
         """
         self.reset_map()  # get a clear starting point
 
         # TODO all this could probably be optimised using the "GridIter" or "attrField"
         for pos in pos_list:
-            self.m[pos] = self.farmer_index  # overwrite index of farmers
+            self.map_matrix[pos] = self.farmer_index  # overwrite index of farmers
 
         print(f"Done: added {len(pos_list)} farmers onto map.")
 
@@ -130,7 +135,7 @@ class Map:
 
         # source for "from_levels..." https://stackoverflow.com/questions/32769706/how-to-define-colormap-with-absolute-values-with-matplotlib
         crop_cmap, crop_norm = colors.from_levels_and_colors(self.weights, self.colours)
-        ax.pcolormesh(self.m, cmap=crop_cmap, norm=crop_norm, edgecolors="k")
+        ax.pcolormesh(self.map_matrix, cmap=crop_cmap, norm=crop_norm, edgecolors="k")
 
         ax = plt.gca()
         ax.set_aspect("equal")

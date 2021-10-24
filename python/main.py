@@ -21,7 +21,6 @@ if __name__ == "__main__":
         "crop_shop": crop_shop,
     }
 
-
     """ Create and run the model """
     model = CropwarModel(parameters)  # create model instance
     model.setup()  # setup the model and its properties
@@ -38,6 +37,6 @@ if __name__ == "__main__":
 
     """ Display the Map with the farmers """
     sim_map = Map(*parameters["water_levels"])
-    sim_map.generateMap()
+    sim_map.generate_map()
     sim_map.add_farmers(farmer_pos_list)
     sim_map.show()
