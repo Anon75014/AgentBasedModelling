@@ -1,17 +1,26 @@
 """ Main File for the CropWar agent Based Simulation. """
 
 from sim_map import Map
-from modelStructure import CropwarModel
+from model_structure import CropwarModel
+from crops import CropSortiment
 
 
 if __name__ == "__main__":
     # The following parameters are provided to the Model instance and are accessible within the model by eg "self.p.water_levels"
+
+    # The Crop_Shop contains the relevant information for the farmers.
+    crop_shop = CropSortiment()
+    crop_shop.add_crop(100, 15, 2)  # Add two crops TODO Find good parameters for crops.
+    crop_shop.add_crop(150, 25, 1)
+
     parameters = {
         "water_levels": [0, 0, 3],  # only hydrated land. Later maybe [1,2,3] or so
-        "N_farmers": 4,
+        "n_farmers": 4,
         "start_budget": 500,
         "t_end": 10,
+        "crop_shop": crop_shop,
     }
+
 
     """ Create and run the model """
     model = CropwarModel(parameters)  # create model instance
@@ -28,7 +37,7 @@ if __name__ == "__main__":
     # TODO see how the "record" function output can be displayed easily and beautiful
 
     """ Display the Map with the farmers """
-    map = Map(*parameters["water_levels"])
-    map.generateMap()
-    map.add_farmers(farmer_pos_list)
-    map.show()
+    sim_map = Map(*parameters["water_levels"])
+    sim_map.generateMap()
+    sim_map.add_farmers(farmer_pos_list)
+    sim_map.show()

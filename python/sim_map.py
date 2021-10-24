@@ -19,16 +19,16 @@ class Map:
             high, medium, low = amount of water rows with that water-intensity (per side; its symmetric as of now)
 
         Ideas:
-            - alternative for wider rivers and matching dimensions: water = N - 2*high - 2*medium - 2*low
+            - alternative for wider rivers and matching dimensions: water = n_land_rows - 2*high - 2*medium - 2*low
         """
         # Set indices as matrix entries to distinguish from hydrated soil while colouring
         self.farmer_index = 100
         self.water_index = 10
 
         """Set amount of water rows and check, that amount of rows is feasable"""
-        N = 2 * (low + medium + high)
+        n_land_rows = 2 * (low + medium + high)
         water = 1
-        self.m = np.ones((N + water, N))  # generate matrix
+        self.m = np.ones((n_land_rows + water, n_land_rows))  # generate matrix
 
         """ These lists have corresponding entries: name (for legend), amount of rows, colour and index"""
         self._plot_names = [
@@ -76,6 +76,7 @@ class Map:
         self.reference = np.copy(
             self.m
         )  # just so that the initial map is not destroyed by adding farmers; this matrix should never be modified
+        # Aaron: I think we can also just color over the map at the farmer positions instead of copying the entire map
         print(self.reference)  # to check that the generation was succesful
         print("Done: Generated map.")
 
@@ -107,7 +108,7 @@ class Map:
         plt.tight_layout(rect=[0, 0, 0.75, 1])  # dont know if necessary
         plt.title("CropWar - Map")
 
-        """ Generate Patches for nice plot legends"""
+        # Generate patches for nice plot legends
         # source: https://moonbooks.org/Articles/How-to-manually-add-a-legend-with-a-color-box-on-a-matplotlib-figure-/"""
         legend_patches = []
         for i, _label in enumerate(self._plot_names):

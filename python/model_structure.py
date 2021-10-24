@@ -17,7 +17,8 @@ class CropwarModel(ap.Model):
         m = 2 * sum(water_levels)  # because these maps are symmetric
         n = m + 1  # and have one horizontal river (with thickness = 1)
         water_row = sum(water_levels)  # ensure that water is in the center
-        N_farmers = self.p.N_farmers  # amount of farmer-agents
+        n_farmers = self.p.n_farmers  # amount of farmer-agents
+        self.crop_shop = self.p.crop_shop
 
         # Create grid:
         self.grid = ap.Grid(self, (n, m), track_empty=True)
@@ -27,7 +28,7 @@ class CropwarModel(ap.Model):
             # print(f"This model got water at: {(water_row,i)} ?!")
             self.grid.empty.remove((water_row, i))
 
-        self.agents = ap.AgentList(self, N_farmers, Farmer)
+        self.agents = ap.AgentList(self, n_farmers, Farmer)
 
         self.grid.add_agents(
             self.agents,
