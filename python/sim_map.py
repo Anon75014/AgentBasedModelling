@@ -1,37 +1,33 @@
+""" This file contains the Map class, designed to generate and display the CropWar map. """
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.patches as mpatches # used for legend in plt plot
-
-class Catchment: 
-    """
-    Catchments in which the farmers will compete
-    """
-    def __init__(self):
-        pass
 
 class Map:
     """
     Entire map, contains all the catchments
     """
 
-    def __init__(self, N,low,medium,high):
+    def __init__(self, low,medium,high):
         """
         Initialise the map matrix 'm'. And store colour values.
 
         Input:
-            N = amount of rows of hydrated land on either side of the river
             high, medium, low = amount of water rows with that water-intensity (per side; its symmetric as of now)
 
+        Ideas:
+            - alternative for wider rivers and matching dimensions: water = N - 2*high - 2*medium - 2*low 
         """
         # Set indices as matrix entries to distinguish from hydrated soil while colouring
         self.farmer_index = 100 
         self.water_index = 10
 
         """Set amount of water rows and check, that amount of rows is feasable"""
-        water = 1 #N - 2*high - 2*medium - 2*low #<- alternative for wider rivers and matching dimensions
+        N = 2*(low + medium + high)
+        water = 1 
         self.m = np.ones((N+water, N))     # generate matrix
-        assert(2*(high + medium + low) == N)   
 
         """ These lists have corresponding entries: name (for legend), amount of rows, colour and index"""
         self._plot_names = ["Low Hydration", "Medium Hydration", "High Hydration", "River", "Farmer"]
@@ -40,7 +36,6 @@ class Map:
         self.weights = [0.25,0.5, 1,self.water_index,self.farmer_index,self.farmer_index+1]
 
         print('Done: Initialised map.')
-
 
     def generateMap(self):
         """
@@ -59,15 +54,6 @@ class Map:
         self.reference = np.copy(self.m)    # just so that the initial map is not destroyed by adding farmers; this matrix should never be modified
         print(self.reference)               # to check that the generation was succesful 
         print('Done: Generated map.')
-
-        # Depreciated: (according to Aaron)
-        """ 
-        for i, j in product(range(N), repeat=2):
-            if 0.5 + 1 / N > (i / N) > 0.5 - 1 / N:
-                m[i, j] = 0.0
-            if 0.75 <= (i / N) or (i / N) <= 0.25:
-                m[i, j] = 0.5 
-        """
 
     def reset_map(self):
         """ Used to reset the active matrix (m) back to the reference. """
@@ -112,9 +98,21 @@ class Map:
         plt.legend(handles=legend_patches,bbox_to_anchor=(1.04,0.5), loc="center left",
                  fancybox=True, shadow=True, ncol=1)
     
+        # source for "from_levels..." https://stackoverflow.com/questions/32769706/how-to-define-colormap-with-absolute-values-with-matplotlib
         crop_cmap, crop_norm = colors.from_levels_and_colors(self.weights, self.colours)
         ax.pcolormesh(self.m, cmap=crop_cmap, norm=crop_norm, edgecolors='k')
 
         ax = plt.gca()
         ax.set_aspect('equal')
         plt.show()
+
+
+        # TODO : Idea put crop numbers or so inside of patches... 
+
+class Catchment: 
+    """
+    Catchments in which the farmers will compete
+    """
+    def __init__(self):
+        pass
+        #       source: https://stackoverflow.com/questions/20998083/show-the-values-in-the-grid-using-matplotlib
