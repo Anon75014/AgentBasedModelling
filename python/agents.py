@@ -57,5 +57,11 @@ class Farmer(ap.Agent):
             )
         else:
             print(
-                f"ERROR: Farmer {self.id} does not have enough in stock for that deal."
+                f"Ups: Farmer {self.id} does not have enough in stock for that deal."
             )
+
+    def update(self):
+        self.farm()
+        amount = self.random.randint(0, 3)
+        self.sell(self.crop_id, amount)
+        print(f"Upadted farmer {self.id}")

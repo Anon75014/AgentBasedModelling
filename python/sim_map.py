@@ -70,11 +70,11 @@ class Map:
         """  Set matrix (m) entries as specified """
         # Aaron: I feel like this doesn't work as you intend it to
         for index, amount in enumerate(self.amounts):
-            self.map_matrix[row, :] = self.weights[index]
-            self.map_matrix[-(row + 1), :] = self.weights[
-                index
-            ]  # based on symmetry color two at once
-            row += amount
+            for _ in range(amount):
+                  # based on symmetry color two at once
+                self.map_matrix[row, :] = self.weights[index]
+                self.map_matrix[-(row + 1), :] = self.weights[index]
+                row += 1
 
         self.reference = np.copy(
             self.map_matrix
