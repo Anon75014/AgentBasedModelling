@@ -34,6 +34,7 @@
 \usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry} 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{hyperref}
 \usepackage{tikz} %for the flow chart
 \usetikzlibrary{shapes,arrows}
 \usepackage{amsmath} %math package
@@ -104,15 +105,17 @@ Fall 2021  \\
 %----------------First section
 \section{Introduction}
 
-Due to population growth, urbanization, and climate change, competition for water resources is expected to increase, with a particular impact on agriculture \footnote{https://www.worldbank.org/en/topic/water-in-agriculture}. \\
+Agricultural structures are shaped by a variety of factors, including economic, environmental, cultural, technological and geographical conditions \cite{happeAgriculturalPoliciesFarm2004}. \\
 Consequently, both farmers and policymakers can benefit from farm-level models which optimise water usage and crop nature, based on a set of different externalities including water ressources availability and market dynamics.\\
 The model featured in this coding project aims to illustrate the process behind the development of agent-based farm-level models, by starting with a simple, deterministic model that is progressively complexified with elements from physics-based models and game theory.
 
 
 \section{State-of-the-Art}
 
-To guide the development of our illustrative agent-based model, a literature review was conducted to assess the state-of-the-art on agent-based modelling for water ressources allocation and farming simulations. \\
-A seed review paper was selected, "A review of Agent Based Modeling for agricultural policy evaluation" by Kremmydas et al.(2018) from which a literature graph was generated from online tools, and the result is presented on figure \ref{fig:State_of_the_art}.
+To guide the development of our illustrative model, a literature review was conducted to assess the state-of-the-art on agent-based modelling for water ressources allocation and farming simulations. \\
+Our starting point was the thesis \textit{"Agricultural policies and farm structures: Agent-based modelling and application to EU-policy reform"} by Happe (2004) \cite{happeAgriculturalPoliciesFarm2004}, which outlines in details the development of an agent-based model (AgriPoliS) to assess the influence of agricultural policies at the farm level, which is applied to a case study in the region of Holenhole in Germany.\\
+To have an overview of more recent approaches. a seed review paper was selected, \textit{"A review of Agent Based Modeling for agricultural policy evaluation"} by Kremmydas et al.(2018) \cite{kremmydasReviewAgentBased2018} from which a literature graph was generated using the online tools \href{https://www.connectedpapers.com/main/35fac7b643317e5f48f5280fadec94051bf2401f/A-review-of-Agent-Based-Modeling-for-agricultural-policy-evaluation/graph}{Connected Papers}, and is analysed on figure \ref{fig:State_of_the_art}.\\
+For completeness, the graphs generated through other seed papers were also analysed, including an older paper applying game theory to decision making in farmer cooperatives by Staatz (1983) \cite{staatzGametheoreticAnalysisDecision1983} and a case application of agent-based models to water allocation on the transboundary Nile river by Ding (2016) \cite{dingAgentBasedModelling2016}.
 
 
 \begin{figure}[H]
@@ -121,5 +124,9 @@ A seed review paper was selected, "A review of Agent Based Modeling for agricult
 	\caption{Graph showing papers related to ref.X generated on ConnectedPapers.com. Circle radius is proportionnal to number of citation, color to publication date, dashed line refers to paper categories.}
 	\label{fig:State_of_the_art}
 \end{figure}
+
+\newpage
+\bibliographystyle{ieeetr} 
+\bibliography{AgentBasedModelling.bib}
 
 \end{document}
