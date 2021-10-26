@@ -23,19 +23,18 @@ if __name__ == "__main__":
 
     """ Create and run the model """
     model = CropwarModel(parameters)  # create model instance
-    model.setup()  # setup the model and its properties
-    farmer_pos_list = list(
-        model.grid.positions.values()
-    )  # get the placement of the farmers.
-    print(f"The farmers are at: {farmer_pos_list}")
-    # TODO at a later stage, when the farmers can expand etc we might want to track similar properties. and update them each time step from within the model framework
 
     results = model.run()
     print(f"The results are {results}.")
     # print(model.output['info'])
     # TODO see how the "record" function output can be displayed easily and beautiful
 
-    """ Display the Map with the farmers """
+    ''' Display the Map with the farmers '''
+    farmer_pos_list = list(
+        model.grid.positions.values()
+    )  # get the placement of the farmers.
+    print(f"The farmers are at: {farmer_pos_list}")
+    #TODO at a later stage, when the farmers can expand etc we might want to track similar properties. and update them each time step from within the model framework
     sim_map = Map(*parameters["water_levels"])
     sim_map.generate_map()
     sim_map.add_farmers(farmer_pos_list)

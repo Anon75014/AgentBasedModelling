@@ -68,7 +68,6 @@ class Map:
         row = 0
 
         """  Set matrix (m) entries as specified """
-        # Aaron: I feel like this doesn't work as you intend it to
         for index, amount in enumerate(self.amounts):
             for _ in range(amount):
                   # based on symmetry color two at once
