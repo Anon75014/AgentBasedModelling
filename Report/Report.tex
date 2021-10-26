@@ -132,14 +132,19 @@ A possible extension of this project would be the application to a real-life cas
 In order to build the model, we decided to use the python library \href{https://agentpy.readthedocs.io/en/stable/overview.html}{Agentpy} which conveniently introduces the \texttt{Agent}, \texttt{Grid}, \texttt{Model}, and \texttt{Experiment} classes, allowing to create our model with minimal pre-requisite work.\\
 The present report was generated via LaTeX, and all relevant programs or documents were hosted on a git repo, with which our team interacted using Visual Studio Code.
 
-\subsection{Aim of the model}
+\subsection{Overview}
+\subsubsection{Aim of the model}
 The Crop War model aims to visualise how farmers can compete with respect to water ressources and crop profitability, given a geogaphical environment (the procedurally generated \texttt{Map} class) and a set of externalities including weather conditions, market dynamics (supply and demand impacting the price of crops), variable water ressources and government policies.
+\subsubsection{Concept}
+At each time step $dt$, all agents collect their crop yields and are faced with the choice of selling it at market price or stocking it for later use. Agents can also change the crops they are growing, or leave their land idle for replenishment of its nutritive properties, where the respective probabilities of these choices can be influenced by agent personalities.\\
+The wealth $W_i$ of each agent is then plotted as a function of time $t$, and an analyis is carried out to explain the success rate of different strategies, given a set of externalities such as weather conditions or government policies.
 
 \subsection{Model development}
-In order to illustrate the development of a farm-level agent-based model applied to agricultural systems, the model development is organised in versions, starting from the simple, deterministic \tagg{v1.0} on top of which we progressively implement new features such as market dynamics, weather events and agent personalities.
+In order to illustrate the development of our Crop Wars model, this section is organised in versions, starting from the simple, deterministic \tagg{v1.0} on top of which we progressively implement new features such as market dynamics, weather events and agent personalities.
 
 \subsubsection{Version 1.0}
-The first version of the model is not spatially resolved, in the sense that each agent can only grow one crop at a time and can not expand to other locations.
+The first version of the model is not spatially resolved, in the sense that each agent can only grow one crop at a time and can not expand to other locations.\\
+The price of each crop is fixed and does not vary
 
 \newpage
 \bibliographystyle{ieeetr} 
