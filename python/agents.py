@@ -7,10 +7,14 @@ class Personality(Enum):  # TODO Implenent Personalities
     """
     Personalities of the Farmers
     Maybe use Strategy design pattern for this?
+    
+    --> Each personality refers to a certain strategy interaction for the market or expansion (to be implemented).
     """
 
     Stocker = auto()
     Seller = auto()
+    Pioneer = auto()  # Strategy: decide whether to invest in seeds and harvest next period or to invest in land and harvest then. 
+    Efficiency = auto()  # Strategy: decide whether to invest in seeds and harvest or to invest in technology and thereby increase harvest_yield for all crops
 
 
 class Farmer(ap.Agent):
