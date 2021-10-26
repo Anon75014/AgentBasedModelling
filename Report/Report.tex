@@ -20,19 +20,8 @@
 % 2. Packages
 % 3. Header
 % 4. Your Document
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 1. Document Class
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- 
- % The first command you will always have will declare your document class. This tells LaTeX what type of document you are creating (article, presentation, poster, etc). 
-% \documentclass is the command
-% in {} you specify the type of document
-% in [] you define additional parameters
  
 \documentclass[a4paper,12pt]{article} % This defines the style of your paper
-
-% We usually use the article type. The additional parameters are the format of the paper you want to print it on and the standard font size. For us this is a4paper and 12pt.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 2. Packages
@@ -43,43 +32,26 @@
 
 % First, we usually want to set the margins of our document. For this we use the package geometry. We call the package with the \usepackage command. The package goes in the {}, the parameters again go into the [].
 \usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry} 
-
-% Unfortunately, LaTeX has a hard time interpreting German Umlaute. The following two lines and packages should help.
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-
+\usepackage{hyperref}
 \usepackage{tikz} %for the flow chart
 \usetikzlibrary{shapes,arrows}
-
-
 \usepackage{amsmath} %math package
 \usepackage{amsmath, nccmath} %multiple fractions
 \usepackage{pgfplots} %plots
 \usepackage{pgfplotstable} %to plot from imported text files
 \pgfplotsset{compat = newest}
 \usepackage{subcaption} %figures with multiple captions
-
-% The following two packages - multirow and booktabs - are needed to create nice looking tables.
 \usepackage{multirow} % Multirow is for tables with multiple rows within one cell.
 \usepackage{booktabs} % For even nicer tables.
-
-% As we usually want to include some plots (.pdf files) we need a package for that.
-\usepackage{graphicx} 
-%Centering captions under the figures
-\usepackage[justification=centering]{caption}
-
-% The default setting of LaTeX is to indent new paragraphs. This is useful for articles. But not really nice for homework problem sets. The following command sets the indent to 0.
+\usepackage{graphicx} %to include some plots (.pdf files) we need a package for that.
+\usepackage[justification=centering]{caption} %Centering captions under the figures
 \usepackage{setspace}
-\setlength{\parindent}{0in}
-
-% Package to place figures where you want them.
-\usepackage{float}
-
-% The fancyhdr package let's us create nice headers.
-\usepackage{fancyhdr}
-
-%Package for Matlab code listings:
-\usepackage[numbered, framed]{mcode}
+\setlength{\parindent}{0in} %The following command sets the indent to 0.
+\usepackage{float} % Package to place figures where you want them.
+\usepackage{fancyhdr} % to create nice headers.
+\usepackage[numbered, framed]{mcode} %Package for Matlab code listings:
 \lstset{stepnumber  = 5, % Line numbers go in steps of 4
 	breaklines  = true,
 	breakautoindent=true, 
@@ -92,46 +64,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 3. Header (and Footer)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% To make our document nice we want a header and number the pages in the footer.
-
-\pagestyle{fancy} % With this command we can customize the header style.
-
+\pagestyle{fancy} % % To make our document nice we want a header and number the pages in the footer. With this command we can customize the header style.
 \fancyhf{} % This makes sure we do not have other information in our header or footer.
-
-\lhead{\footnotesize Agent-based Modelling}% \lhead puts text in the top left corner. \footnotesize sets our font to a smaller size.
-
-%\rhead works just like \lhead (you can also use \chead)
+\lhead{\footnotesize Agent-based Modelling}% \lhead puts text in the top left corner. \footnotesize sets our font to a smaller size. \rhead works just like \lhead (you can also use \chead)
 \rhead{\footnotesize Christopher Golling, Gael Mourouga, Author 3, Author 4, Author 5} %<---- Fill in your lastnames.
-
-% Similar commands work for the footer (\lfoot, \cfoot and \rfoot).
-% We want to put our page number in the center.
-\cfoot{\footnotesize \thepage} 
-
+\cfoot{\footnotesize \thepage} % We want to put our page number in the center.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 4. Your document
+% 4. document
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Now, you need to tell LaTeX where your document starts. We do this with the \begin{document} command.
-% Like brackets every \begin{} command needs a corresponding \end{} command. We come back to this later.
 
 \begin{document}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Title section of the document
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% For the title section we want to reproduce the title section of the Problem Set and add your names.
-
 \thispagestyle{empty} % This command disables the header on the first page. 
-
 \begin{tabular}{p{15.5cm}} % This is a simple tabular environment to align your text nicely 
-
 %---------
 {\large \bf Agent-based Modelling} \\
 Fall 2021  \\
@@ -139,12 +85,11 @@ Fall 2021  \\
 \\
 \end{tabular} % Our tabular environment ends here.
 %--------------
-
 \vspace*{0.3cm} % some vertical space in between the line and our title.
 
 %----------------------------Title
 \begin{center} % Everything within the center environment is centered.
-	{\Large \bf Mini-Project} % <---- Don't forget to put in the right number
+	{\Large \bf Coding Project: Crop Wars}
 	\vspace{2mm}
 	
         % YOUR NAMES GO HERE
@@ -158,6 +103,30 @@ Fall 2021  \\
 \vspace{0.4cm}
 
 %----------------First section
-\section{Model definition}
+\section{Introduction}
+
+Agricultural structures are shaped by a variety of factors, including economic, environmental, cultural, technological and geographical conditions \cite{happeAgriculturalPoliciesFarm2004}. \\
+Consequently, both farmers and policymakers can benefit from farm-level models which optimise water usage and crop nature, based on a set of different externalities including water ressources availability and market dynamics.\\
+The model featured in this coding project aims to illustrate the process behind the development of agent-based farm-level models, by starting with a simple, deterministic model that is progressively complexified with elements from physics-based models and game theory.
+
+
+\section{State-of-the-Art}
+
+To guide the development of our illustrative model, a literature review was conducted to assess the state-of-the-art on agent-based modelling for water ressources allocation and farming simulations. \\
+Our starting point was the thesis \textit{"Agricultural policies and farm structures: Agent-based modelling and application to EU-policy reform"} by Happe (2004) \cite{happeAgriculturalPoliciesFarm2004}, which outlines in details the development of an agent-based model (AgriPoliS) to assess the influence of agricultural policies at the farm level, which is applied to a case study in the region of Holenhole in Germany.\\
+To have an overview of more recent approaches. a seed review paper was selected, \textit{"A review of Agent Based Modeling for agricultural policy evaluation"} by Kremmydas et al.(2018) \cite{kremmydasReviewAgentBased2018} from which a literature graph was generated using the online tools \href{https://www.connectedpapers.com/main/35fac7b643317e5f48f5280fadec94051bf2401f/A-review-of-Agent-Based-Modeling-for-agricultural-policy-evaluation/graph}{Connected Papers}, and is analysed on figure \ref{fig:State_of_the_art}.\\
+For completeness, the graphs generated through other seed papers were also analysed, including an older paper applying game theory to decision making in farmer cooperatives by Staatz (1983) \cite{staatzGametheoreticAnalysisDecision1983} and a case application of agent-based models to water allocation on the transboundary Nile river by Ding (2016) \cite{dingAgentBasedModelling2016}.
+
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{Figures/StateOfTheArt2.pdf}
+	\centering
+	\caption{Graph showing papers related to ref.X generated on ConnectedPapers.com. Circle radius is proportionnal to number of citation, color to publication date, dashed line refers to paper categories.}
+	\label{fig:State_of_the_art}
+\end{figure}
+
+\newpage
+\bibliographystyle{ieeetr} 
+\bibliography{AgentBasedModelling.bib}
 
 \end{document}
