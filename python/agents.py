@@ -1,7 +1,7 @@
 import agentpy as ap
 from crops import Crop_Shop
-
 from enum import Enum, auto
+import python.Objectives_ABM as abmc
 
 class Personality(Enum): # TODO Implenent Personalities
     """
@@ -11,7 +11,7 @@ class Personality(Enum): # TODO Implenent Personalities
     Stocker = auto()
     Seller = auto()
 
-
+#each_subcatchment_rate=[0.137305849, 0.123708066, 0.173220163, 0.132715515, 0.433050407]
 
 class Farmer(ap.Agent):
 
@@ -22,14 +22,17 @@ class Farmer(ap.Agent):
         
         # Set start budget 
         self.budget = self.p.start_budget
+        self.area=self.p.available_area_ha
         
         # self.field_locations = np.zeros(shape=(2,1)) # list where subfield locations are stored
-
+        
         # Set start crop
         self.crop = None
         self.crop_id = self.random.randint(0,len(Crop_Shop.crops)-1) # -1 since len is  >= 1 and crop id starts at 0
+        self.subbasin_id = self.random.randint(0,4)
         self.choose_crop(self.crop_id)
-
+        N_farmers = self.p.N_farmers
+        #self.available_area_for_the_first_time_step=self.area/N_farmers To decide
         # Initialise Stock
         self.stock = {}
         for _crop_id in Crop_Shop.crops.keys():
@@ -52,6 +55,12 @@ class Farmer(ap.Agent):
             print(f"Farmer {self.id} Sold. New Stock: {self.stock}. New Budget: {self.budget}")
         else:
             print(f"ERROR: Farmer {self.id} does not have enough in stock for that deal.")
+    
+    def needed_water_for_deficit_irrigation(self,crop_id,area):
+        di=0.8# Can be input param
+        #total_water_per_crop,net_benefit =abmc.agr(crop_id,area,di) Can be the sample function 
+        
+        
 
 
 

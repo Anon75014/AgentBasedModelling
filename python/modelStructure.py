@@ -25,6 +25,10 @@ class CropwarModel(ap.Model):
         
         print('Done: setup of Grid.')
 
+
+    def step(self):
+        pass
+    
     def update(self):
         if self.t > 10:
             self.stop()
@@ -32,10 +36,8 @@ class CropwarModel(ap.Model):
         self.agents.record("budget")
         self.agents.record("crop_id")
         self.agents.record("stock")
+        #Social resilience
 
-
-    def step(self):
-        pass
 
     def end(self):
         self.report('my_reporter', 1)  # Report a simulation result #just a test

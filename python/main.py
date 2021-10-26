@@ -24,7 +24,8 @@ if __name__ == '__main__':
     parameters = {
         'water_levels' : [0,0,3],
         'N_farmers' : 4,
-        'start_budget' : 500
+        'start_budget' : 500,
+        'available_area_ha':138552
     }
 
     model = CropwarModel(parameters)
