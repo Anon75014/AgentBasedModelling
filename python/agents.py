@@ -1,21 +1,70 @@
 import agentpy as ap
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
-from enum import Enum, auto
-
-
-class Personality(Enum):  # TODO Implenent Personalities
+class FarmerPersonality(ABC):
     """
-    Personalities of the Farmers
-    Maybe use Strategy design pattern for this?
-    
+    Abstract base class for the personalities of the farmers
+
     --> Each personality refers to a certain strategy interaction for the market or expansion (to be implemented).
     """
 
-    Stocker = auto()
-    Seller = auto()
-    Pioneer = auto()  # Strategy: decide whether to invest in seeds and harvest next period or to invest in land and harvest then. 
-    Efficiency = auto()  # Strategy: decide whether to invest in seeds and harvest or to invest in technology and thereby increase harvest_yield for all crops
+    # Aaron: Some dummy methods, replace them with the actual decisions
+    @abstractmethod
+    def buy(self) -> bool:
+        """Buy something"""
 
+    @abstractmethod
+    def sell(self) -> bool:
+        """Sell something"""
+
+@dataclass
+class Stocker(FarmerPersonality):
+
+    # Can add parameters like this, with default values since this is a dataclass
+    some_parameter: int = 3
+
+    def buy(self) -> bool:
+        pass
+
+    def buy(self) -> bool:
+        pass
+
+@dataclass
+class Seller(FarmerPersonality):
+
+    # Can add parameters like this, with default values since this is a dataclass
+    some_parameter: int = 3
+
+    def buy(self) -> bool:
+        pass
+
+    def buy(self) -> bool:
+        pass
+
+@dataclass
+class Pioneer(FarmerPersonality):
+    # Strategy: decide whether to invest in seeds and harvest next period or to invest in land and harvest then. 
+    # Can add parameters like this, with default values since this is a dataclass
+    some_parameter: int = 3
+
+    def buy(self) -> bool:
+        pass
+
+    def buy(self) -> bool:
+        pass
+
+@dataclass
+class Efficiency(FarmerPersonality):
+    # Strategy: decide whether to invest in seeds and harvest or to invest in technology and thereby increase harvest_yield for all crops
+    # Can add parameters like this, with default values since this is a dataclass
+    some_parameter: int = 3
+
+    def buy(self) -> bool:
+        pass
+
+    def buy(self) -> bool:
+        pass
 
 class Farmer(ap.Agent):
     def setup(self):
