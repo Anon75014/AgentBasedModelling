@@ -2,6 +2,11 @@ import agentpy as ap
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from pandas import DataFrame as df
+import numpy as np
+import copy
+
+
 class FarmerPersonality(ABC):
     """
     Abstract base class for the personalities of the farmers
@@ -18,6 +23,7 @@ class FarmerPersonality(ABC):
     def sell(self) -> bool:
         """Sell something"""
 
+
 @dataclass
 class Stocker(FarmerPersonality):
 
@@ -29,6 +35,7 @@ class Stocker(FarmerPersonality):
 
     def buy(self) -> bool:
         pass
+
 
 @dataclass
 class Seller(FarmerPersonality):
@@ -42,9 +49,10 @@ class Seller(FarmerPersonality):
     def buy(self) -> bool:
         pass
 
+
 @dataclass
 class Pioneer(FarmerPersonality):
-    # Strategy: decide whether to invest in seeds and harvest next period or to invest in land and harvest then. 
+    # Strategy: decide whether to invest in seeds and harvest next period or to invest in land and harvest then.
     # Can add parameters like this, with default values since this is a dataclass
     some_parameter: int = 3
 
@@ -53,6 +61,7 @@ class Pioneer(FarmerPersonality):
 
     def buy(self) -> bool:
         pass
+
 
 @dataclass
 class Efficiency(FarmerPersonality):
@@ -66,6 +75,7 @@ class Efficiency(FarmerPersonality):
     def buy(self) -> bool:
         pass
 
+
 class Farmer(ap.Agent):
     def setup(self):
         """Initiate agent attributes."""
@@ -74,7 +84,6 @@ class Farmer(ap.Agent):
 
         # Set start budget
         self.budget = self.p.start_budget
-
         # self.field_locations = np.zeros(shape=(2,1)) # list where subfield locations are stored
 
         # Set start crop
@@ -85,9 +94,13 @@ class Farmer(ap.Agent):
         self.choose_crop(self.crop_id)
 
         # Initialise Stock
-        self.stock = {}
+        # create an array of fixed size, where each entry corresponds to the amount in _stock:
+        self._stock = {}
         for crop_id in self.model.crop_shop.crops.keys():
-            self.stock[crop_id] = 0
+            self._stock[crop_id] = 0
+
+        #self._stock = np.zeros(self.model.crop_shop.amount_of_crops, dtype=int)
+        self.stock = copy.deepcopy(self._stock)
 
     def choose_crop(self, new_id: int):
         self.crop_id = new_id
@@ -98,23 +111,26 @@ class Farmer(ap.Agent):
         )
 
     def farm(self):
-        self.stock[self.crop_id] += self.crop.harvest_yield
-        print(f"Farmer {self.id} harvested. New Stock: {self.stock}")
+        self._stock[self.crop_id] += self.crop.harvest_yield
+        print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
 
     def sell(self, crop_id: int, amount: int):
-        if self.stock[crop_id] >= amount:
-            self.stock[crop_id] -= amount
-            self.budget += self.crop.sell_price
+        if self._stock[crop_id] >= amount:
+            self._stock[crop_id] -= amount
+            self.budget += amount*self.crop.sell_price
             print(
-                f"Farmer {self.id} Sold. New Stock: {self.stock}. New Budget: {self.budget}"
+                f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
             )
         else:
             print(
-                f"Ups: Farmer {self.id} does not have enough in stock for that deal."
+                f"Ups: Farmer {self.id} does not have enough in _stock for that deal."
             )
 
-    def update(self):
+    def step(self):
+
         self.farm()
-        amount = self.random.randint(0, 3)
+
+        amount = self.random.randint(0, 5)
         self.sell(self.crop_id, amount)
-        print(f"Upadted farmer {self.id}")
+        self.stock = copy.deepcopy(self._stock)
+        print(f"Updated farmer {self.id}")

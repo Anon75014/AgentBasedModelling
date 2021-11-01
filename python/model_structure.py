@@ -39,18 +39,18 @@ class CropwarModel(ap.Model):
         # self.grid.add_agents(self.agents, random=True, empty=True) # version 1
         print("Done: setup of grid.")
 
-    def update(self):
-        self.agents.record("budget")  # record these properties of the agents each step
-        self.agents.record("crop_id")
-        self.agents.record("stock")
-        
-
     def step(self):
         if self.t > self.p.t_end:  # model should stop after "t_end" steps
             self.stop()
 
-        self.agents.farm()  # agents should farm each step
+        print(f"\n    Start of time step: {self.t}")
+        self.agents.step()
 
+    def update(self):
+        # record the properties of the agents each step:
+        self.agents.record("budget")
+        self.agents.record("crop_id")
+        self.agents.record("stock")
 
     def end(self):
         # These reporter functions can be used to track properties over multiple experiments.

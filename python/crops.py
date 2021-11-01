@@ -32,15 +32,15 @@ class CropSortiment:
     def __init__(self):
         """Initialise the crop sortiment"""
         # number of available crops; to track and for ID-assignement
-        self.total_amount = 0
+        self.amount_of_crops = 0
         self.crops = {}
         print("Done: Created Crop_sortiment instance.")
 
     def add_crop(self, seed_cost: float, sell_price: float, harvest_yield: float):
         """Add a new kind of Crop to the sortiment"""
 
-        crop_id = self.total_amount
-        self.total_amount += 1
+        crop_id = self.amount_of_crops
+        self.amount_of_crops += 1
 
         # generate new Crop-instance based on Crop-class and add to dict:
         # Aaron: Maybe better to add crop instances instead of creating them in here.
