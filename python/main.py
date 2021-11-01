@@ -8,8 +8,8 @@ from sim_map import Map
 from pandas import DataFrame as df
 
 # These 2 lines are useful when working with Jupyter in vscode -> ask chris for help
-#%load_ext autoreload
-#%autoreload 2
+# %load_ext autoreload
+# %autoreload 2
 
 if __name__ == "__main__":
     # The following parameters are provided to the Model instance and are accessible within the model by eg "self.p.water_levels"
@@ -43,6 +43,7 @@ if __name__ == "__main__":
     presenter.crops()
     presenter.stocks()
     presenter.budget()
+    presenter.export()
 
     ''' Display the Map with the farmers '''
     farmer_pos_list = list(
