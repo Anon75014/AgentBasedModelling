@@ -144,13 +144,19 @@ In order to illustrate the development of our Crop Wars model, this section is o
 
 \subsubsection{Version 1.0}
 The first version of the model is not spatially resolved, in the sense that each agent can only grow one crop at a time and can not expand to other locations.\\
-The price of each crop is fixed and does not vary
+The price of each crop is fixed and does not vary as a function of time, and the agents only have the choice between selling or stocking their yields, their storage space being unlimited.\\
+The following plots show the evolution of the budget (in \$) and stock as a function of time over 10 time steps for 5 agents choosing between 2 crops to grow:
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{Figures/Graph_v01.pdf}
+	\centering
+	\caption{Graph showing the evolution of crop stocks (left) and farmer's budget (right) as a function of time over 10 time steps}
+	\label{fig:v01}
+\end{figure}
 
-\begin{lstlisting}
-	for i in 1:10
-	 do a
-	end
-\end{lstlisting}
+
+%command to display code:
+%\begin{lstlisting}
+%\end{lstlisting}
 
 
 \newpage
