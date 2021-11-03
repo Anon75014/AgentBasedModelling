@@ -70,7 +70,7 @@ class Map:
         """  Set matrix (m) entries as specified """
         for index, amount in enumerate(self.amounts):
             for _ in range(amount):
-                  # based on symmetry color two at once
+                # based on symmetry color two at once
                 self.map_matrix[row, :] = self.weights[index]
                 self.map_matrix[-(row + 1), :] = self.weights[index]
                 row += 1
@@ -97,8 +97,11 @@ class Map:
         self.reset_map()  # get a clear starting point
 
         # TODO all this could probably be optimised using the "GridIter" or "attrField"
-        for pos in pos_list:
-            self.map_matrix[pos] = self.farmer_index  # overwrite index of farmers
+        for lands in pos_list:
+            for pos in lands:
+                self.map_matrix[
+                    pos[0], pos[1]
+                ] = self.farmer_index  # overwrite index of farmers
 
         print(f"Done: added {len(pos_list)} farmers onto map.")
 

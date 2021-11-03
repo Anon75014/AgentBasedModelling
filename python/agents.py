@@ -7,6 +7,113 @@ import numpy as np
 import copy
 
 
+class Farmer(ap.Agent):
+    def setup(self):
+        """Initiate agent attributes."""
+        self.grid = self.model.grid
+        self.random = self.model.random
+
+        """ Choose start position for Farmer"""
+        self.accuired_land = []
+        self.pos_init = self.random.choice(self.model.unoccupied)
+        self._buy_cell(self.pos_init)
+
+        # Set start budget
+        self.budget = self.p.start_budget
+
+        # Set start crop
+        self.crop_id = self.random.randint(
+            0, len(self.model.crop_shop.crops) - 1
+        )  # -1 since len is  >= 1 and crop id starts at 0
+        self._change_to_crop(self.crop_id)
+
+        # Initialise Stock dictionary
+        self._stock = {}
+        for crop_id in self.model.crop_shop.crops.keys():
+            self._stock[crop_id] = 0
+
+        self.stock = copy.deepcopy(self._stock)  # this is recorded...
+
+    def _update_cell_list(self):
+        self.cells = self.model.cells.select(self.model.cells.farmer_id == self.id)
+
+    def _buy_cell(self, _coordinates):
+        """Farmer buys a cell at _coordinates and adds it to list"""
+        self.model.unoccupied.remove(_coordinates)
+        self.accuired_land.append(_coordinates)
+
+        # update cell properties
+        self.model.get_cell(_coordinates).farmer_id = self.id
+        self.model.get_cell(_coordinates).farmer = self
+
+        # update list of the Farmers owned cells
+        self._update_cell_list()
+
+    def _change_to_crop(self, new_id: int):  # TODO change s.t. all are updated
+        '''Farmer changes all his cells to new crop "new_id"'''
+        self.crop_id = new_id
+        self.crop = self.model.crop_shop.crops[new_id]
+        self.budget -= self.crop.seed_cost * len(self.accuired_land)
+
+        # update cell properties
+        self.cells.crop_id = self.crop_id
+        self.cells.crop = self.crop
+
+        print(
+            f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
+        )
+
+    def harvest(self):
+        self.cells.harvest()
+        # self._stock[self.crop_id] += self.crop.harvest_yield
+        print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
+
+    def sell(self, crop_id: int, amount: int):
+        if self._stock[crop_id] >= amount:
+            self._stock[crop_id] -= amount
+            self.budget += amount * self.crop.sell_price
+            print(
+                f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
+            )
+        else:
+            print(
+                f"Ups: Farmer {self.id} does not have enough in _stock for that deal."
+            )
+
+    def step(self):
+        self.harvest()
+
+        amount = self.random.randint(0, 5)
+        self.sell(self.crop_id, amount)
+
+        print(f"Stepped farmer {self.id}")
+
+    def update(self):
+        self.stock = copy.deepcopy(self._stock)
+
+
+class Cell(ap.Agent):
+    def setup(self):
+        """Initiate agent attributes."""
+        self.grid = self.model.grid
+        self.random = self.model.random
+
+        # Set variables
+        self.farmer_id = 0  # legend: 0=empty,-1=unavailable, x>0 = farmer
+        self.farmer = None
+        self.crop = -1
+        self.crop_id = -1
+        self.pos = self.model.free_cell_coords.pop(0)
+        self.water = self.model.water_matrix[self.pos]  # in [0,1] interval
+        self.is_border = True  # not quite shure if this var is necessary
+
+    def harvest(self):
+        self.farmer._stock[self.crop_id] += self.crop.harvest_yield
+
+    def step(self):
+        pass
+
+
 class FarmerPersonality(ABC):
     """
     Abstract base class for the personalities of the farmers
@@ -73,94 +180,4 @@ class Efficiency(FarmerPersonality):
         pass
 
     def buy(self) -> bool:
-        pass
-
-
-class Farmer(ap.Agent):
-    def setup(self):
-        """Initiate agent attributes."""
-        self.grid = self.model.grid
-        self.random = self.model.random
-        self.pos_init = self.random.choice(self.grid.empty) 
-        self.grid.empty.remove(self.pos_init)
-        self.pos_list = [self.pos_init]
-        
-        # Set start budget
-        self.budget = self.p.start_budget
-        # self.field_locations = np.zeros(shape=(2,1)) # list where subfield locations are stored
-
-        # Set start crop
-        self.crop = None
-        self.crop_id = self.random.randint(
-            0, len(self.model.crop_shop.crops) - 1
-        )  # -1 since len is  >= 1 and crop id starts at 0
-        self.choose_crop(self.crop_id)
-
-        # Initialise Stock
-        # create an array of fixed size, where each entry corresponds to the amount in _stock:
-        self._stock = {}
-        for crop_id in self.model.crop_shop.crops.keys():
-            self._stock[crop_id] = 0
-
-        self.stock = copy.deepcopy(self._stock)
-
-    def choose_crop(self, new_id: int):
-        self.crop_id = new_id
-        self.crop = self.model.crop_shop.crops[new_id]
-        self.budget -= self.crop.seed_cost
-        print(
-            f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
-        )
-
-    def farm(self):
-        self._stock[self.crop_id] += self.crop.harvest_yield
-        print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
-
-    def sell(self, crop_id: int, amount: int):
-        if self._stock[crop_id] >= amount:
-            self._stock[crop_id] -= amount
-            self.budget += amount*self.crop.sell_price
-            print(
-                f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
-            )
-        else:
-            print(
-                f"Ups: Farmer {self.id} does not have enough in _stock for that deal."
-            )
-
-    def step(self):
-
-        self.farm()
-
-        amount = self.random.randint(0, 5)
-        self.sell(self.crop_id, amount)
-        self.stock = copy.deepcopy(self._stock)
-        print(f"Updated farmer {self.id}")
-
-
-class Cell(ap.Agent):
-    def setup(self):
-        """Initiate agent attributes."""
-        self.grid = self.model.grid
-        self.random = self.model.random
-
-        # Set variables
-        self.farmer_id = 0
-        self.crop = -1
-        self.water = -1
-        self.pos = None
-        self.is_border = True #not quite shure if this var is necessary 
-
-
-        # self.choose_crop(self.crop_id)
-
-    def choose_crop(self, new_id: int):
-        self.crop_id = new_id
-        self.crop = self.model.crop_shop.crops[new_id]
-        self.budget -= self.crop.seed_cost
-        print(
-            f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
-        )
-
-    def step(self):
         pass

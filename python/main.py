@@ -27,7 +27,7 @@ if __name__ == "__main__":
         "start_budget": 500,
         "t_end": 6,
         "crop_shop": crop_shop,
-        "amount_of_crops": crop_shop.amount_of_crops
+        "amount_of_crops": crop_shop.amount_of_crops,
     }
 
     """ Create and run the model """
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     print(f"The results are {results}.")
     print(results.variables.Farmer)
 
-    ''' Display the results using the Displayer Class'''
+    """ Display the results using the Displayer Class """
     presenter = presentation.Displayer(results)
 
     presenter.crops()
@@ -45,10 +45,9 @@ if __name__ == "__main__":
     presenter.budget()
     presenter.export()
 
-    ''' Display the Map with the farmers '''
-    farmer_pos_list = list(
-        model.grid.positions.values()
-    )  # get the placement of the farmers.
+    """ Display the Map with the farmers """
+    # get the placement of the farmers:
+    farmer_pos_list = list(model.farmers.accuired_land)
 
     print(f"The farmers are at: {farmer_pos_list}")
     # TODO at a later stage, when the farmers can expand etc we might want to track similar properties. and update them each time step from within the model framework
