@@ -1,10 +1,10 @@
-import agentpy as ap
+""" This file contains the Agent and Cell classes. """
+
+import copy
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from pandas import DataFrame as df
-import numpy as np
-import copy
+import agentpy as ap
 
 
 class Farmer(ap.Agent):
@@ -35,7 +35,8 @@ class Farmer(ap.Agent):
         self.stock = copy.deepcopy(self._stock)  # this is recorded...
 
     def _update_cell_list(self):
-        self.cells = self.model.cells.select(self.model.cells.farmer_id == self.id)
+        self.cells = self.model.cells.select(
+            self.model.cells.farmer_id == self.id)
 
     def _buy_cell(self, _coordinates):
         """Farmer buys a cell at _coordinates and adds it to list"""
@@ -49,7 +50,7 @@ class Farmer(ap.Agent):
         # update list of the Farmers owned cells
         self._update_cell_list()
 
-    def _change_to_crop(self, new_id: int):  # TODO change s.t. all are updated
+    def _change_to_crop(self, new_id: int):  
         '''Farmer changes all his cells to new crop "new_id"'''
         self.crop_id = new_id
         self.crop = self.model.crop_shop.crops[new_id]
@@ -65,8 +66,8 @@ class Farmer(ap.Agent):
 
     def harvest(self):
         self.cells.harvest()
-        # self._stock[self.crop_id] += self.crop.harvest_yield
-        print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
+
+        # print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
 
     def sell(self, crop_id: int, amount: int):
         if self._stock[crop_id] >= amount:
@@ -75,10 +76,10 @@ class Farmer(ap.Agent):
             print(
                 f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
             )
-        else:
-            print(
-                f"Ups: Farmer {self.id} does not have enough in _stock for that deal."
-            )
+        # else:
+        #     print(
+        #         f"Ups: Farmer {self.id} does not have enough in _stock for that deal."
+        #     )
 
     def step(self):
         self.harvest()
@@ -86,7 +87,7 @@ class Farmer(ap.Agent):
         amount = self.random.randint(0, 5)
         self.sell(self.crop_id, amount)
 
-        print(f"Stepped farmer {self.id}")
+        # print(f"Stepped farmer {self.id}")
 
     def update(self):
         self.stock = copy.deepcopy(self._stock)

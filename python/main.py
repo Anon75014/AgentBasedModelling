@@ -1,11 +1,10 @@
 """ Main File for the CropWar agent Based Simulation. """
 # %%
 
-import presentation
 from crops import CropSortiment
+from graph_presenter import graph_class
+from map_presenter import map_class
 from model import CropwarModel
-from sim_map import Map
-from pandas import DataFrame as df
 
 # These 2 lines are useful when working with Jupyter in vscode -> ask chris for help
 # %load_ext autoreload
@@ -16,16 +15,15 @@ if __name__ == "__main__":
 
     # The Crop_Shop contains the relevant information for the farmers.
     crop_shop = CropSortiment()
-    # Add two crops TODO Find good parameters for crops.
+    # TODO Find good parameters for crops.
     crop_shop.add_crop(100, 15, 2)
     crop_shop.add_crop(150, 25, 1)
 
     parameters = {
-        # only hydrated land. Later maybe [1,2,3] or so
         "water_levels": [1, 2, 3],
         "n_farmers": 4,
         "start_budget": 500,
-        "t_end": 6,
+        "t_end": 10,
         "crop_shop": crop_shop,
         "amount_of_crops": crop_shop.amount_of_crops,
     }
@@ -36,9 +34,10 @@ if __name__ == "__main__":
     results = model.run()
     print(f"The results are {results}.")
     print(results.variables.Farmer)
+    print(f"The farmers got this land: {list(model.farmers.accuired_land)}")
 
     """ Display the results using the Displayer Class """
-    presenter = presentation.Displayer(results)
+    presenter = graph_class(results)
 
     presenter.crops()
     presenter.stocks()
@@ -46,14 +45,10 @@ if __name__ == "__main__":
     presenter.export()
 
     """ Display the Map with the farmers """
-    # get the placement of the farmers:
-    farmer_pos_list = list(model.farmers.accuired_land)
 
-    print(f"The farmers are at: {farmer_pos_list}")
-    # TODO at a later stage, when the farmers can expand etc we might want to track similar properties. and update them each time step from within the model framework
-    sim_map = Map(*parameters["water_levels"])
-    sim_map.generate_map()
-    sim_map.add_farmers(farmer_pos_list)
-    sim_map.show()
+    # TODO at a later stage, when the farmers can expand etc we might want to track similar properties.
+    mapper = map_class(model)
+    mapper.add_farmers()
+    mapper.show()
 
 # %%

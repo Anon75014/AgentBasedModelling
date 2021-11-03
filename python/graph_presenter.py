@@ -6,7 +6,7 @@ import seaborn as sns
 from pandas import DataFrame as df
 
 
-class Displayer():
+class graph_class():
     """ Displayer Class to show the Agnetpy Run results. """
 
     def __init__(self, _results) -> None:
@@ -101,16 +101,3 @@ class Displayer():
         """ Export Stockdata and Budget&Crop_id data to two .csv files for plotting in Latex. """
         self.stock_data.to_csv("stock_results.csv")
         self.data.to_csv("data.csv")
-
-
-"""
-#Working with pandas:
-
-import pandas as pd
-from pandas import DataFrame as df
-
-- create new dataframe: t7 = df(data=[10,20],columns=["bla"])
-- join two together: df.join(t2,t3)
-- Fill NA/NaN values: df.fillna(0)
-- reset indices: t5.reset_index(drop=True,inplace=True)
-"""

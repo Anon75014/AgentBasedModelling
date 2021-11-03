@@ -1,9 +1,11 @@
 """ This file contains the Main structure of the Simulation. -> The AgentPy model """
 
-import agentpy as ap
-from agents import Farmer, Cell
 from copy import deepcopy
+
+import agentpy as ap
 import numpy as np
+
+from agents import Cell, Farmer
 
 
 class CropwarModel(ap.Model):
@@ -23,7 +25,6 @@ class CropwarModel(ap.Model):
         self.grid = ap.Grid(self, (n, m), track_empty=True)
         # list of map coords: [(0,0),(0,1),...] :
         self.unoccupied = np.array(deepcopy(self.grid.empty))
-        # self.ref_cell_indices = deepcopy(list(self.grid.empty)) # TODO needed?!
         self.water_matrix = self.generate_water_matrix()
 
         """ Initialising Cells"""
@@ -55,8 +56,6 @@ class CropwarModel(ap.Model):
         n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.farmers = ap.AgentDList(self, n_farmers, Farmer)
 
-        # dicitonary, mapping each matrix coordinate to the corresponding cell
-        # self.grid.add_agents(self.agents, random=True, empty=True) # version 1
         print("Done: setup of grid.")
 
     def get_cell(self, pos: tuple):
@@ -88,7 +87,7 @@ class CropwarModel(ap.Model):
             self.stop()
         print(f"\n    Start of time step: {self.t}")
 
-        self.farmers.step()  # TODO
+        self.farmers.step()  
 
     def update(self):
         # record the properties of the farmers each step:
