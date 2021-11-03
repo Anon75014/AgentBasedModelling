@@ -1,7 +1,7 @@
 """ This file contains the Main structure of the Simulation. -> The AgentPy model """
 
 import agentpy as ap
-from agents import Farmer
+from agents import Farmer, Cell
 
 
 class CropwarModel(ap.Model):
@@ -11,25 +11,23 @@ class CropwarModel(ap.Model):
 
     def setup(self):
         """Setting parameters and model properties"""
-        water_levels = (
-            self.p.water_levels
-        )  # self.p. ... access of provided paramter dictionary
-        m = 2 * sum(water_levels)  # because these maps are symmetric
-        n = m + 1  # and have one horizontal river (with thickness = 1)
-        water_row = sum(water_levels)  # ensure that water is in the center
-        n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.crop_shop = self.p.crop_shop
+        
+        water_row = sum(self.p.water_levels)  # ensure that water is in the center
+        m = 2 * sum(self.p.water_levels)  # because these maps are symmetric
+        n = m + 1  # and have one horizontal river (with thickness = 1)
 
         # Create grid:
         self.grid = ap.Grid(self, (n, m), track_empty=True)
-
         # Remove water coordinates from the grid s.t. no farmer is placed there and cannot cross it:
         for i in range(m):
             # print(f"This model got water at: {(water_row,i)} ?!")
             self.grid.empty.remove((water_row, i))
 
+        n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.agents = ap.AgentList(self, n_farmers, Farmer)
 
+        n_cells = m*m           # amount of cells (that are not water)
         self.grid.add_agents(
             self.agents,
             #positions=[(5, 4), (5, 1), (1, 1), (1, 4)],
@@ -55,7 +53,4 @@ class CropwarModel(ap.Model):
         self.agents.record("stock")
 
     def end(self):
-        # These reporter functions can be used to track properties over multiple experiments.
-        # For example, which farmer personality got the most money, or the most stock, etc
-        # self.report("my_reporter", 1)
         pass

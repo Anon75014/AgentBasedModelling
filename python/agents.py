@@ -81,7 +81,10 @@ class Farmer(ap.Agent):
         """Initiate agent attributes."""
         self.grid = self.model.grid
         self.random = self.model.random
-
+        self.pos_init = self.random.choice(self.grid.empty) 
+        self.grid.empty.remove(self.pos_init)
+        self.pos_list = [self.pos_init]
+        
         # Set start budget
         self.budget = self.p.start_budget
         # self.field_locations = np.zeros(shape=(2,1)) # list where subfield locations are stored
@@ -133,3 +136,31 @@ class Farmer(ap.Agent):
         self.sell(self.crop_id, amount)
         self.stock = copy.deepcopy(self._stock)
         print(f"Updated farmer {self.id}")
+
+
+class Cell(ap.Agent):
+    def setup(self):
+        """Initiate agent attributes."""
+        self.grid = self.model.grid
+        self.random = self.model.random
+
+        # Set variables
+        self.farmer_id = 0
+        self.crop = -1
+        self.water = -1
+        self.pos = None
+        self.is_border = True #not quite shure if this var is necessary 
+
+
+        # self.choose_crop(self.crop_id)
+
+    def choose_crop(self, new_id: int):
+        self.crop_id = new_id
+        self.crop = self.model.crop_shop.crops[new_id]
+        self.budget -= self.crop.seed_cost
+        print(
+            f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
+        )
+
+    def step(self):
+        pass
