@@ -32,7 +32,6 @@ if __name__ == "__main__":
 
     """ Create and run the model """
     model = CropwarModel(parameters)  # create model instance
-
     results = model.run()
     print(f"The results are {results}.")
     print(results.variables.Farmer)

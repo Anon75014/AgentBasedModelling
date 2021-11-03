@@ -1,6 +1,7 @@
 import agentpy as ap
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Dict
 
 from pandas import DataFrame as df
 import numpy as np
@@ -81,6 +82,10 @@ class Farmer(ap.Agent):
         """Initiate agent attributes."""
         self.grid = self.model.grid
         self.random = self.model.random
+        np.random.seed(1234)  # Find out how to do this cleanly
+        self.c_agent = {
+            k: np.random.random() for k in self.model.crop_shop.crops
+        }  # TODO: find good values
 
         # Set start budget
         self.budget = self.p.start_budget
@@ -99,7 +104,7 @@ class Farmer(ap.Agent):
         for crop_id in self.model.crop_shop.crops.keys():
             self._stock[crop_id] = 0
 
-        #self._stock = np.zeros(self.model.crop_shop.amount_of_crops, dtype=int)
+        # self._stock = np.zeros(self.model.crop_shop.amount_of_crops, dtype=int)
         self.stock = copy.deepcopy(self._stock)
 
     def choose_crop(self, new_id: int):
@@ -114,10 +119,32 @@ class Farmer(ap.Agent):
         self._stock[self.crop_id] += self.crop.harvest_yield
         print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
 
+    def supply(self, prices: Dict[int, int]) -> Dict[int, int]:
+        """
+        Supply to the market
+
+        Parameters
+        ----------
+        prices: Dict[int, int]
+            Dictionary with the global prices for each `crop_id`
+
+
+        Returns
+        -------
+        supplies: Dict[int, int]
+            Dictionary with the amounts that the agent supplies
+        """
+        supplies = dict.fromkeys(self.model.crop_shop.crops.keys())
+        for crop_id in self.model.crop_shop.crops.keys():
+            supplying: int = int(self.c_agent[crop_id] * prices[crop_id])
+            supplies[crop_id] = supplying
+            self.sell(crop_id, supplying)  # Is there a reason to keep supply and sell separate?
+        return supplies
+
     def sell(self, crop_id: int, amount: int):
         if self._stock[crop_id] >= amount:
             self._stock[crop_id] -= amount
-            self.budget += amount*self.crop.sell_price
+            self.budget += amount * self.crop.sell_price
             print(
                 f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
             )
@@ -127,10 +154,9 @@ class Farmer(ap.Agent):
             )
 
     def step(self):
-
         self.farm()
 
-        amount = self.random.randint(0, 5)
-        self.sell(self.crop_id, amount)
+        #amount = self.random.randint(0, 5)
+        #self.sell(self.crop_id, amount)
         self.stock = copy.deepcopy(self._stock)
         print(f"Updated farmer {self.id}")

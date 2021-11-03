@@ -2,6 +2,7 @@
 
 import agentpy as ap
 from agents import Farmer
+from market import Market
 
 
 class CropwarModel(ap.Model):
@@ -29,6 +30,7 @@ class CropwarModel(ap.Model):
             self.grid.empty.remove((water_row, i))
 
         self.agents = ap.AgentList(self, n_farmers, Farmer)
+        self.market = Market(crop_sortiment=self.crop_shop, agents=self.agents)
 
         self.grid.add_agents(
             self.agents,
@@ -45,6 +47,10 @@ class CropwarModel(ap.Model):
 
         print(f"\n    Start of time step: {self.t}")
         self.agents.step()
+        self.market.step()
+        # Update prices of crops
+        for crop_id, price in self.market.current_prices.items():
+            self.crop_shop.crops[crop_id].sell_price = price
 
     def update(self):
         # record the properties of the agents each step:
