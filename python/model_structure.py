@@ -32,10 +32,12 @@ class CropwarModel(ap.Model):
 
         self.grid.add_agents(
             self.agents,
-            positions=[(5, 4), (5, 1), (1, 1), (1, 4)],
-            random=False,
+            #positions=[(5, 4), (5, 1), (1, 1), (1, 4)],
+            random=True,
             empty=True,
         )  # version 0
+
+        
         # self.grid.add_agents(self.agents, random=True, empty=True) # version 1
         print("Done: setup of grid.")
 

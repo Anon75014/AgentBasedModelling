@@ -99,7 +99,6 @@ class Farmer(ap.Agent):
         for crop_id in self.model.crop_shop.crops.keys():
             self._stock[crop_id] = 0
 
-        #self._stock = np.zeros(self.model.crop_shop.amount_of_crops, dtype=int)
         self.stock = copy.deepcopy(self._stock)
 
     def choose_crop(self, new_id: int):
