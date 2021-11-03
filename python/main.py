@@ -3,7 +3,7 @@
 
 import presentation
 from crops import CropSortiment
-from model_structure import CropwarModel
+from model import CropwarModel
 from sim_map import Map
 from pandas import DataFrame as df
 
