@@ -20,10 +20,10 @@ if __name__ == "__main__":
     crop_shop.add_crop(150, 25, 1)
 
     parameters = {
-        "water_levels": [1, 2, 3],
+        "water_levels": [0, 0, 3],
         "n_farmers": 4,
         "start_budget": 500,
-        "t_end": 4,
+        "t_end": 50,
         "crop_shop": crop_shop,
         "amount_of_crops": crop_shop.amount_of_crops,
     }
@@ -40,10 +40,11 @@ if __name__ == "__main__":
     presenter = graph_class(results)
 
     presenter.crops()
+    presenter.cellcount()
     presenter.stocks()
     presenter.budget()
     presenter.export()
-
+    presenter.traits(model)
     """ Display the Map with the farmers """
 
     # TODO at a later stage, when the farmers can expand etc we might want to track similar properties.

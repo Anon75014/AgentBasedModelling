@@ -20,20 +20,22 @@ class CropwarModel(ap.Model):
         # because these water rows are symmetric
         m = 2 * sum(self.p.water_levels)
         n = m + 1  # and have one horizontal river (with thickness = 1)
-        self.n = n; self.m = m
+        self.n = n
+        self.m = m
 
         """ Create grid: """
         self.grid = ap.Grid(self, (n, m), track_empty=True)
         # list of map coords: [(0,0),(0,1),...] :
         self.unoccupied = np.array(deepcopy(self.grid.empty))
         self.water_matrix = self.generate_water_matrix()
-        self.headings = ['N','O','S','W']
+        self.headings = ['N', 'O', 'S', 'W']
+
         """ Initialising Cells"""
         n_cells = m * n  # amount of cells (that can even be water)
         self.free_cell_coords = deepcopy(list(self.grid.empty))
-        # Dlist s.t. order is maintained
+        # Dlist s.t. order is maintained ::
         self.cells = ap.AgentDList(self, n_cells, Cell)
-        # check that all cells are assigned a position:
+        # check that all cells are assigned a position::
         assert len(self.free_cell_coords) == 0
 
         self.grid.add_agents(
@@ -88,7 +90,7 @@ class CropwarModel(ap.Model):
             self.stop()
         print(f"\n    Start of time step: {self.t}")
 
-        self.farmers.step()  
+        self.farmers.step()
 
     def update(self):
         # record the properties of the farmers each step:
@@ -96,6 +98,7 @@ class CropwarModel(ap.Model):
         self.farmers.record("budget")
         self.farmers.record("crop_id")
         self.farmers.record("stock")
+        self.farmers.record("cellcount")
 
     def end(self):
         pass

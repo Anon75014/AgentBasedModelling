@@ -23,12 +23,16 @@ class graph_class():
         self.titles = {
             "budget": "Budget Evolution",
             "crop_id": "Active Crops",
-            "stock": "Stock Evolution"
+            "stock": "Stock Evolution",
+            "cellcount": "Evolution of Cells per Farmer",
+            "buy_cell_threash": "Buy Threashold"
         }
         self.y_labels = {
             "budget": "Budget",
             "crop_id": "Active Crop ID",
-            "stock": "Stock Units"
+            "stock": "Stock Units",
+            "cellcount": "Amount of Cells",
+            "buy_cell_threash": r"Parameter $\in [0,1]}$"
         }
         self._stock_data = None
         print("OK: initialised Displayer instance")
@@ -96,6 +100,23 @@ class graph_class():
         """ Plot budget data """
         self.new_plot("budget")
         self.show_evolution_line("budget")
+
+    def cellcount(self):
+        """ Cellcount data """
+        self.new_plot("cellcount")
+        self.show_evolution_line("cellcount")
+
+    def traits(self, model):
+        """ Personality traits """
+        fig, ax = plt.subplots()
+        trait_data = list(model.farmers.buy_cell_threash)
+        farmer_ids = list(model.farmers.id)
+        rects1 = ax.bar(farmer_ids, trait_data)
+        ax.set_ylabel("Buy threashold")
+        ax.set_xlabel("Farmer ID")
+        ax.bar_label(rects1, padding=3, fmt='%.2f')
+        ax.set_xticks(farmer_ids)
+        ax.set_title('Buy Threashold for the farmers')
 
     def export(self):
         """ Export Stockdata and Budget&Crop_id data to two .csv files for plotting in Latex. """
