@@ -20,13 +20,14 @@ class CropwarModel(ap.Model):
         # because these water rows are symmetric
         m = 2 * sum(self.p.water_levels)
         n = m + 1  # and have one horizontal river (with thickness = 1)
+        self.n = n; self.m = m
 
         """ Create grid: """
         self.grid = ap.Grid(self, (n, m), track_empty=True)
         # list of map coords: [(0,0),(0,1),...] :
         self.unoccupied = np.array(deepcopy(self.grid.empty))
         self.water_matrix = self.generate_water_matrix()
-
+        self.headings = ['N','O','S','W']
         """ Initialising Cells"""
         n_cells = m * n  # amount of cells (that can even be water)
         self.free_cell_coords = deepcopy(list(self.grid.empty))
@@ -47,7 +48,7 @@ class CropwarModel(ap.Model):
 
         # Set River Cells
         for i in range(m):
-            self.get_cell((self.water_row, i)).farmer_id = -1
+            self.cell_at((self.water_row, i)).farmer_id = -1
 
         """ Initialising Farmers"""
         self.unoccupied = self.unoccupied[
@@ -58,7 +59,7 @@ class CropwarModel(ap.Model):
 
         print("Done: setup of grid.")
 
-    def get_cell(self, pos: tuple):
+    def cell_at(self, pos: tuple):
         """Returns cell at pos Position in Grid"""
         return self._cell_dict[tuple(pos)]
 

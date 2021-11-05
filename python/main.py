@@ -23,7 +23,7 @@ if __name__ == "__main__":
         "water_levels": [1, 2, 3],
         "n_farmers": 4,
         "start_budget": 500,
-        "t_end": 10,
+        "t_end": 4,
         "crop_shop": crop_shop,
         "amount_of_crops": crop_shop.amount_of_crops,
     }
