@@ -92,152 +92,6 @@ def agr(area,crop_type,di):
     income=y_c_a*area*price[crop_type]*1000  #for each crop 1000 is to convert ton to kg
     net_benefit=income-cost[crop_type]*area
    
-    
-    # water_demand_section
-    #Winter Wheat Nov-June m^3/month
-    if crop_type==0:
-        months[10]=w_c_a[0]*month_day[10]*area*10 #m^3/month
-        months[11]=w_c_a[1]*month_day[11]*area*10
-        months[0]=w_c_a[1]*month_day[0]*area*10
-        months[1]=w_c_a[1]*month_day[1]*area*10
-        months[2]=w_c_a[1]*month_day[2]*area*10
-        months[3]=w_c_a[1]*month_day[3]*area*10
-        months[4]=w_c_a[2]*month_day[4]*area*10
-        months[5]=w_c_a[3]*month_day[5]*area*10
-
-        total_water_per_crop[0]=w_c_a[0]*month_day[10]*area*10
-        total_water_per_crop[0]+=w_c_a[1]*month_day[11]*area*10
-        total_water_per_crop[0]+=w_c_a[1]*month_day[0]*area*10
-        total_water_per_crop[0]+=w_c_a[1]*month_day[1]*area*10
-        total_water_per_crop[0]+=w_c_a[1]*month_day[2]*area*10
-        total_water_per_crop[0]+=w_c_a[1]*month_day[3]*area*10
-        total_water_per_crop[0]+=w_c_a[2]*month_day[4]*area*10
-        total_water_per_crop[0]+=w_c_a[3]*month_day[5]*area*10
-    
-    if crop_type==1:
-    #Barley Nov-June
-        months[10]=months[10]+w_c_a[1][0]*month_day[10]*area*10
-        months[11]=months[11]+w_c_a[1][1]*month_day[11]*area*10
-        months[0]=months[0]+w_c_a[1][1]*month_day[0]*area*10
-        months[1]=months[1]+w_c_a[1][2]*month_day[1]*area*10
-        months[2]=months[2]+w_c_a[1][2]*month_day[2]*area*10
-        months[3]=months[3]+w_c_a[1][2]*month_day[3]*area*10
-        months[4]=months[4]+w_c_a[1][3]*month_day[4]*area*10
-        months[5]=months[5]+w_c_a[1][3]*month_day[5]*area*10
-
-        total_water_per_crop[1]=w_c_a[1][0]*month_day[10]*area*10
-        total_water_per_crop[1]+=w_c_a[1][1]*month_day[11]*area*10
-        total_water_per_crop[1]+=w_c_a[1][1]*month_day[0]*area*10
-        total_water_per_crop[1]+=w_c_a[1][2]*month_day[1]*area*10
-        total_water_per_crop[1]+=w_c_a[1][2]*month_day[2]*area*10
-        total_water_per_crop[1]+=w_c_a[1][2]*month_day[3]*area*10
-        total_water_per_crop[1]+=w_c_a[1][3]*month_day[4]*area*10
-        total_water_per_crop[1]+=w_c_a[1][3]*month_day[5]*area*10
-        
-    if crop_type==2:
-    #Maize June-Oct
-        months[5]=months[5]+w_c_a[2][0]*month_day[5]*10
-        months[6]=months[6]+w_c_a[2][1]*month_day[6]*10
-        months[7]=months[7]+w_c_a[2][2]*month_day[7]*10
-        months[8]=months[8]+w_c_a[2][2]*month_day[8]*10
-        months[9]=months[9]+w_c_a[2][3]*month_day[9]*10
-
-        total_water_per_crop[2]=w_c_a[2][0]*month_day[5]*area*10
-        total_water_per_crop[2]+=w_c_a[2][1]*month_day[6]*area*10
-        total_water_per_crop[2]+=w_c_a[2][2]*month_day[7]*area*10
-        total_water_per_crop[2]+=w_c_a[2][2]*month_day[8]*area*10
-        total_water_per_crop[2]+=w_c_a[2][3]*month_day[9]*area*10
-    
-    if crop_type==3:
-#Beans June-Oct
-        months[5]=months[5]+w_c_a[3][0]*month_day[5]*area*10
-        months[6]=months[6]+w_c_a[3][1]*month_day[6]*area*10
-        months[7]=months[7]+w_c_a[3][2]*month_day[7]*area*10
-        months[8]=months[8]+w_c_a[3][2]*month_day[8]*area*10
-        months[9]=months[9]+w_c_a[3][3]*month_day[9]*area*10
-
-        total_water_per_crop[3]=w_c_a[3][0]*month_day[5]*area*10
-        total_water_per_crop[3]+=w_c_a[3][1]*month_day[6]*area*10
-        total_water_per_crop[3]+=w_c_a[3][2]*month_day[7]*area*10
-        total_water_per_crop[3]+=w_c_a[3][2]*month_day[8]*area*10
-        total_water_per_crop[3]+=w_c_a[3][3]*month_day[9]*area*10
-
-    if crop_type==4:
-#Cucumbers Feb-June 
-        months[1]=months[1]+w_c_a[4][0]*month_day[1]*area*10
-        months[2]=months[2]+w_c_a[4][1]*month_day[2]*area*10
-        months[3]=months[3]+w_c_a[4][1]*month_day[3]*area*10
-        months[4]=months[4]+w_c_a[4][1]*month_day[4]*area*10
-        months[5]=months[5]+w_c_a[4][2]*month_day[5]*area*10
-
-        total_water_per_crop[4]=w_c_a[4][0]*month_day[1]*area*10
-        total_water_per_crop[4]+=w_c_a[4][1]*month_day[2]*area*10
-        total_water_per_crop[4]+=w_c_a[4][1]*month_day[3]*area*10
-        total_water_per_crop[4]+=w_c_a[4][1]*month_day[4]*area*10
-        total_water_per_crop[4]+=w_c_a[4][2]*month_day[5]*area*10
-
-    if crop_type==5:
-#Tomatoes Sep-Dec 
-        months[8]=months[8]+w_c_a[5][0]*month_day[8]*area*10
-        months[9]=months[9]+w_c_a[5][1]*month_day[9]*area*10
-        months[10]=months[10]+w_c_a[5][2]*month_day[10]*area*10
-        months[11]=months[11]+w_c_a[5][3]*month_day[11]*area*10
-
-        total_water_per_crop[5]=w_c_a[5][0]*month_day[8]*area*10
-        total_water_per_crop[5]+=w_c_a[5][1]*month_day[9]*area*10
-        total_water_per_crop[5]+=w_c_a[5][2]*month_day[10]*area*10
-        total_water_per_crop[5]+=w_c_a[5][3]*month_day[11]*area*10
-    if crop_type==6:
-#Watermelon March-June
-        months[2]=months[2]+w_c_a[6][0]*month_day[2]*area*10
-        months[3]=months[3]+w_c_a[6][1]*month_day[3]*area*10
-        months[4]=months[4]+w_c_a[6][2]*month_day[4]*area*10
-        months[5]=months[5]+w_c_a[6][3]*month_day[5]*area*10
-
-        total_water_per_crop[6]=w_c_a[6][0]*month_day[2]*area*10
-        total_water_per_crop[6]+=w_c_a[6][2]*month_day[4]*area*10
-        total_water_per_crop[6]+=w_c_a[6][1]*month_day[3]*area*10
-        total_water_per_crop[6]+=w_c_a[6][3]*month_day[5]*area*10
-    if  crop_type==7:
-#Alfalfa Nov-Apr
-        months[10]=months[10]+w_c_a[7][0]*month_day[10]*area*10
-        months[11]=months[11]+w_c_a[7][0]*month_day[11]*area*10
-        months[0]=months[0]+w_c_a[7][1]*month_day[0]*area*10
-        months[1]=months[1]+w_c_a[7][1]*month_day[1]*area*10
-        months[2]=months[2]+w_c_a[7][1]*month_day[2]*area*10
-        months[3]=months[3]+w_c_a[7][0]*month_day[3]*area*10
-
-        total_water_per_crop[7]=w_c_a[7][0]*month_day[10]*area*10
-        total_water_per_crop[7]+=w_c_a[7][0]*month_day[11]*area*10
-        total_water_per_crop[7]+=w_c_a[7][1]*month_day[0]*area*10
-        total_water_per_crop[7]+=w_c_a[7][1]*month_day[1]*area*10
-        total_water_per_crop[7]+=w_c_a[7][1]*month_day[2]*area*10
-        total_water_per_crop[7]+=w_c_a[7][0]*month_day[3]*area*10
-        
-    if crop_type==8:
-#Sorghum Feb-May
-        months[1]=months[1]+w_c_a[8][0]*month_day[1]*area*10
-        months[2]=months[2]+w_c_a[8][1]*month_day[2]*area*10
-        months[3]=months[3]+w_c_a[8][2]*month_day[3]*area*10
-        months[4]=months[4]+w_c_a[8][3]*month_day[4]*area*10
-
-        total_water_per_crop[8]=w_c_a[8][0]*month_day[1]*area*10
-        total_water_per_crop[8]+=w_c_a[8][1]*month_day[2]*area*10
-        total_water_per_crop[8]+=w_c_a[8][2]*month_day[3]*area*10
-        total_water_per_crop[8]+=w_c_a[8][3]*month_day[4]*area*10
-    if crop_type==9:
-#Rapeseed jun-Oct
-        months[6]=months[6]+w_c_a[9][1]*month_day[6]*area*10
-        months[5]=months[5]+w_c_a[9][0]*month_day[5]*area*10
-        months[7]=months[7]+w_c_a[9][1]*month_day[7]*area*10
-        months[8]=months[8]+w_c_a[9][1]*month_day[8]*area*10
-        months[9]=months[9]+w_c_a[9][2]*month_day[9]*area*10
-
-        total_water_per_crop[9]=w_c_a[9][0]*month_day[5]*area*10
-        total_water_per_crop[9]+=w_c_a[9][1]*month_day[6]*area*10
-        total_water_per_crop[9]+=w_c_a[9][1]*month_day[7]*area*10
-        total_water_per_crop[9]+=w_c_a[9][1]*month_day[8]*area*10
-        total_water_per_crop[9]+=w_c_a[9][2]*month_day[9]*area*10
 
     eff=0.464 #irrigation efficiency for each subbasin
     
@@ -246,7 +100,7 @@ def agr(area,crop_type,di):
     total_water_per_crop=[element/eff for element in total_water_per_crop]
 
 
-    return [total_water_per_crop[0],net_benefit]
+    return [y_c_a,income,net_benefit]
    
   
     
@@ -309,40 +163,6 @@ def GWP(total_water_per_crop,area,sub):     #area (ha)  water(M^3)
 
 
 
-# This is for calculating ecologyical_water_demand_value m^3/month                
-# ecologyical_water_demand_df=pd.read_csv(r'C:\Users\ASUS\Desktop\Water\Ecological.csv')   
-# ecologyical_water_demand_value=ecologyical_water_demand_df['value']  #m^3/s 
-# ecologyical_water_demand_value=ecologyical_water_demand_value.values.tolist()
 
-# for i in range(12):
-#     ecologyical_water_demand_value[i] = ecologyical_water_demand_value[i]*month_day[i]*86400  #m^3/month
-#     print(ecologyical_water_demand_value[i]/10**6)
-
-
-def balance(stream_flow,total_water_demand_for_agriculture,initial_storage,ecological_demand):  #stream flow 120 values
-    
-    #all values are in MCM
-    storage=[initial_storage]
-    
-    domestic=[0.827152855,0.800456906,1.039164504,1.387705139,2.195308209,2.360282529,3.773634426,2.850189762,2.096948144,1.787834961,0.826283302,0.828143563] #MCM per month for one year
-    Evap=[4.1,2.1,1.0,0.7,1.1,1.9,4.5,8.0,11.2,12.7,11.9,8.9] #m^3/s
-    total_Eva=[(element*month_day[Evap.index(element)]*24*3600)/10**6 for element in Evap] #MCM/month
-    Seepage=[8.6,8.5,8.5,8.4,8.4,8.5,8.8,9.1,9.2,9.2,9.0,8.8] #m^3/s
-    total_Seepage=[(element*month_day[Seepage.index(element)]*24*3600)/10**6 for element in Seepage] #MCM/month
-    industrial=0.983 #MCM per month   
-    wells=20.41 #MCM/month
-    balance_w=[0]*120
-    for i in range(120):
-
-        balance_w[i]=stream_flow[i]+wells-total_water_demand_for_agriculture[i]-ecological_demand[i]-domestic[i%12]-industrial-total_Eva[i%12]-total_Seepage[i%12]
-        storage.append(storage[i]+balance_w[i])
-    storage.pop(0)
-   
-    return[storage] # must be greater than 1600 MCM
-
-
-
-
-print(agr(100,0,0.8))
 
 
