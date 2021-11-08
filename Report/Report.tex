@@ -148,8 +148,8 @@ The price of each crop is fixed and does not vary as a function of time, and the
 Fig. show the evolution of the budget (in \$) and stock as a function of time over 10 time steps for 5 agents choosing between 2 crops to grow:
 
 
-\pgfplotstableread[col sep=comma]{Data/exported_budget.csv}{\budget}
-\pgfplotstableread[col sep=comma, skip first n=3]{Data/exported_stock.csv}{\stock}
+\pgfplotstableread[col sep=comma]{Data/v10_budget.csv}{\budgeta}
+\pgfplotstableread[col sep=comma, skip first n=3]{Data/v10_stock.csv}{\stocka}
 
 
 %figure showing 4 subfigures: wealth, crop stocks (1 and 2) and the map
@@ -181,7 +181,7 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 			  no marks,
 			  thick
 				  ] 
-			  table[y index =1]{\budget};
+			  table[y index =1]{\budgeta};
 		  \addlegendentry{$1$}
 		  
 		  %plot 2: farmer ID 2
@@ -190,7 +190,7 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 			  dashed,
 			  thick,
 			  rounded corners
-				  ]  table[y index =2]{\budget};
+				  ]  table[y index =2]{\budgeta};
 		  \addlegendentry{$2$}
   
 		  %plot 3: farmer ID 3
@@ -198,7 +198,7 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 			  color={rgb:red,0;green,3;blue,1},
 			  loosely dotted,
 			  mark = x
-				  ] table[y index =3]{\budget};
+				  ] table[y index =3]{\budgeta};
 		  \addlegendentry{$3$}
   
 		  %plot 4: farmer ID 4
@@ -207,7 +207,7 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 			  no marks,
 			  rounded corners,
 			  thick
-				  ] table[y index =4]{\budget};
+				  ] table[y index =4]{\budgeta};
 		  \addlegendentry{$4$}
   
 		\end{axis}
@@ -234,14 +234,14 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 		  color={rgb:red,3;green,1;blue,2},
 		  no marks,
 		  rounded corners
-			  ] table[y index =1]{\stock};
+			  ] table[y index =1]{\stocka};
 	  \addlegendentry{$1$}
 	  
 	  %plot 2: farmer ID 2
 	  \addplot[
 		  color={rgb:red,1;green,1;blue,2},
 		  no marks
-			  ]  table[y index =2]{\stock};
+			  ]  table[y index =2]{\stocka};
 	  \addlegendentry{$2$}
 
 	  %plot 3: farmer ID 3
@@ -249,7 +249,7 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 		  color={rgb:red,0;green,3;blue,1},
 		  dashed,
 		  mark = x
-			  ] table[y index =3]{\stock};
+			  ] table[y index =3]{\stocka};
 	  \addlegendentry{$3$}
 
 	  %plot 4: farmer ID 4
@@ -257,7 +257,7 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 		  color={rgb:red,3;green,0;blue,2},
 		  no marks,
 		  rounded corners
-			  ] table[y index =4]{\stock};
+			  ] table[y index =4]{\stocka};
 	  \addlegendentry{$4$}
 
 	  \end{axis}
@@ -278,20 +278,30 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 		  legend pos=north west
 		]
 
-		  \addplot table[y index =5]{\stock};
+		  \addplot table[y index =5]{\stocka};
 		  \addlegendentry{$1$}
-		  \addplot table[y index =6]{\stock};
+		  \addplot table[y index =6]{\stocka};
 		  \addlegendentry{$2$}
-		  \addplot table[y index =7]{\stock};
+		  \addplot table[y index =7]{\stocka};
 		  \addlegendentry{$3$}
-		  \addplot table[y index =8]{\stock};
+		  \addplot table[y index =8]{\stocka};
 		  \addlegendentry{$4$}
 		\end{axis}
 	  \end{tikzpicture}
   }
 \end{subfigure}
-\caption{Graph showing the evolution of crop stocks (left) and farmer's budget (right) as a function of time over 10 time steps}
+\caption{Graph showing the map with four farmers, the evolution of crop stocks the and farmer's budget as a function of time over 10 time steps}
 \end{figure}
+
+
+\subsubsection{Version 1.2}
+In the second version of the model \tagg{v1.2}, the agents can expand to neighbouring cells in order to grow more crops.
+
+
+\pgfplotstableread[col sep=comma]{Data/v12_budget.csv}{\budgetb}
+\pgfplotstableread[col sep=comma, skip first n=3]{Data/v12_stock.csv}{\stockb}
+
+
 
 \subsection{The market model}
 
