@@ -33,6 +33,7 @@
 \usepackage{longtable}
 \usepackage{subcaption} % provides subfigures within figures 
 \usepackage[absolute,overlay]{textpos} %for placing figures wherever
+\usepackage{animate} %for making GIF animations
 %small font size for the bibliography at the end
 \newcommand\Fontvi{\fontsize{6}{7.2}\selectfont}
 
@@ -43,22 +44,37 @@
 
 \title[] % [] is optional - is placed on the bottom of the sidebar on every slide
 { % is placed on the title page
-      \textbf{Crop Wars: Agent-based simulation of agricultural interactions}
+      \textbf{851-0101-86 S Complex Social Systems: Modeling Agents, Learning, and Games}
 }
 
 \subtitle[]
 {
-      \textbf{}
+      \textbf{Crop Wars: Agent-based simulation of agricultural interactions}
 }
 
-\author[Ga\"el Mourouga]
-{      G. Mourouga, R. Sch\"arer, J. Wlodarczyk, J.O. Schumacher\\
-    \vspace{5mm}
-      {\ttfamily \tiny 
-       ZHAW, Institute of Computational Physics, Wildbachstrasse 21, 8400 Winterthur, Switzerland}
+\author[]
+{      Christopher Golling, Gael Mourouga, Aaron Moser, Otto Schmidt, Amir H. Keshavarzzadeh
+      {}
+}
+
+\institute[]
+{
+      %GDR redox-flow
+  
+  %there must be an empty line above this line - otherwise some unwanted space is added between the university and the country (I do not know why;( )
 }
 
 \date{}
+
+%Programatically defining the sections to be called on the slides title
+\def\a{Different types of frames with LaTeX}
+\def\aa{Basic frames}
+\def\aaa{Text and maths}
+\def\aab{Image}
+\def\aac{Image and text}
+\def\ab{More advanced frames}
+\def\aba{Animation on click}
+\def\abb{GIF animation}
 
 %-------------------------------------------------------
 % START OF DOCUMENT
@@ -80,10 +96,60 @@
     \tableofcontents
 \end{frame}
 
-\section{frame}
+%-------------------------------------------------------
+\section{\a}
+%-------------------------------------------------------
 
-\begin{frame}{frame}{}
-    frame
+\subsection{\aa}
+%-------------------------------------------------------
+
+\subsubsection{\aaa}
+\begin{frame}{\aa}{\aaa}
+    text:
+\begin{equation}
+    U = \sum_i a_k c^k
+\end{equation}
+\end{frame}
+
+\subsubsection{\aab}
+\begin{frame}{\aa}{\aab}
+    \begin{figure}
+      \includegraphics[scale=0.45]{Figures/v12_Budget.png}
+    \end{figure}
+\end{frame}
+
+\subsubsection{\aac}
+\begin{frame}{\aa}{\aac}
+    \begin{columns}
+      \column{0.48\linewidth}
+         \centering
+         \begin{figure}
+          \includegraphics[scale=0.30]{Figures/v12_Budget.png}
+         \end{figure}
+       \column{0.52\linewidth}
+       Text:
+       \begin{equation}
+        \phi \approx \frac{a}{b} \ln \left( \frac{a}{b} \right)
+      \end{equation}
+     \end{columns} 
+\end{frame}
+
+\subsection{\ab}
+
+\subsubsection{\aba}
+\begin{frame}{\ab}{\aba}
+    \begin{itemize}
+        \item<1-> point 1
+        \item<2-> point 2
+        \item<3-> point 3
+        \item<4-> point 4
+    \end{itemize}
+\end{frame}
+
+\subsubsection{\abb}
+\begin{frame}{\ab}{\abb}
+    \centering
+    \animategraphics[loop,width=4cm]{10}{Figures/ThankYouGIF/frame-}{0}{6}
 \end{frame}
 
 \end{document}
