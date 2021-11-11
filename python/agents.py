@@ -15,66 +15,18 @@ class FarmerPersonality(ABC):
     --> Each personality refers to a certain strategy interaction for the market or expansion (to be implemented).
     """
 
-    # Aaron: Some dummy methods, replace them with the actual decisions
-    @abstractmethod
-    def buy(self) -> bool:
-        """Buy something"""
-
     @abstractmethod
     def sell(self) -> bool:
         """Sell something"""
 
-
-@dataclass
-class Stocker(FarmerPersonality):
-
-    # Can add parameters like this, with default values since this is a dataclass
-    some_parameter: int = 3
-
-    def buy(self) -> bool:
-        pass
-
-    def buy(self) -> bool:
-        pass
-
-
-@dataclass
-class Seller(FarmerPersonality):
-
-    # Can add parameters like this, with default values since this is a dataclass
-    some_parameter: int = 3
-
-    def buy(self) -> bool:
-        pass
-
-    def buy(self) -> bool:
-        pass
-
-
-@dataclass
-class Pioneer(FarmerPersonality):
-    # Strategy: decide whether to invest in seeds and harvest next period or to invest in land and harvest then.
-    # Can add parameters like this, with default values since this is a dataclass
-    some_parameter: int = 3
-
-    def buy(self) -> bool:
-        pass
-
-    def buy(self) -> bool:
-        pass
-
-
-@dataclass
-class Efficiency(FarmerPersonality):
-    # Strategy: decide whether to invest in seeds and harvest or to invest in technology and thereby increase harvest_yield for all crops
-    # Can add parameters like this, with default values since this is a dataclass
-    some_parameter: int = 3
-
-    def buy(self) -> bool:
-        pass
-
-    def buy(self) -> bool:
-        pass
+    @abstractmethod
+    def change_crop(
+        self,
+        highest_price_id: int,
+        current_demand: Dict[int, int],
+        current_supply: Dict[int, int],
+    ) -> bool:
+        """Change crop"""
 
 
 class Farmer(ap.Agent):
@@ -96,7 +48,7 @@ class Farmer(ap.Agent):
         self.crop_id = self.random.randint(
             0, len(self.model.crop_shop.crops) - 1
         )  # -1 since len is  >= 1 and crop id starts at 0
-        self.choose_crop(self.crop_id)
+        self.choose_crop(self.crop_id, start=True)
 
         # Initialise Stock
         # create an array of fixed size, where each entry corresponds to the amount in _stock:
@@ -107,13 +59,30 @@ class Farmer(ap.Agent):
         # self._stock = np.zeros(self.model.crop_shop.amount_of_crops, dtype=int)
         self.stock = copy.deepcopy(self._stock)
 
-    def choose_crop(self, new_id: int):
-        self.crop_id = new_id
-        self.crop = self.model.crop_shop.crops[new_id]
-        self.budget -= self.crop.seed_cost
-        print(
-            f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
-        )
+    def change_crop(
+        self,
+        crop_id: int,
+        current_demand: Dict[int, int],
+        current_supply: Dict[int, int],
+    ) -> bool:
+        cost_seed_change = self.crop_shop[crop_id].seed_cost
+        price = self.crop_shop.crops[crop_id].sell_price
+        expected_profit = cost_seed_change + (current_demand - current_supply) * price
+        print(expected_profit)
+
+    def choose_crop(self,
+            new_id: int,
+            current_demand: Dict[int, int]=None,
+            current_supply: Dict[int, int]=None,
+            start: bool=False
+        ) -> bool:
+        if start or self.change_crop(new_id, current_demand, current_supply):
+            self.crop_id = new_id
+            self.crop = self.model.crop_shop.crops[new_id]
+            self.budget -= self.crop.seed_cost
+            print(
+                f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
+            )
 
     def farm(self):
         self._stock[self.crop_id] += self.crop.harvest_yield
@@ -136,9 +105,13 @@ class Farmer(ap.Agent):
         """
         supplies = dict.fromkeys(self.model.crop_shop.crops.keys())
         for crop_id in self.model.crop_shop.crops.keys():
-            supplying: int = int(self.c_agent[crop_id] * prices[crop_id])
+            supplying: int = np.min(
+                [int(self.c_agent[crop_id] * prices[crop_id]), self._stock[crop_id]]
+            )
             supplies[crop_id] = supplying
-            self.sell(crop_id, supplying)  # Is there a reason to keep supply and sell separate?
+            self.sell(
+                crop_id, supplying
+            )  # Is there a reason to keep supply and sell separate?
         return supplies
 
     def sell(self, crop_id: int, amount: int):
@@ -156,7 +129,7 @@ class Farmer(ap.Agent):
     def step(self):
         self.farm()
 
-        #amount = self.random.randint(0, 5)
-        #self.sell(self.crop_id, amount)
+        # amount = self.random.randint(0, 5)
+        # self.sell(self.crop_id, amount)
         self.stock = copy.deepcopy(self._stock)
         print(f"Updated farmer {self.id}")

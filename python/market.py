@@ -12,10 +12,11 @@ class Market:
     def __init__(self, crop_sortiment: CropSortiment, agents: ap.AgentList) -> None:
         self.crop_sortiment = crop_sortiment
         self.agents = agents
-        self.current_demand : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
+        self.current_demand : Dict[int, int] = {k: 5 for k in crop_sortiment.crops.keys()}
         self.current_stock : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
         self.current_supply : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
         self.current_prices : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
+        self.MAX_PRICE = 1e6
 
     def _calc_current_demand(self) -> None:
         """
@@ -30,23 +31,28 @@ class Market:
         self.current_stock = {k: 0 for k in self.crop_sortiment.crops.keys()}
         for agent in self.agents:
             for crop_id, crop_stock in agent.stock.items():
-                self.current_supply[crop_id] += crop_stock
+                self.current_stock[crop_id] += crop_stock
+        print("Global stock is {}".format(self.current_stock))
 
-    def calc_global_price(self) -> None:
+    def calc_global_price(self) -> np.ndarray:
         self._calc_current_demand()
         self._calc_global_stock()
         global_prices: Dict[int, float] = self.current_demand
         for crop_id, crop_demand in global_prices.items():
             r = np.random.random() # Random component of the demand
-            global_prices[crop_id] = (
-                self.crop_sortiment.crops[crop_id].sell_price # Current crop price
-                * (crop_demand + r)
-                / self.current_supply[crop_id]
-            )
+            if self.current_stock[crop_id] != 0:
+                global_prices[crop_id] = np.max(
+                [(
+                    self.crop_sortiment.crops[crop_id].sell_price # Current crop price
+                    * (crop_demand + r)
+                    / self.current_stock[crop_id]
+                ), self.MAX_PRICE])
+            else:
+                global_prices[crop_id] = self.MAX_PRICE
         self.current_prices = global_prices
         return global_prices
 
-    def calc_global_supply(self) -> None:
+    def calc_global_supply(self) -> np.ndarray:
         self.calc_global_price()
         self.current_supply = {k: 0 for k in self.crop_sortiment.crops.keys()}
         for agent in self.agents:
