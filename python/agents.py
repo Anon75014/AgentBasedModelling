@@ -10,9 +10,16 @@ import numpy as np
 
 class Farmer(ap.Agent):
     """ Farmer Class containing functions that CropWar farmers can do. :)
-    Todos:
+    Numerical Todos :
     - TODO better values for buy_cell_threash
-    - TODO find good order to get new land... buy->crop or other way?
+    - TODO check and adjust prices for cells
+
+    Technical Todos:
+    - Done: change ALL positions to tuples s.t. no conversions necessary
+    - Done: find good order to get new land... buy->crop or other way?
+    - Done: remove farmer_id from cells. Do it via farmer.id 
+    - Done: remove all seperate crop_id of cells. Access it via crop._id
+    - Done: "functions" are generated every check. maybe make this a model's property
     """
 
     def setup(self):
@@ -24,7 +31,11 @@ class Farmer(ap.Agent):
         self.sourrounding = []  # list of accessible land coords
         self.accuired_land = []  # list of owned land coords
         self.budget = self.p.start_budget
-        self.crop_id = -1
+        self.moneytracker = {
+            'expansion_cost': 0,
+            'crop_change': 0,
+            'harvest_income': 0
+        }
         self.crop = None
         self.cells = None
         self.cellcount = 0
@@ -34,13 +45,19 @@ class Farmer(ap.Agent):
         self.stock = copy.deepcopy(self._stock)  # this is recorded...
 
         """ Choose start position for Farmer"""
-        pos_init = self.random.choice(self.model.unoccupied)
+        if self.p.v0_pos and self.p.n_farmers == 4:
+            pos_init = self.p.v0_pos.pop(0)
+        else:
+            pos_init = self.random.choice(self.model.unoccupied)
+
         self.model.unoccupied.remove(pos_init)
         self.buy_cell_threash = self.random.uniform(0, 1)
+
         """ Set start crop id"""
         crop_id_init = self.random.randint(
             0, len(self.model.crop_shop.crops) - 1
         )  # -1 since len is  >= 1 and crop id starts at 0
+        self.crop = self.model.crop_shop.crops[crop_id_init]
 
         self._buy_cell(pos_init)
         self._change_to_crop(crop_id_init)
@@ -48,25 +65,32 @@ class Farmer(ap.Agent):
     def _update_cell_list(self):
         """ Update the list of a farmers cells """
         self.cells = self.model.cells.select(
-            self.model.cells.farmer_id == self.id)
+            self.model.cells.farmer == self)
 
     def _update_sourrounding(self):
         """ generate complete list of the sourrounding cells of a farmers property """
         for _cell in self.cells:
             _cell_neighbours = self.grid.neighbors(_cell, distance=1)
             for _neighbor_cell in _cell_neighbours:
-                if _neighbor_cell.farmer_id == 0 and \
+                if _neighbor_cell.farmer == None and \
                         _neighbor_cell.pos not in self.sourrounding:
                     self.sourrounding.append(_neighbor_cell.pos)
 
-    def _buy_cell(self, _coordinates):  # TODO add prices for cells!!!
+    def _buy_cell(self, _coordinates): 
         """ Farmer buys a cell at _coordinates and adds it to list"""
         # make sure algorithm found an empty cell:
-        assert self.model.cell_at(_coordinates).farmer_id == 0
+        cell = self.model.cell_at(_coordinates)
+        assert cell.farmer == None # if river, farmer == -1
+
+        if self.budget <= cell.buy_cost:
+            return  # farmer got not enough budget to buy this Cell
+
+        self.budget -= cell.buy_cost
+        self.moneytracker['expansion_cost'] += cell.buy_cost
         self.accuired_land.append(_coordinates)
 
         # update cells Propietary properties
-        self.model.cell_at(_coordinates).farmer_id = self.id
+        #self.model.cell_at(_coordinates).farmer_id = self.id
         self.model.cell_at(_coordinates).farmer = self
 
         # update list of the Farmers owned cells
@@ -84,8 +108,8 @@ class Farmer(ap.Agent):
         """
         _new_crop = self.model.crop_shop.crops[new_id]
 
-        if new_id == self.crop_id:  # same as current
-            active_cells = self.cells.select(self.cells.crop_id == -1)
+        if new_id == self.crop._id:  # same as current
+            active_cells = self.cells.select(self.cells.crop == None)
         else:  # farmer just changed crops
             active_cells = self.cells
 
@@ -93,54 +117,36 @@ class Farmer(ap.Agent):
                 print("Not enough money to change crop.")
                 return
             else:
-                self.crop_id = new_id
                 self.crop = _new_crop
-                print(
-                    f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
-                )
+
+                print(f"Farmer {self.id} changed crop to {self.crop._id}.")
 
         for _cell in active_cells:
             if self.budget >= _new_crop.seed_cost:
                 self.budget -= _new_crop.seed_cost
-
-                # update cell properties
-                _cell.crop_id = self.crop_id
+                self.moneytracker['crop_change'] += _new_crop.seed_cost
+                
+                # update cell properties ::
                 _cell.crop = self.crop
 
     def harvest(self):
         self.cells.harvest()
-
         # print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
 
     def sell(self, crop_id: int, amount: int):
         if self._stock[crop_id] >= amount:
             self._stock[crop_id] -= amount
+
             self.budget += amount * self.crop.sell_price
+            self.moneytracker['harvest_income'] += amount * \
+                self.crop.sell_price
+
             print(
                 f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
             )
-        # else:
-        #     print(
-        #         f"Ups: Farmer {self.id} does not have enough in _stock for that deal."
-        #     )
-
-    def _get_next_from_direction(self, _dir: str, _a: int, _b: int):
-        """ Converts the input so that it matches the direction
-        Parameters:
-        - _a is the slowly changing index
-        - _b is the fast chaning index
-        """
-
-        N = self.model.n - 1
-        M = self.model.m - 1
-
-        functions = {  # TODO this is generated every check. maybe make this a model's propert
-            'S': lambda a, b: tuple((a, M-b)),
-            'W': lambda a, b: tuple((b, a)),
-            'N': lambda a, b: tuple((N-a, b)),
-            'O': lambda a, b: tuple((N-a, M-b)),
-        }
-        return functions[_dir](_a, _b)  # TODO Check if this works as expected
+        else:
+            # " Not enough stock. "
+            pass
 
     def _find_matching_cell(self, _water_level: float, _dir: str):
         water_map = np.array(self.grid.attr_grid("water"))
@@ -149,12 +155,19 @@ class Farmer(ap.Agent):
         for coord in self.sourrounding:
             sourrounding_map[coord] = True
 
-        for slow in range(self.model.n - 1):
-            for fast in range(self.model.m - 1):
-                (i, j) = self._get_next_from_direction(_dir, slow, fast)
+        for slow in range(self.model.N):
+            for fast in range(self.model.M):
+                # (i,j) will be every value in the grid.
+                (i, j) = self.model._approach_from[_dir](slow, fast)
+
                 if sourrounding_map[(i, j)]:
-                    if self.model.cell_at((i, j)).water == _water_level and self.model.cell_at((i, j)).farmer_id == 0:
-                        return (i, j)
+                    cell = self.model.cell_at((i, j))
+                    """ Check that the cell is valid 
+                        Rule: Cell must share an edge, not just a vertex
+                    """
+                    if cell.water == _water_level and cell.farmer == None:
+                        if self.model._valid_root_cell(self, (i, j), _dir):
+                            return (i, j)
 
         return None
 
@@ -165,25 +178,29 @@ class Farmer(ap.Agent):
 
         print(f"Farmer {self.id} bought new land at {_pos}.")
 
-    ''' Commands accessible by the CropWar model Class '''
+    """ Commands accessible by the CropWar model Class :: """
 
     def step(self):
         self.harvest()
 
-        amount = self.random.randint(0, 5)
-        self.sell(self.crop_id, amount)
+        ''' sell with relative boundaries '''
+        amount = int(self.random.randint(0, 20)/100 * self._stock[self.crop._id])
+        ''' or: sell with fixed boundaries '''
+        #amount = self.random.randint(0, 5)
+        self.sell(self.crop._id, amount)
 
         dir = self.random.choice(self.model.headings)
         prob = self.random.uniform(0, 1)
-        if prob > self.buy_cell_threash:  # TODO is that good?
+        if prob > self.buy_cell_threash:  
             self.find_and_buy(1, dir)  # TODO set water level
-        self._change_to_crop(self.crop_id)  # TODO for now crop is constant
+        self._change_to_crop(self.crop._id)  # TODO for now crop is constant
 
         # print(f"Stepped farmer {self.id}")
 
     def update(self):
         self.cellcount = len(self.cells)
         self.stock = copy.deepcopy(self._stock)
+        self.crop_id = copy.deepcopy(self.crop._id)
 
 
 class Cell(ap.Agent):
@@ -193,13 +210,12 @@ class Cell(ap.Agent):
         self.random = self.model.random
 
         # Set variables
-        self.farmer_id = 0  # legend: 0=empty,-1=unavailable, x>0 = farmer
+        #self.farmer_id = 0  # legend: 0=empty,-1=unavailable, x>0 = farmer
         self.farmer = None
-        self.crop = -1
-        self.crop_id = -1
+        self.crop = None
         self.pos = self.model.free_cell_coords.pop(0)
         self.water = self.model.water_matrix[self.pos]  # in [0,1] interval
-        # self.is_border = True  # not quite sure if this var is necessary
+        self.buy_cost = self.water * 10  
 
     def harvest(self):
         """ Harvest the cells content into farmers stock
@@ -208,14 +224,21 @@ class Cell(ap.Agent):
         - If there is no crop planted on this cell yet => no yield 
         """
 
-        if self.crop_id == -1:
+        if self.crop == None: 
             print(f"No crop planted here! {self.pos}")
             return
-        self.farmer._stock[self.crop_id] += self.crop.harvest_yield
+        self.farmer._stock[self.crop._id] += self.crop.harvest_yield
 
     def step(self):
         pass
 
+    def set_farmer_id(self):
+        if self.farmer == -1:
+            self.farmer_id = -1
+        elif self.farmer:
+            self.farmer_id = self.farmer.id
+        else:
+            self.farmer_id = 0
 
 class FarmerPersonality(ABC):
     """
@@ -284,3 +307,5 @@ class Efficiency(FarmerPersonality):
 
     def buy(self) -> bool:
         pass
+
+# %%
