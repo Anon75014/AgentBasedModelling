@@ -17,8 +17,10 @@ if __name__ == "__main__":
     # The Crop_Shop contains the relevant information for the farmers.
     crop_shop = CropSortiment()
     # Add two crops TODO Find good parameters for crops.
-    crop_shop.add_crop(100, 15, 10)
-    crop_shop.add_crop(150, 25, 5)
+    
+
+    crop_shop.add_crop(1, 1, 1) #area, crop_type, available water
+    crop_shop.add_crop(1, 9, 1)
 
     parameters = {
         # only hydrated land. Later maybe [1,2,3] or so
