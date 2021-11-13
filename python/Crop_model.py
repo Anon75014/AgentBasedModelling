@@ -99,9 +99,9 @@ def agr(area,crop_type,di):
    
     #total_water_per_months = [element/eff for element in months] 
     total_water_per_crop=[element/eff for element in total_water_per_crop]
+    cost=cost[crop_type]
 
-
-    return [y_c_a,income,net_benefit]
+    return [y_c_a,cost,income]
    
   
     

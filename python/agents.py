@@ -2,7 +2,7 @@ import agentpy as ap
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Dict
-
+import Crop_model as cm
 from pandas import DataFrame as df
 import numpy as np
 import copy
