@@ -11,7 +11,7 @@ import numpy as np
 #4- Azadegan(AZ) 60000
 #Total=138552 ha
 
-
+#Mandatory
 month_day=[31,28,31,30,31,30,31,31,30,31,30,31]
 
 def agr(area,crop_type,di):
