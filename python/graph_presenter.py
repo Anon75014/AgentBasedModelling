@@ -39,7 +39,7 @@ class graph_class:
 
     def new_plot(self, _parameter):
         """Basic properties for a new plot."""
-        # fig = plt.figure()
+        fig = plt.figure()
 
         plt.title(self.titles[_parameter])
         plt.xlabel("Time Steps")

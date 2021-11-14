@@ -34,7 +34,7 @@ if __name__ == "__main__":
         "crop_shop": crop_shop,
         "amount_of_crops": crop_shop.amount_of_crops,
         "diagonal expansion": False,
-        "save_gif": True
+        "save_gif": True,
     }
 
     """ Create and run the model """

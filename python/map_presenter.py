@@ -9,6 +9,8 @@ import numpy as np
 import PIL.Image
 from matplotlib.colors import from_levels_and_colors
 
+import os
+
 
 class map_class:
     def __init__(self, _model):
@@ -105,20 +107,17 @@ class map_class:
 
         ax = plt.gca()
         ax.set_aspect("equal")
-        fig = plt.gcf()
-        # {self.model.t}.png")
-        fig.savefig(
-            str(
-                "/Users/Chris/OneDrive - ETH Zurich/GESS ABM/\
-            AgentBasedModelling/python/images/plttest.png"
-            )
-        )
 
-        if not return_img:
-            plt.show()
-        else:
+        if return_img:
+            fig = plt.gcf()
+            # {self.model.t}.png")
+            dirname = os.path.dirname(os.path.abspath(__file__))
+            filename = dirname + "/images/plttest.png"
+            fig.savefig(filename)
             return PIL.Image.frombytes(
                 "RGB", fig.canvas.get_width_height(), fig.canvas.tostring_rgb()
             )
+        else:
+            plt.show()
 
         # TODO : Idea put crop numbers or so inside of patches...
