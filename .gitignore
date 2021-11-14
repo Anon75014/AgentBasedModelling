@@ -25,3 +25,5 @@ Report/Report.fdb_latexmk
 *.out
 *.synctex.gz
 *.csv
+python/images/plttest.png
+python/images/test.png

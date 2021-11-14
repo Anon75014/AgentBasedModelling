@@ -6,6 +6,7 @@ import matplotlib._color_data as mcd
 import matplotlib.patches as mpatches  # used for legend in plt plot
 import matplotlib.pyplot as plt
 import numpy as np
+import PIL.Image
 from matplotlib.colors import from_levels_and_colors
 
 
@@ -38,16 +39,7 @@ class map_class:
 
         print("Done: Initialised map_class.")
 
-    def add_farmers(self):
-        """Add locations of farmer into the map"""
-
-        """ Modify the watermap by replaciing entries with farmer_id """
-        _raw_id_matrix = np.array(self.model.grid.attr_grid("farmer_id"))
-        _combined_matrix = deepcopy(np.array(self.water_matrix))
-        # using 'putmask' we can change the entries according to a condition
-        np.putmask(_combined_matrix, _raw_id_matrix > 0, _raw_id_matrix)
-        self.processed_matrix = _combined_matrix
-
+    def initialise_farmers(self):
         """ Assign colours and modify colourlimits """
         for farmer in self.model.farmers:
             _color = self.model.random.choice(list(mcd.XKCD_COLORS.values()))
@@ -57,9 +49,20 @@ class map_class:
 
         self.weights.append(self.weights[-1] * 2)  # needed in "from_levels..."
 
-        print(f"Done: added farmers onto map.")
+        print(f"Done: initialised farmer in map_class.")
 
-    def show(self):
+    def place_farmers(self):
+        """Add locations of farmer into the map"""
+
+        """ Modify the watermap by replaciing entries with farmer_id """
+        _raw_id_matrix = np.array(self.model.grid.attr_grid("farmer_id"))
+        _combined_matrix = deepcopy(np.array(self.water_matrix))
+        # using 'putmask' we can change the entries according to a condition
+        np.putmask(_combined_matrix, _raw_id_matrix > 0, _raw_id_matrix)
+        self.processed_matrix = _combined_matrix
+        print(f"Done: updated farmers in map_class.")
+
+    def show(self, return_img=False):
         """
         Show the map in colours
         """
@@ -98,6 +101,15 @@ class map_class:
 
         ax = plt.gca()
         ax.set_aspect("equal")
-        plt.show()
+        fig = plt.gcf()
+        # {self.model.t}.png")
+        fig.savefig(
+            f"/Users/Chris/OneDrive - ETH Zurich/GESS ABM/AgentBasedModelling/python/images/plttest.png")
+        if not return_img:
+            plt.show()
+        else:
+
+            return PIL.Image.frombytes('RGB',
+                                       fig.canvas.get_width_height(), fig.canvas.tostring_rgb())
 
         # TODO : Idea put crop numbers or so inside of patches...

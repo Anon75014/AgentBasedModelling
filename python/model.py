@@ -4,7 +4,9 @@ from copy import deepcopy
 
 import agentpy as ap
 import numpy as np
+from PIL import Image
 
+import map_presenter
 from agents import Cell, Farmer
 
 """ TODOS ::
@@ -50,12 +52,12 @@ class CropwarModel(ap.Model):
                 _a is the slowly changing index
                 _b is the fast chaning index
         """
-        self._approach_from = {  
-                'S': lambda a, b: (a, self.M-b),
-                'W': lambda a, b: (b, a),
-                'N': lambda a, b: (self.N-a, b),
-                'O': lambda a, b: (self.N-a, self.M-b),
-            }
+        self._approach_from = {
+            'S': lambda a, b: (a, self.M-b),
+            'W': lambda a, b: (b, a),
+            'N': lambda a, b: (self.N-a, b),
+            'O': lambda a, b: (self.N-a, self.M-b),
+        }
 
         """ Initialising Cells"""
         n_cells = m * n  # amount of cells (that can even be water)
@@ -88,6 +90,12 @@ class CropwarModel(ap.Model):
         n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.farmers = ap.AgentDList(self, n_farmers, Farmer)
 
+        """ Initialise Map (for GIF) Instances """
+        if self.p.save_gif:
+            self.map_frames = []  # used for png storage for the gif
+            self.map_drawer = map_presenter.map_class(self)
+            self.map_drawer.initialise_farmers()
+
         print("Done: setup of grid.")
 
     def cell_at(self, pos: tuple):
@@ -114,7 +122,7 @@ class CropwarModel(ap.Model):
 
         return water_matrix
 
-    def _valid_root_cell(self, farmer : Farmer, pos: tuple, _dir: str):
+    def _valid_root_cell(self, farmer: Farmer, pos: tuple, _dir: str):
         """ Check if one step into direction _dir the farmer ownes a cell"""
         for item in self._one_to_dir.values():
             if item(pos[0], pos[1]) in farmer.accuired_land:
@@ -136,5 +144,20 @@ class CropwarModel(ap.Model):
         self.farmers.record("stock")
         self.farmers.record("cellcount")
 
+        if self.p.save_gif:
+            self.cells.set_farmer_id()
+            self.map_drawer.place_farmers()
+            pil_map_img = self.map_drawer.show(return_img=True)
+            # {self.t}.png","PNG")
+            pil_map_img.save(
+                f"/Users/Chris/OneDrive - ETH Zurich/GESS ABM/AgentBasedModelling/python/images/test.png", "PNG")
+            self.map_frames.append(
+                pil_map_img.convert("P", palette=Image.ADAPTIVE))
+
     def end(self):
         self.cells.set_farmer_id()
+
+        if self.p.save_gif:
+            print(f"Found {len(self.map_frames)} images.")
+            self.map_frames[0].save('map.gif',
+                                    save_all=True, append_images=self.map_frames[1:], optimize=True, duration=200, loop=3)

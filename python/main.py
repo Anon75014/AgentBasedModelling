@@ -25,15 +25,16 @@ if __name__ == "__main__":
 
     # These parameters are accessible within the model by eg "self.p.water_levels"
     parameters = {
-        "water_levels": [0, 0, 6],
+        "water_levels": [0, 0, 3],
         "n_farmers": 4,
-        "v0_pos" : None,
-        #"v0_pos": [(5, 4), (5, 1), (1, 1), (1, 4)],
+        # "v0_pos" : None,
+        "v0_pos": [(5, 4), (5, 1), (1, 1), (1, 4)],
         "start_budget": 500,
-        "t_end": 150,
+        "t_end": 20,
         "crop_shop": crop_shop,
         "amount_of_crops": crop_shop.amount_of_crops,
-        "diagonal expansion": False
+        "diagonal expansion": False,
+        "save_gif": True
     }
 
     """ Create and run the model """
@@ -45,18 +46,19 @@ if __name__ == "__main__":
     #print(f"The farmers got this land: {list(model.farmers.accuired_land)}")
 
     """ Display the results using the Displayer Class """
-    presenter = graph_class(results)
+    # presenter = graph_class(results)
 
-    presenter.crops()
-    presenter.cellcount()
-    presenter.stocks()
-    presenter.budget()
-    presenter.export()
-    presenter.traits(model)
+    # presenter.crops()
+    # presenter.cellcount()
+    # presenter.stocks()
+    # presenter.budget()
+    # presenter.export()
+    # presenter.traits(model)
 
-    """ Display the Map with the farmers """
-    mapper = map_class(model)
-    mapper.add_farmers()
-    mapper.show()
+    # """ Display the Map with the farmers """
+    # mapper = map_class(model)
+    # mapper.initialise_farmers()
+    # mapper.place_farmers()
+    # mapper.show()
 
 # %%
