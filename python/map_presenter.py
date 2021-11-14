@@ -1,4 +1,4 @@
-""" This file contains the Map class, designed to generate and display the CropWar map. """
+""" File contains the Map class, to generate and display the CropWar map. """
 
 from copy import deepcopy
 
@@ -22,7 +22,8 @@ class map_class:
         self.model = _model
         self.water_matrix = self.model.grid.attr_grid("water")
 
-        """ These lists have corresponding entries: name (for legend), amount of rows, colour and index"""
+        """ These lists have corresponding entries:
+        name (for legend), amount of rows, colour and index"""
         self._plot_names = [
             "Low Hydration",
             "Medium Hydration",
@@ -40,7 +41,7 @@ class map_class:
         print("Done: Initialised map_class.")
 
     def initialise_farmers(self):
-        """ Assign colours and modify colourlimits """
+        """Assign colours and modify colourlimits"""
         for farmer in self.model.farmers:
             _color = self.model.random.choice(list(mcd.XKCD_COLORS.values()))
             self.colours.append(_color)
@@ -49,7 +50,7 @@ class map_class:
 
         self.weights.append(self.weights[-1] * 2)  # needed in "from_levels..."
 
-        print(f"Done: initialised farmer in map_class.")
+        print("Done: initialised farmer in map_class.")
 
     def place_farmers(self):
         """Add locations of farmer into the map"""
@@ -60,7 +61,7 @@ class map_class:
         # using 'putmask' we can change the entries according to a condition
         np.putmask(_combined_matrix, _raw_id_matrix > 0, _raw_id_matrix)
         self.processed_matrix = _combined_matrix
-        print(f"Done: updated farmers in map_class.")
+        print("Done: updated farmers in map_class.")
 
     def show(self, return_img=False):
         """
@@ -73,7 +74,8 @@ class map_class:
         plt.title("CropWar - Map")
 
         # Generate patches for nice plot legends
-        # source: https://moonbooks.org/Articles/How-to-manually-add-a-legend-with-a-color-box-on-a-matplotlib-figure-/"""
+        # source: https://moonbooks.org/Articles/
+        # How-to-manually-add-a-legend-with-a-color-box-on-a-matplotlib-figure-/"""
         legend_patches = []
         for i, _label in enumerate(self._plot_names):
             _patch = mpatches.Patch(color=self.colours[i], label=_label)
@@ -81,7 +83,8 @@ class map_class:
 
         # print(legend_patches)
 
-        # Formatting source:https://stackoverflow.com/questions/4700614/how-to-put-the-legend-out-of-the-plot
+        # Formatting source:https://stackoverflow.com/questions/4700614/
+        # how-to-put-the-legend-out-of-the-plot
         box = ax.get_position()
         ax.set_position([box.x0, box.y0, box.width * 0.8, box.height * 0.9])
         plt.legend(
@@ -93,23 +96,29 @@ class map_class:
             ncol=1,
         )
 
-        # source for "from_levels..." https://stackoverflow.com/questions/32769706/how-to-define-colormap-with-absolute-values-with-matplotlib
-        crop_cmap, crop_norm = from_levels_and_colors(
-            self.weights, self.colours)
-        ax.pcolormesh(self.processed_matrix, cmap=crop_cmap,
-                      norm=crop_norm, edgecolors="k")
+        # source for "from_levels..." https://stackoverflow.com/questions/
+        # 32769706/how-to-define-colormap-with-absolute-values-with-matplotlib
+        crop_cmap, crop_norm = from_levels_and_colors(self.weights, self.colours)
+        ax.pcolormesh(
+            self.processed_matrix, cmap=crop_cmap, norm=crop_norm, edgecolors="k"
+        )
 
         ax = plt.gca()
         ax.set_aspect("equal")
         fig = plt.gcf()
         # {self.model.t}.png")
         fig.savefig(
-            f"/Users/Chris/OneDrive - ETH Zurich/GESS ABM/AgentBasedModelling/python/images/plttest.png")
+            str(
+                "/Users/Chris/OneDrive - ETH Zurich/GESS ABM/\
+            AgentBasedModelling/python/images/plttest.png"
+            )
+        )
+
         if not return_img:
             plt.show()
         else:
-
-            return PIL.Image.frombytes('RGB',
-                                       fig.canvas.get_width_height(), fig.canvas.tostring_rgb())
+            return PIL.Image.frombytes(
+                "RGB", fig.canvas.get_width_height(), fig.canvas.tostring_rgb()
+            )
 
         # TODO : Idea put crop numbers or so inside of patches...

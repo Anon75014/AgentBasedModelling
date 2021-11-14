@@ -29,22 +29,22 @@ class CropwarModel(ap.Model):
         n = m + 1  # and have one horizontal river (with thickness = 1)
         self.n = n  # amount of rows
         self.m = m
-        self.N = n-1  # max index
-        self.M = m-1  # max index
+        self.N = n - 1  # max index
+        self.M = m - 1  # max index
 
         """ Create grid: """
         self.grid = ap.Grid(self, (n, m), track_empty=True)
         # list of map coords: [(0,0),(0,1),...] ::
         self.unoccupied = np.array(deepcopy(self.grid.empty))
         self.water_matrix = self.generate_water_matrix()
-        self.headings = ['N', 'O', 'S', 'W']
+        self.headings = ["N", "O", "S", "W"]
 
         """ Grid Iteration Functions """
         self._one_to_dir = {
-            'S': lambda a, b: (a-1, b),
-            'W': lambda a, b: (a, b-1),
-            'N': lambda a, b: (a+1, b),
-            'O': lambda a, b: (a, b+1),
+            "S": lambda a, b: (a - 1, b),
+            "W": lambda a, b: (a, b - 1),
+            "N": lambda a, b: (a + 1, b),
+            "O": lambda a, b: (a, b + 1),
         }
         """ About: _approach_from 
             Info: Converts the input so that it matches the direction
@@ -53,10 +53,10 @@ class CropwarModel(ap.Model):
                 _b is the fast chaning index
         """
         self._approach_from = {
-            'S': lambda a, b: (a, self.M-b),
-            'W': lambda a, b: (b, a),
-            'N': lambda a, b: (self.N-a, b),
-            'O': lambda a, b: (self.N-a, self.M-b),
+            "S": lambda a, b: (a, self.M - b),
+            "W": lambda a, b: (b, a),
+            "N": lambda a, b: (self.N - a, b),
+            "O": lambda a, b: (self.N - a, self.M - b),
         }
 
         """ Initialising Cells"""
@@ -123,7 +123,7 @@ class CropwarModel(ap.Model):
         return water_matrix
 
     def _valid_root_cell(self, farmer: Farmer, pos: tuple, _dir: str):
-        """ Check if one step into direction _dir the farmer ownes a cell"""
+        """Check if one step into direction _dir the farmer ownes a cell"""
         for item in self._one_to_dir.values():
             if item(pos[0], pos[1]) in farmer.accuired_land:
                 return True
@@ -150,14 +150,21 @@ class CropwarModel(ap.Model):
             pil_map_img = self.map_drawer.show(return_img=True)
             # {self.t}.png","PNG")
             pil_map_img.save(
-                f"/Users/Chris/OneDrive - ETH Zurich/GESS ABM/AgentBasedModelling/python/images/test.png", "PNG")
-            self.map_frames.append(
-                pil_map_img.convert("P", palette=Image.ADAPTIVE))
+                f"/Users/Chris/OneDrive - ETH Zurich/GESS ABM/AgentBasedModelling/python/images/test.png",
+                "PNG",
+            )
+            self.map_frames.append(pil_map_img.convert("P", palette=Image.ADAPTIVE))
 
     def end(self):
         self.cells.set_farmer_id()
 
         if self.p.save_gif:
             print(f"Found {len(self.map_frames)} images.")
-            self.map_frames[0].save('map.gif',
-                                    save_all=True, append_images=self.map_frames[1:], optimize=True, duration=200, loop=3)
+            self.map_frames[0].save(
+                "map.gif",
+                save_all=True,
+                append_images=self.map_frames[1:],
+                optimize=True,
+                duration=200,
+                loop=3,
+            )

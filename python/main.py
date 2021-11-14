@@ -6,14 +6,14 @@ from graph_presenter import graph_class
 from map_presenter import map_class
 from model import CropwarModel
 
-""" TODOS: 
+""" TODOS:
 # TODO Find good parameters for crops.
 
 """
 
 
-# These 2 lines are useful when working with Jupyter in vscode -> ask chris for help
-# %load_ext autoreload
+# These 2 lines are useful when working with Jupyter in vscode
+# # %load_ext autoreload
 # %autoreload 2
 
 if __name__ == "__main__":
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     crop_shop.add_crop(100, 15, 2)
     crop_shop.add_crop(150, 25, 1)
 
-    # These parameters are accessible within the model by eg "self.p.water_levels"
+    # These parameters are accessible within the model by"self.p.water_levels"
     parameters = {
         "water_levels": [0, 0, 3],
         "n_farmers": 4,
@@ -41,24 +41,24 @@ if __name__ == "__main__":
     model = CropwarModel(parameters)  # create model instance
 
     results = model.run()
-    #print(f"The results are {results}.")
+    # print(f"The results are {results}.")
     print(results.variables.Farmer)
-    #print(f"The farmers got this land: {list(model.farmers.accuired_land)}")
+    # print(f"The farmers got this land: {list(model.farmers.accuired_land)}")
 
     """ Display the results using the Displayer Class """
-    # presenter = graph_class(results)
+    presenter = graph_class(results)
 
-    # presenter.crops()
-    # presenter.cellcount()
-    # presenter.stocks()
-    # presenter.budget()
-    # presenter.export()
-    # presenter.traits(model)
+    presenter.crops()
+    presenter.cellcount()
+    presenter.stocks()
+    presenter.budget()
+    presenter.export()
+    presenter.traits(model)
 
-    # """ Display the Map with the farmers """
-    # mapper = map_class(model)
-    # mapper.initialise_farmers()
-    # mapper.place_farmers()
-    # mapper.show()
+    """ Display the Map with the farmers """
+    mapper = map_class(model)
+    mapper.initialise_farmers()
+    mapper.place_farmers()
+    mapper.show()
 
 # %%

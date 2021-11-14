@@ -6,11 +6,11 @@ import seaborn as sns
 from pandas import DataFrame as df
 
 
-class graph_class():
-    """ Displayer Class to show the Agnetpy Run results. """
+class graph_class:
+    """Displayer Class to show the Agnetpy Run results."""
 
     def __init__(self, _results) -> None:
-        """ 
+        """
         Parameters:
         -   _results: A pandas dataframe, containing the results of Model.run()
         """
@@ -18,107 +18,113 @@ class graph_class():
         self.data = _results.arrange_variables()
         self.data = self.data.rename(columns={"obj_id": "Farmer ID"})
         self.stock_data = self.preprocess_data()
-        self.data.drop(columns=['stock'], inplace=True)
+        self.data.drop(columns=["stock"], inplace=True)
 
         self.titles = {
             "budget": "Budget Evolution",
             "crop_id": "Active Crops",
             "stock": "Stock Evolution",
             "cellcount": "Evolution of Cells per Farmer",
-            "buy_cell_threash": "Buy Threashold"
+            "buy_cell_threash": "Buy Threashold",
         }
         self.y_labels = {
             "budget": "Budget",
             "crop_id": "Active Crop ID",
             "stock": "Stock Units",
             "cellcount": "Amount of Cells",
-            "buy_cell_threash": r"Parameter $\in [0,1]}$"
+            "buy_cell_threash": r"Parameter $\in [0,1]}$",
         }
         self._stock_data = None
         print("OK: initialised Displayer instance")
 
     def new_plot(self, _parameter):
-        """ Basic properties for a new plot. """
-        fig = plt.figure()
+        """Basic properties for a new plot."""
+        # fig = plt.figure()
 
         plt.title(self.titles[_parameter])
         plt.xlabel("Time Steps")
         plt.ylabel(self.y_labels[_parameter])
 
     def show_evolution_bar(self, _parameter):
-        sns.catplot(data=self.data, kind="bar", x='t',
-                    y=_parameter, hue="Farmer ID")
+        sns.catplot(data=self.data, kind="bar", x="t", y=_parameter, hue="Farmer ID")
 
     def show_evolution_line(self, _parameter):
         sns.set_theme(style="whitegrid")
-        sns.lineplot(data=self.data, x='t', y=_parameter, hue="Farmer ID")
+        sns.lineplot(data=self.data, x="t", y=_parameter, hue="Farmer ID")
 
     def show_evolution_scatter(self, _parameter):
         sns.set_theme(style="whitegrid")
-        sns.scatterplot(data=self.data, x='t', y=_parameter, hue="Farmer ID")
+        sns.scatterplot(data=self.data, x="t", y=_parameter, hue="Farmer ID")
 
     def show_solo_line(self, _parameter):
         g = sns.relplot(
-            data=self.data, x="t", y=_parameter, col="Farmer ID",
-            kind="line")
+            data=self.data, x="t", y=_parameter, col="Farmer ID", kind="line"
+        )
 
         return g
 
-    ''' SPECIFIC FUNCTIONS '''
+    """ SPECIFIC FUNCTIONS """
 
     def preprocess_data(self):
-        """ Convert the results-pandas-series to a dataframe without dictionaries """
+        """Convert the results-pd-series to a dataframe w/out dictionaries"""
 
         _stock_as_df = df.from_records(self.data.stock)
         _stock_data_raw = pd.concat(
-            [self.data[["t", "Farmer ID"]], _stock_as_df], axis=1)
+            [self.data[["t", "Farmer ID"]], _stock_as_df], axis=1
+        )
         _stock_data = _stock_data_raw.melt(
-            id_vars=['t', 'Farmer ID'], var_name='Crop', value_name='Amount')
-        # melt source: https://pandas.pydata.org/docs/reference/api/pandas.melt.html
+            id_vars=["t", "Farmer ID"], var_name="Crop", value_name="Amount"
+        )
+        # source: https://pandas.pydata.org/docs/reference/api/pandas.melt.html
 
         return _stock_data
 
     def stocks(self):
-        ''' Plot the stock evolution for all the farmers seperately. '''
+        """Plot the stock evolution for all the farmers seperately."""
         g = sns.relplot(
-            data=self.stock_data, x="t", y="Amount", col="Farmer ID", hue="Crop",
-            kind="line")
+            data=self.stock_data,
+            x="t",
+            y="Amount",
+            col="Farmer ID",
+            hue="Crop",
+            kind="line",
+        )
         g.set_axis_labels("Time", "Amount in Stock")
-        g.fig.suptitle('Stock Evolution', fontsize=14)
+        g.fig.suptitle("Stock Evolution", fontsize=14)
         g.fig.subplots_adjust(top=0.86)
 
     def crops(self):
-        """ Plot crop_id evolution for the different farmers. """
+        """Plot crop_id evolution for the different farmers."""
         g = self.show_solo_line("crop_id")
-        g.set(yticks=list(
-            range(self.results.parameters.constants["amount_of_crops"])))
+        g.set(yticks=list(range(self.results.parameters.constants["amount_of_crops"])))
         g.set_axis_labels("Time", "Crop ID")
-        g.fig.suptitle('Active Crop', fontsize=14)
+        g.fig.suptitle("Active Crop", fontsize=14)
         g.fig.subplots_adjust(top=0.86)
 
     def budget(self):
-        """ Plot budget data """
+        """Plot budget data"""
         self.new_plot("budget")
         self.show_evolution_line("budget")
 
     def cellcount(self):
-        """ Cellcount data """
+        """Cellcount data"""
         self.new_plot("cellcount")
         self.show_evolution_line("cellcount")
 
     def traits(self, model):
-        """ Personality traits """
+        """Personality traits"""
         fig, ax = plt.subplots()
         trait_data = list(model.farmers.buy_cell_threash)
         farmer_ids = list(model.farmers.id)
         rects1 = ax.bar(farmer_ids, trait_data)
         ax.set_ylabel("Buy threashold")
         ax.set_xlabel("Farmer ID")
-        ax.bar_label(rects1, padding=3, fmt='%.2f')
+        ax.bar_label(rects1, padding=3, fmt="%.2f")
         ax.set_xticks(farmer_ids)
-        ax.set_title('Buy Threashold for the farmers')
+        ax.set_title("Buy Threashold for the farmers")
 
     def export(self):
-        """ Export Stockdata and Budget&Crop_id data to two .csv files for plotting in Latex. """
+        """Export Stockdata and Budget&Crop_id data to
+        two .csv files for plotting in Latex."""
         self.stock_data.to_csv("stock_results.csv")
         self.data.to_csv("data.csv")
