@@ -70,7 +70,7 @@ class Map:
         """  Set matrix (m) entries as specified """
         for index, amount in enumerate(self.amounts):
             for _ in range(amount):
-                  # based on symmetry color two at once
+                # based on symmetry color two at once
                 self.map_matrix[row, :] = self.weights[index]
                 self.map_matrix[-(row + 1), :] = self.weights[index]
                 row += 1

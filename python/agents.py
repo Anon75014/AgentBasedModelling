@@ -55,7 +55,6 @@ class Farmer(ap.Agent):
             self._stock[crop_id] = 0
         self.supply = dict.fromkeys(self.model.crop_shop.crops.keys())
 
-
         # self._stock = np.zeros(self.model.crop_shop.amount_of_crops, dtype=int)
         self.stock = copy.deepcopy(self._stock)
 
@@ -67,9 +66,14 @@ class Farmer(ap.Agent):
         current_supply: int,
     ) -> None:
         if crop_id != self.crop_id:
-            cost_seed_change = self.model.crop_shop.crops[crop_id].seed_cost - self.model.crop_shop.crops[self.crop_id].seed_cost
+            cost_seed_change = (
+                self.model.crop_shop.crops[crop_id].seed_cost
+                - self.model.crop_shop.crops[self.crop_id].seed_cost
+            )
             price = self.model.crop_shop.crops[crop_id].sell_price
-            expected_profit = cost_seed_change + (current_demand - current_supply) * price
+            expected_profit = (
+                cost_seed_change + (current_demand - current_supply) * price
+            )
             print("Expected profit: ", expected_profit)
             if expected_profit > 0:
                 self.choose_crop(crop_id)
@@ -107,7 +111,9 @@ class Farmer(ap.Agent):
         """
         supplies = dict.fromkeys(self.model.crop_shop.crops.keys())
         for crop_id in self.model.crop_shop.crops.keys():
-            supplies[crop_id] = np.min([self.c_agent[crop_id] * prices[crop_id], self._stock[crop_id]])
+            supplies[crop_id] = np.min(
+                [self.c_agent[crop_id] * prices[crop_id], self._stock[crop_id]]
+            )
         self.supply = supplies
         return supplies
 

@@ -9,20 +9,30 @@ class Market:
     """
     Market which regulates the prices of the crops
     """
+
     def __init__(self, crop_sortiment: CropSortiment, agents: ap.AgentList) -> None:
         self.crop_sortiment = crop_sortiment
         self.agents = agents
-        self.current_demand : Dict[int, int] = {k: 1 for k in crop_sortiment.crops.keys()}
-        self.current_stock : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
-        self.current_supply : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
-        self.current_prices : Dict[int, int] = {crop_id: crop.sell_price for (crop_id, crop) in crop_sortiment.crops.items()}
+        self.current_demand: Dict[int, int] = {
+            k: 1 for k in crop_sortiment.crops.keys()
+        }
+        self.current_stock: Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
+        self.current_supply: Dict[int, int] = {
+            k: 0 for k in crop_sortiment.crops.keys()
+        }
+        self.current_prices: Dict[int, int] = {
+            crop_id: crop.sell_price for (crop_id, crop) in crop_sortiment.crops.items()
+        }
         self.MAX_PRICE = 1e6
 
     def _calc_current_demand(self) -> None:
         """
         Calculates the current demand
         """
-        self.current_demand = {k: 10.0 * (0.5 + np.random.random()) for k in self.crop_sortiment.crops.keys()}
+        self.current_demand = {
+            k: 10.0 * (0.5 + np.random.random())
+            for k in self.crop_sortiment.crops.keys()
+        }
 
     def _calc_global_stock(self) -> None:
         """
@@ -41,11 +51,17 @@ class Market:
         for crop_id, crop_demand in global_prices.items():
             if self.current_stock[crop_id] != 0:
                 global_prices[crop_id] = np.max(
-                [(
-                    self.crop_sortiment.crops[crop_id].sell_price # Current crop price
-                    * crop_demand
-                    / self.current_stock[crop_id]
-                ), self.MAX_PRICE])
+                    [
+                        (
+                            self.crop_sortiment.crops[
+                                crop_id
+                            ].sell_price  # Current crop price
+                            * crop_demand
+                            / self.current_stock[crop_id]
+                        ),
+                        self.MAX_PRICE,
+                    ]
+                )
             else:
                 global_prices[crop_id] = self.MAX_PRICE
         self.current_prices = global_prices

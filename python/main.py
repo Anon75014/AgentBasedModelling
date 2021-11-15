@@ -18,7 +18,7 @@ if __name__ == "__main__":
     crop_shop = CropSortiment()
     # Add two crops TODO Find good parameters for crops.
 
-    crop_shop.add_crop(1, 1, 1) #area, crop_type, available water
+    crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
     crop_shop.add_crop(1, 9, 1)
 
     parameters = {
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         "start_budget": 50000000,
         "t_end": 10,
         "crop_shop": crop_shop,
-        "amount_of_crops": crop_shop.amount_of_crops
+        "amount_of_crops": crop_shop.amount_of_crops,
     }
 
     """ Create and run the model """
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     print(f"The results are {results}.")
     print(results.variables.Farmer)
 
-    ''' Display the results using the Displayer Class'''
+    """ Display the results using the Displayer Class"""
     presenter = presentation.Displayer(results)
 
     presenter.crops()
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     presenter.budget()
     presenter.export()
 
-    ''' Display the Map with the farmers '''
+    """ Display the Map with the farmers """
     farmer_pos_list = list(
         model.grid.positions.values()
     )  # get the placement of the farmers.
