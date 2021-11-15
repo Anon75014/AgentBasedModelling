@@ -93,6 +93,11 @@ class CropwarModel(ap.Model):
 
         """ Initialise Map (for GIF) Instances """
         if self.p.save_gif:
+            try:
+                dirname = os.path.dirname(os.path.abspath(__file__))
+                os.mkdir(dirname + "/images")
+            except OSError as error:
+                print(f"Folder exists already, so: {error}")  
             self.map_frames = []  # used for png storage for the gif
             self.map_drawer = map_presenter.map_class(self)
             self.map_drawer.initialise_farmers()

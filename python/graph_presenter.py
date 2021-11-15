@@ -123,8 +123,26 @@ class graph_class:
         ax.set_xticks(farmer_ids)
         ax.set_title("Buy Threashold for the farmers")
 
+    def export_budget(self):
+        """ export the relevant data for plotting in LaTeX """
+        budget_df = df.pivot(self.data,index='t',columns="Farmer ID",values="budget")
+        budget_df.to_csv("exported_budget.csv")
+    
+    def export_cellcount(self):
+        """ export the relevant data for plotting in LaTeX """
+        cellcount_df = df.pivot(self.data,index='t',columns="Farmer ID",values="cellcount")
+        cellcount_df.to_csv("exported_cellcount.csv")
+
+    def export_stock(self):
+        """ export the relevant data for plotting in LaTeX """
+        stock_df = df.pivot(self.stock_data,index='t',columns=["Crop","Farmer ID"],values="Amount")
+        stock_df.to_csv("exported_stock.csv")
+
     def export(self):
         """Export Stockdata and Budget&Crop_id data to
         two .csv files for plotting in Latex."""
-        self.stock_data.to_csv("stock_results.csv")
-        self.data.to_csv("data.csv")
+        # self.stock_data.to_csv("stock_results.csv")
+        # self.data.to_csv("data.csv")
+        self.export_budget()
+        self.export_cellcount()
+        self.export_stock()
