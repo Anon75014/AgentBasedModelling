@@ -112,7 +112,7 @@ class map_class:
             fig = plt.gcf()
             # {self.model.t}.png")
             dirname = os.path.dirname(os.path.abspath(__file__))
-            filename = dirname + "/images/plttest.png"
+            filename = dirname + "/images/final_map.png"
             fig.savefig(filename)
             img =  PIL.Image.frombytes(
                 "RGB", fig.canvas.get_width_height(), fig.canvas.tostring_rgb()
