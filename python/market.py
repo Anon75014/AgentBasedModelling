@@ -12,10 +12,10 @@ class Market:
     def __init__(self, crop_sortiment: CropSortiment, agents: ap.AgentList) -> None:
         self.crop_sortiment = crop_sortiment
         self.agents = agents
-        self.current_demand : Dict[int, int] = {k: 5 for k in crop_sortiment.crops.keys()}
+        self.current_demand : Dict[int, int] = {k: 3 for k in crop_sortiment.crops.keys()}
         self.current_stock : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
         self.current_supply : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
-        self.current_prices : Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
+        self.current_prices : Dict[int, int] = {crop_id: crop.sell_price for (crop_id, crop) in crop_sortiment.crops.items()}
         self.MAX_PRICE = 1e6
 
     def _calc_current_demand(self) -> None:

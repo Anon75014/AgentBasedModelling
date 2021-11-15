@@ -34,9 +34,8 @@ class Farmer(ap.Agent):
         """Initiate agent attributes."""
         self.grid = self.model.grid
         self.random = self.model.random
-        np.random.seed(1234)  # Find out how to do this cleanly
         self.c_agent = {
-            k: np.random.random() for k in self.model.crop_shop.crops
+            k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
         }  # TODO: find good values
 
         # Set start budget
@@ -48,7 +47,7 @@ class Farmer(ap.Agent):
         self.crop_id = self.random.randint(
             0, len(self.model.crop_shop.crops) - 1
         )  # -1 since len is  >= 1 and crop id starts at 0
-        self.choose_crop(self.crop_id, start=True)
+        self.choose_crop(self.crop_id)
 
         # Initialise Stock
         # create an array of fixed size, where each entry corresponds to the amount in _stock:
@@ -62,27 +61,26 @@ class Farmer(ap.Agent):
     def change_crop(
         self,
         crop_id: int,
-        current_demand: Dict[int, int],
-        current_supply: Dict[int, int],
-    ) -> bool:
-        cost_seed_change = self.crop_shop[crop_id].seed_cost
-        price = self.crop_shop.crops[crop_id].sell_price
-        expected_profit = cost_seed_change + (current_demand - current_supply) * price
-        print(expected_profit)
+        price: int,
+        current_demand: int,
+        current_supply: int,
+    ) -> None:
+        for old_crop_id in self._stock.keys():
+            cost_seed_change = self.model.crop_shop.crops[crop_id].seed_cost - self.model.crop_shop.crops[old_crop_id].seed_cost
+            price = self.model.crop_shop.crops[crop_id].sell_price
+            expected_profit = cost_seed_change + (current_demand - current_supply) * price
+            print("Expected profit: ", expected_profit)
+            if expected_profit > 0:
+                self.choose_crop(crop_id)
+                break
 
-    def choose_crop(self,
-            new_id: int,
-            current_demand: Dict[int, int]=None,
-            current_supply: Dict[int, int]=None,
-            start: bool=False
-        ) -> bool:
-        if start or self.change_crop(new_id, current_demand, current_supply):
-            self.crop_id = new_id
-            self.crop = self.model.crop_shop.crops[new_id]
-            self.budget -= self.crop.seed_cost
-            print(
-                f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
-            )
+    def choose_crop(self, new_id: int) -> bool:
+        self.crop_id = new_id
+        self.crop = self.model.crop_shop.crops[new_id]
+        self.budget -= self.crop.seed_cost
+        print(
+            f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
+        )
 
     def farm(self):
         self._stock[self.crop_id] += self.crop.harvest_yield
