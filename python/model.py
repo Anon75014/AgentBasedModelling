@@ -159,12 +159,12 @@ class CropwarModel(ap.Model):
             self.map_drawer.place_farmers()
             pil_map_img = self.map_drawer.show(return_img=True)
             # {self.t}.png","PNG")
-            dirname = os.path.dirname(os.path.abspath(__file__))
-            filename = dirname + "/images/gif_frame.png"
-            pil_map_img.save(
-                filename,
-                "PNG",
-            )
+            self.images_path = os.path.dirname(os.path.abspath(__file__))+ "/images/"
+            file_path = self.images_path + "gif_frame.png"
+            # pil_map_img.save(
+            #     file_path,
+            #     "PNG",
+            # )
             self.map_frames.append(pil_map_img.convert("P", palette=Image.ADAPTIVE))
 
     def end(self):
@@ -173,7 +173,7 @@ class CropwarModel(ap.Model):
         if self.p.save_gif:
             print(f"Found {len(self.map_frames)} images.")
             self.map_frames[0].save(
-                "map.gif",
+                self.images_path+"map.gif",
                 save_all=True,
                 append_images=self.map_frames[1:],
                 optimize=True,
