@@ -93,16 +93,16 @@ def agr(area,crop_type,di):
     income=y_c_a*area*price[crop_type]*1000  #for each crop 1000 is to convert ton to kg
     net_benefit=income-cost[crop_type]*area
    
-
+    exchange_rate_to_USD=320000
     eff=0.464 #irrigation efficiency for each subbasin
     
    
     #total_water_per_months = [element/eff for element in months] 
     total_water_per_crop=[element/eff for element in total_water_per_crop]
     cost=cost[crop_type]
+    price=price[crop_type]
 
-    return [y_c_a,cost,income]
-
+    return [y_c_a,cost/exchange_rate_to_USD,price/exchange_rate_to_USD]
   
     
 
