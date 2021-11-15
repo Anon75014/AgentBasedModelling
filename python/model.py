@@ -22,6 +22,10 @@ class CropwarModel(ap.Model):
     # See documentation https://agentpy.readthedocs.io/en/latest/reference_grid.html#agentpy.Grid
 
     def setup(self):
+        """Setting random seed (for reproducibility)"""
+        if self.p.seed == 0:
+            self.p.seed = os.urandom(10) # a random seed of length
+        self.random.seed(self.p.seed)
         """Setting parameters and model properties"""
         self.crop_shop = self.p.crop_shop
         self.water_row = sum(self.p.water_levels)  # <- index of center row
