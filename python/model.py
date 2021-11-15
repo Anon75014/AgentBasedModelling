@@ -8,6 +8,7 @@ from PIL import Image
 
 import map_presenter
 from agents import Cell, Farmer
+import os
 
 """ TODOS ::
 # TODO Change all positions to 2D-tuples
@@ -149,8 +150,10 @@ class CropwarModel(ap.Model):
             self.map_drawer.place_farmers()
             pil_map_img = self.map_drawer.show(return_img=True)
             # {self.t}.png","PNG")
+            dirname = os.path.dirname(os.path.abspath(__file__))
+            filename = dirname + "/images/gif_frame.png"
             pil_map_img.save(
-                f"/Users/Chris/OneDrive - ETH Zurich/GESS ABM/AgentBasedModelling/python/images/test.png",
+                filename,
                 "PNG",
             )
             self.map_frames.append(pil_map_img.convert("P", palette=Image.ADAPTIVE))

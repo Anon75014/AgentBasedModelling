@@ -114,9 +114,11 @@ class map_class:
             dirname = os.path.dirname(os.path.abspath(__file__))
             filename = dirname + "/images/plttest.png"
             fig.savefig(filename)
-            return PIL.Image.frombytes(
+            img =  PIL.Image.frombytes(
                 "RGB", fig.canvas.get_width_height(), fig.canvas.tostring_rgb()
             )
+            plt.close()
+            return img
         else:
             plt.show()
 
