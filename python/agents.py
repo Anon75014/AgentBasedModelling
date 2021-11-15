@@ -2,7 +2,6 @@ import agentpy as ap
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Dict
-import Crop_model as cm
 from pandas import DataFrame as df
 import numpy as np
 import copy
@@ -54,47 +53,52 @@ class Farmer(ap.Agent):
         self._stock = {}
         for crop_id in self.model.crop_shop.crops.keys():
             self._stock[crop_id] = 0
+        self.supply = dict.fromkeys(self.model.crop_shop.crops.keys())
+
 
         # self._stock = np.zeros(self.model.crop_shop.amount_of_crops, dtype=int)
         self.stock = copy.deepcopy(self._stock)
 
-    def change_crop(
+    def check_crop_change(
         self,
         crop_id: int,
         price: int,
         current_demand: int,
         current_supply: int,
     ) -> None:
-        for old_crop_id in self._stock.keys():
-            cost_seed_change = self.model.crop_shop.crops[crop_id].seed_cost - self.model.crop_shop.crops[old_crop_id].seed_cost
+        if crop_id != self.crop_id:
+            cost_seed_change = self.model.crop_shop.crops[crop_id].seed_cost - self.model.crop_shop.crops[self.crop_id].seed_cost
             price = self.model.crop_shop.crops[crop_id].sell_price
             expected_profit = cost_seed_change + (current_demand - current_supply) * price
             print("Expected profit: ", expected_profit)
             if expected_profit > 0:
                 self.choose_crop(crop_id)
-                break
 
     def choose_crop(self, new_id: int) -> bool:
         self.crop_id = new_id
         self.crop = self.model.crop_shop.crops[new_id]
-        self.budget -= self.crop.seed_cost
-        print(
-            f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
-        )
+        if self.budget >= self.crop.seed_cost:
+            self.budget -= self.crop.seed_cost
+            print(
+                f"Farmer {self.id} changed crop to {self.crop_id}. New Budget: {self.budget}"
+            )
+        else:
+            print(
+                f"Farmer {self.id} could not change crop to {self.crop_id}. Budget was short!"
+            )
 
     def farm(self):
         self._stock[self.crop_id] += self.crop.harvest_yield
         print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
 
-    def supply(self, prices: Dict[int, int]) -> Dict[int, int]:
+    def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
         """
-        Supply to the market
+        Calculates how much the farmer wants to supply
 
         Parameters
         ----------
         prices: Dict[int, int]
             Dictionary with the global prices for each `crop_id`
-
 
         Returns
         -------
@@ -103,22 +107,19 @@ class Farmer(ap.Agent):
         """
         supplies = dict.fromkeys(self.model.crop_shop.crops.keys())
         for crop_id in self.model.crop_shop.crops.keys():
-            supplying: int = np.min(
-                [int(self.c_agent[crop_id] * prices[crop_id]), self._stock[crop_id]]
-            )
-            supplies[crop_id] = supplying
-            self.sell(
-                crop_id, supplying
-            )  # Is there a reason to keep supply and sell separate?
+            supplies[crop_id] = np.min([self.c_agent[crop_id] * prices[crop_id], self._stock[crop_id]])
+        self.supply = supplies
         return supplies
 
     def sell(self, crop_id: int, amount: int):
-        if self._stock[crop_id] >= amount:
+        if self._stock[crop_id] >= amount > 0:
             self._stock[crop_id] -= amount
             self.budget += amount * self.crop.sell_price
             print(
                 f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
             )
+        elif amount == 0.0:
+            print(f"Nothing to sell.")
         else:
             print(
                 f"Ups: Farmer {self.id} does not have enough in _stock for that deal."
@@ -126,7 +127,6 @@ class Farmer(ap.Agent):
 
     def step(self):
         self.farm()
-
         # amount = self.random.randint(0, 5)
         # self.sell(self.crop_id, amount)
         self.stock = copy.deepcopy(self._stock)

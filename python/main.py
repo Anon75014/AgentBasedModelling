@@ -25,7 +25,7 @@ if __name__ == "__main__":
         # only hydrated land. Later maybe [1,2,3] or so
         "water_levels": [0, 0, 3],
         "n_farmers": 4,
-        "start_budget": 500,
+        "start_budget": 50000000,
         "t_end": 10,
         "crop_shop": crop_shop,
         "amount_of_crops": crop_shop.amount_of_crops

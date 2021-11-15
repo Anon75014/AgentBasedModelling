@@ -102,7 +102,7 @@ def agr(area,crop_type,di):
     cost=cost[crop_type]
 
     return [y_c_a,cost,income]
-   
+
   
     
 

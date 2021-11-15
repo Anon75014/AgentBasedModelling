@@ -53,7 +53,7 @@ class CropwarModel(ap.Model):
             self.crop_shop.crops[crop_id].sell_price = price
         highest_price_id = max(self.market.current_prices, key=self.market.current_prices.get)
         highest_price = max(self.market.current_prices.values())
-        self.agents.change_crop(highest_price_id, highest_price, self.market.current_demand[highest_price_id], self.market.current_supply[highest_price_id])
+        self.agents.check_crop_change(highest_price_id, highest_price, self.market.current_demand[highest_price_id], self.market.current_supply[highest_price_id])
 
     def update(self):
         # record the properties of the agents each step:
