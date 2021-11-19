@@ -1,5 +1,6 @@
 """ This file contains the Main structure of the Simulation. -> The AgentPy model """
 
+import os
 from copy import deepcopy
 
 import agentpy as ap
@@ -8,7 +9,6 @@ from PIL import Image
 
 import map_presenter
 from agents import Cell, Farmer
-import os
 
 
 class CropwarModel(ap.Model):
@@ -89,8 +89,11 @@ class CropwarModel(ap.Model):
 
         n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.farmers = ap.AgentDList(self, n_farmers, Farmer)
-        ml_mask = np.array([False for _ in range(n_farmers-self.p.nr_ml_farmers)]+\
-            [True for _ in range(self.p.nr_ml_farmers)],dtype = bool)
+        ml_mask = np.array(
+            [False for _ in range(n_farmers - self.p.nr_ml_farmers)]
+            + [True for _ in range(self.p.nr_ml_farmers)],
+            dtype=bool,
+        )
         self.farmers.select(ml_mask).ml_controlled = True
         self.ml_farmers = self.farmers.select(self.farmers.ml_controlled == True)
         self.normal_farmers = self.farmers.select(self.farmers.ml_controlled == False)
@@ -146,7 +149,9 @@ class CropwarModel(ap.Model):
 
         self.normal_farmers.step()
 
-    def ML_step(self, action):
+    def ml_get_state(self):
+        pass
+    def ml_step(self, action):
         pass
 
     def update(self):

@@ -39,9 +39,8 @@ class CropwarEnv(Env):
             "save_gif": False,  # Save the map each timestep and generate Gif in the end
             "seed": 0,  # Use a new seed
             # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
-
             # ML Variables:
-            "nr_ml_farmers" : 1
+            "nr_ml_farmers": 1,
         }
 
         # Create the model
@@ -84,7 +83,6 @@ class CropwarEnv(Env):
         self._reset_Cropshop()
         self.model = CropwarModel(self.parameters)
         print("Reset: CropShop & Model.")
-
 
 
 env = CropwarEnv()
