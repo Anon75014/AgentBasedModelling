@@ -24,6 +24,9 @@ class Farmer(ap.Agent):
     """
 
     def setup(self):
+
+        self.ml_controlled = False
+
         """Inherit agent attributes."""
         self.grid = self.model.grid
         self.random = self.model.random

@@ -10,11 +10,6 @@ import map_presenter
 from agents import Cell, Farmer
 import os
 
-""" TODOS ::
-# TODO Change all positions to 2D-tuples
-
-"""
-
 
 class CropwarModel(ap.Model):
     """An Agent-Based-Model to simulate the crop war of farmers."""
@@ -24,7 +19,7 @@ class CropwarModel(ap.Model):
     def setup(self):
         """Setting random seed (for reproducibility)"""
         if self.p.seed == 0:
-            self.p.seed = os.urandom(10) # a random seed of length
+            self.p.seed = os.urandom(10)  # a random seed of length
         self.random.seed(self.p.seed)
         """Setting parameters and model properties"""
         self.crop_shop = self.p.crop_shop
@@ -94,6 +89,11 @@ class CropwarModel(ap.Model):
 
         n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.farmers = ap.AgentDList(self, n_farmers, Farmer)
+        ml_mask = np.array([False for _ in range(n_farmers-self.p.nr_ml_farmers)]+\
+            [True for _ in range(self.p.nr_ml_farmers)],dtype = bool)
+        self.farmers.select(ml_mask).ml_controlled = True
+        self.ml_farmers = self.farmers.select(self.farmers.ml_controlled == True)
+        self.normal_farmers = self.farmers.select(self.farmers.ml_controlled == False)
 
         """ Initialise Map (for GIF) Instances """
         if self.p.save_gif:
@@ -101,7 +101,7 @@ class CropwarModel(ap.Model):
                 dirname = os.path.dirname(os.path.abspath(__file__))
                 os.mkdir(dirname + "/images")
             except OSError as error:
-                print(f"Folder exists already, so: {error}")  
+                print(f"Folder exists already, so: {error}")
             self.map_frames = []  # used for png storage for the gif
             self.map_drawer = map_presenter.map_class(self)
             self.map_drawer.initialise_farmers()
@@ -144,7 +144,10 @@ class CropwarModel(ap.Model):
             self.stop()
         print(f"\n    Start of time step: {self.t}")
 
-        self.farmers.step()
+        self.normal_farmers.step()
+
+    def ML_step(self, action):
+        pass
 
     def update(self):
         # record the properties of the farmers each step:
@@ -159,7 +162,7 @@ class CropwarModel(ap.Model):
             self.map_drawer.place_farmers()
             pil_map_img = self.map_drawer.show(return_img=True)
             # {self.t}.png","PNG")
-            self.images_path = os.path.dirname(os.path.abspath(__file__))+ "/images/"
+            self.images_path = os.path.dirname(os.path.abspath(__file__)) + "/images/"
             file_path = self.images_path + "gif_frame.png"
             # pil_map_img.save(
             #     file_path,
@@ -173,7 +176,7 @@ class CropwarModel(ap.Model):
         if self.p.save_gif:
             print(f"Found {len(self.map_frames)} images.")
             self.map_frames[0].save(
-                self.images_path+"map.gif",
+                self.images_path + "map.gif",
                 save_all=True,
                 append_images=self.map_frames[1:],
                 optimize=True,
