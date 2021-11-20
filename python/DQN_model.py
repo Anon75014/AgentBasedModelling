@@ -61,6 +61,17 @@ class CropwarEnv(Env):
             }
         )
 
+        """
+        self.action_space = Tuple(
+            (Discrete(2), Box(low=0.0, high=100.0, dtype=np.float32, shape=(1,)))
+        )
+        self.observation_space = Tuple(
+            (
+                Box(low=0, high=np.inf, shape=(1,)),
+                Box(low=0, high=np.inf, shape=(nr_stock_entries,)),
+            )
+        )"""
+
         print("Done: Initialised Environment.")
 
     def _reset_Cropshop(self):
@@ -73,6 +84,28 @@ class CropwarEnv(Env):
         reward = 0
         done = False
 
+        """Steps and Updates"""
+        self.model.step()
+        self.model.update()
+
+        self.model.ml_step(action)
+        self.state = self.model.ml_get_state()
+
+        done = self.model.at_last_step()
+
+        """Reward Calculation"""
+        ml_farmer = self.model.ml_farmers[0]
+        # reward += ml_farmer.moneytracker['harvest_income']
+        # reward += 0.1 * ml_farmer.budget
+        if action[0]:
+            reward += 2
+        if action[1] > 0:
+            reward += 0.5
+
+        if done:
+            if ml_farmer.budget == max(self.farmers.budget):
+                reward += 100
+
         info = {}
         return self.state, reward, done, info
 
@@ -84,9 +117,13 @@ class CropwarEnv(Env):
         self.model = CropwarModel(self.parameters)
         print("Reset: CropShop & Model.")
 
+    def seed(self, seed):
+        np.random.seed(seed)
 
-env = CropwarEnv()
-print(env.observation_space.sample())
-print(env.action_space.sample())
+
+if __name__ == "__main__":
+    env = CropwarEnv()
+    print(env.observation_space.sample())
+    print(env.action_space.sample())
 
 # %%

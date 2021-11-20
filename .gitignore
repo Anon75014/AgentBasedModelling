@@ -29,3 +29,4 @@ map.gif
 python/images/*
 *.gif
 .venv_ml_abm
+python/log/*

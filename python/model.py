@@ -142,17 +142,40 @@ class CropwarModel(ap.Model):
                 return True
         return False
 
+    def at_last_step(self) -> bool:
+        return self.t == self.p.t_end
+
     def step(self):
         if self.t > self.p.t_end:  # model should stop after "t_end" steps
             self.stop()
-        print(f"\n    Start of time step: {self.t}")
 
-        self.normal_farmers.step()
+        else:
+            print(f"\n    Start of time step: {self.t}")
+            self.normal_farmers.step()
 
     def ml_get_state(self):
-        pass
+        ml_farmer = self.ml_farmers[0]
+
+        stock_array = np.array(list(ml_farmer._stock.values()))
+        state = [ml_farmer.budget, stock_array]  # , ml_farmer.cell_count
+        return np.array(state)
+
     def ml_step(self, action):
-        pass
+        """Applies the action decided by the DQN to the model
+        Inputs:
+            action : [Bool: Farm, Proportion: Sell of active crop \in [0,1]]
+        """
+        ml_farmer = self.ml_farmers[0]
+
+        do_farm, sell_prop = action
+        if do_farm:
+            ml_farmer.harvest()
+
+        amount = sell_prop * ml_farmer._stock[self.crop._id]
+
+        ml_farmer.sell(ml_farmer.crop._id, amount)
+
+        return
 
     def update(self):
         # record the properties of the farmers each step:
