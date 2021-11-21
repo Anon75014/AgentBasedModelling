@@ -1,16 +1,17 @@
 #%%
 import sys
+from copy import deepcopy
 
+import gym
 import numpy as np
 import tianshou as ts
-from gym import Env
-from gym.spaces import Box, Dict, Discrete, Tuple
+from gym import spaces
 
 from crops import CropSortiment
 from model import CropwarModel
 
 
-class CropwarEnv(Env):
+class CropwarEnv(gym.Env):
     def __init__(self) -> None:
         super().__init__()
 
@@ -48,29 +49,22 @@ class CropwarEnv(Env):
 
         """Setup for RL"""
         nr_stock_entries = self.parameters["amount_of_crops"]
-        self.action_space = Dict(
-            {
-                "farm": Discrete(2),
-                "sell": Box(low=0.0, high=100.0, dtype=np.float32, shape=(1,)),
-            }
-        )
-        self.observation_space = Dict(
-            {
-                "budget": Box(low=0, high=np.inf, shape=(1,)),
-                "stock": Box(low=0, high=np.inf, shape=(nr_stock_entries,)),
-            }
-        )
+        self.observation_space = spaces.Box(0.0, np.inf, shape = (nr_stock_entries+1,), dtype=np.float32)
+        self.action_space = spaces.Discrete(2) # spaces.MultiDiscrete([2,2])
 
-        """
-        self.action_space = Tuple(
-            (Discrete(2), Box(low=0.0, high=100.0, dtype=np.float32, shape=(1,)))
-        )
-        self.observation_space = Tuple(
-            (
-                Box(low=0, high=np.inf, shape=(1,)),
-                Box(low=0, high=np.inf, shape=(nr_stock_entries,)),
-            )
-        )"""
+        
+        # self.action_space = Dict(
+        #     {
+        #         "farm": Discrete(2),
+        #         "sell": Box(low=0.0, high=100.0, dtype=np.float32, shape=(1,)),
+        #     }
+        # )
+        # self.observation_space = Dict(
+        #     {
+        #         "budget": Box(low=0, high=np.inf, shape=(1,)),
+        #         "stock": Box(low=0, high=np.inf, shape=(nr_stock_entries,)),
+        #     }
+        # )
 
         print("Done: Initialised Environment.")
 
@@ -81,6 +75,9 @@ class CropwarEnv(Env):
         self.crop_shop.add_crop(1, 9, 1)
 
     def step(self, action):
+        err_msg = f"{action!r} ({type(action)}) invalid"
+        assert self.action_space.contains(action), err_msg
+
         reward = 0
         done = False
 
@@ -107,7 +104,7 @@ class CropwarEnv(Env):
                 reward += 100
 
         info = {}
-        return self.state, reward, done, info
+        return deepcopy(self.state), reward, done, info
 
     def render(self):
         pass
@@ -115,7 +112,12 @@ class CropwarEnv(Env):
     def reset(self):
         self._reset_Cropshop()
         self.model = CropwarModel(self.parameters)
+        self.model.setup()
+        self.model.update()
         print("Reset: CropShop & Model.")
+        state = self.model.ml_get_state()
+        return deepcopy(state)
+
 
     def seed(self, seed):
         np.random.seed(seed)
