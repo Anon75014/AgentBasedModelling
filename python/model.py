@@ -15,6 +15,8 @@ class CropwarModel(ap.Model):
     """An Agent-Based-Model to simulate the crop war of farmers."""
 
     # See documentation https://agentpy.readthedocs.io/en/latest/reference_grid.html#agentpy.Grid
+    # def __init__(self,parameters) -> None:
+    #     super().__init__(parameters)
 
     def setup(self):
         """Setting random seed (for reproducibility)"""
@@ -157,8 +159,9 @@ class CropwarModel(ap.Model):
         ml_farmer = self.ml_farmers[0]
 
         stock_array = np.array(list(ml_farmer._stock.values()))
-        state = [ml_farmer.budget, stock_array]  # , ml_farmer.cell_count
-        return np.array(state)
+        budget = np.array([ml_farmer.budget])  # , ml_farmer.cell_count
+        state = np.concatenate([budget,stock_array], dtype=np.float32)
+        return state
 
     def ml_step(self, action):
         """Applies the action decided by the DQN to the model
@@ -166,12 +169,13 @@ class CropwarModel(ap.Model):
             action : [Bool: Farm, Proportion: Sell of active crop \in [0,1]]
         """
         ml_farmer = self.ml_farmers[0]
+        ml_farmer.harvest()
+#        [do_farm, sell_prop] = action
+#        if do_farm:
+#            ml_farmer.harvest()
 
-        do_farm, sell_prop = action
-        if do_farm:
-            ml_farmer.harvest()
-
-        amount = sell_prop * ml_farmer._stock[self.crop._id]
+#        amount = sell_prop * 0.2 * ml_farmer._stock[self.crop._id] # TODO generalize 0.2 by making action continuous
+        amount = action * 0.2 * ml_farmer._stock[self.crop._id] # TODO generalize 0.2 by making action continuous
 
         ml_farmer.sell(ml_farmer.crop._id, amount)
 
