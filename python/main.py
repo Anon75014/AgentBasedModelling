@@ -24,6 +24,9 @@ if __name__ == "__main__":
     # Add two crops TODO Find good parameters for crops.
 
     crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
+    crop_shop.add_crop(1, 2, 1)  # area, crop_type, available water
+    crop_shop.add_crop(1, 3, 1)  # area, crop_type, available water
+    crop_shop.add_crop(1, 4, 1)  # area, crop_type, available water
     crop_shop.add_crop(1, 9, 1)
 
 # These parameters are accessible within the model by"self.p.water_levels"
@@ -67,7 +70,7 @@ if __name__ == "__main__":
 
     print(f"SEED: {model.p.seed}")
 
-    
+
     """ Display the Map with the farmers """
     mapper = map_class(model)
     mapper.initialise_farmers()

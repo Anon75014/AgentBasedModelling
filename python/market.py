@@ -13,10 +13,12 @@ class Market:
     def __init__(self, crop_sortiment: CropSortiment, agents: ap.AgentList) -> None:
         self.crop_sortiment = crop_sortiment
         self.agents = agents
+        self.base_demand = 10.0
+        self.demand_fraction = 0.2
         self.current_demand: Dict[int, int] = {
-            k: 100 for k in crop_sortiment.crops.keys()
+            k: self.base_demand for k in crop_sortiment.crops.keys()
         }
-        self.current_stock: Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
+        self.current_stock: Dict[int, int] = {k: 1.0 for k in crop_sortiment.crops.keys()}
         self.current_supply: Dict[int, int] = {
             k: 0 for k in crop_sortiment.crops.keys()
         }
@@ -29,8 +31,16 @@ class Market:
         """
         Calculates the current demand
         """
+        #self.current_demand = {
+        #    k: 1.0 * (0.5 + np.random.random())
+        #    for k in self.crop_sortiment.crops.keys()
+        #}
+        #self.current_demand = {
+        #    k: np.max([(1.0 - 2e-1 * self.current_supply[k] / self.current_stock[k]), 0.0]) * self.base_demand if self.current_stock[k] > 0.0 else self.base_demand
+        #    for k in self.crop_sortiment.crops.keys()
+        #}
         self.current_demand = {
-            k: 10.0 * (0.5 + np.random.random())
+            k: self.base_demand + self.demand_fraction * self.current_supply[k]
             for k in self.crop_sortiment.crops.keys()
         }
 
