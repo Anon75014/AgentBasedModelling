@@ -130,8 +130,8 @@ class Farmer(ap.Agent):
 
                 # update cell properties ::
                 _cell.crop = self.crop
-    
-    def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:    
+
+    def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
         """
         Calculates how much the farmer wants to supply
 
@@ -152,7 +152,7 @@ class Farmer(ap.Agent):
             )
         self.supply = supplies
         return supplies
-    
+
     def check_crop_change(
         self,
         crop_id: int,
@@ -171,7 +171,7 @@ class Farmer(ap.Agent):
             )
             print("Expected profit: ", expected_profit)
             if expected_profit > 0:
-                self.choose_crop(crop_id)
+                self._change_to_crop(crop_id)
 
     def harvest(self):
         self.cells.harvest()

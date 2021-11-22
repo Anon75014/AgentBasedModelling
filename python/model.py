@@ -8,6 +8,7 @@ from PIL import Image
 
 import map_presenter
 from agents import Cell, Farmer
+from market import Market
 import os
 
 """ TODOS ::
@@ -94,6 +95,7 @@ class CropwarModel(ap.Model):
 
         n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.farmers = ap.AgentDList(self, n_farmers, Farmer)
+        self.market = Market(crop_sortiment=self.crop_shop, agents=self.farmers)
 
         """ Initialise Map (for GIF) Instances """
         if self.p.save_gif:
@@ -145,6 +147,13 @@ class CropwarModel(ap.Model):
         print(f"\n    Start of time step: {self.t}")
 
         self.farmers.step()
+        self.market.step()
+        # Update prices of crops
+        for crop_id, price in self.market.current_prices.items():
+            self.crop_shop.crops[crop_id].sell_price = price
+        highest_price_id = max(self.market.current_prices, key=self.market.current_prices.get)
+        highest_price = max(self.market.current_prices.values())
+        self.farmers.check_crop_change(highest_price_id, highest_price, self.market.current_demand[highest_price_id], self.market.current_supply[highest_price_id])
 
     def update(self):
         # record the properties of the farmers each step:
