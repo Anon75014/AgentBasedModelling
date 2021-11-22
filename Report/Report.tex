@@ -49,8 +49,10 @@
 	breakindent=10pt,
 	breakatwhitespace   = false,
 	prebreak= \space,
-	postbreak   = \space}
+	postbreak   = \space
+}
 
+%The commands for the tag v1.0
 \newcommand{\tagg}[1]{%
 	\tikz[baseline]\node[anchor=base,
 	draw=gray!30,
@@ -59,7 +61,22 @@
 	inner ysep =0.75ex,
 	text height=1.5ex,
 	text depth=.25ex]{#1};
-  }
+}
+
+%pgfplots style list (I am not a big fan of the default list)
+\pgfplotscreateplotcyclelist{mycolorlist}{%
+blue,every mark/.append style={fill=blue!80!black},mark=*\\%
+red,every mark/.append style={fill=red!80!black},mark=square*\\%
+brown!60!black,every mark/.append style={fill=brown!80!black},mark=otimes*\\%
+black,mark=star\\%
+blue,every mark/.append style={fill=blue!80!black},mark=diamond*\\%
+red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=*\\%
+brown!60!black,densely dashed,every mark/.append style={
+solid,fill=brown!80!black},mark=square*\\%
+black,densely dashed,every mark/.append style={solid,fill=gray},mark=otimes*\\%
+blue,densely dashed,mark=star,every mark/.append style=solid\\%
+red,densely dashed,every mark/.append style={solid,fill=red!80!black},mark=diamond*\\%
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,7 +85,7 @@
 \pagestyle{fancy} % % To make our document nice we want a header and number the pages in the footer. With this command we can customize the header style.
 \fancyhf{} % This makes sure we do not have other information in our header or footer.
 \lhead{\footnotesize Crop Wars}% \lhead puts text in the top left corner. \footnotesize sets our font to a smaller size. \rhead works just like \lhead (you can also use \chead)
-\rhead{\footnotesize Golling, Mourouga, Moser, Schmidt, Author 5} %<---- Fill in your lastnames.
+\rhead{\footnotesize Golling, Mourouga, Moser, Schmidt, Keshavarzzadeh} %<---- Fill in your lastnames.
 \cfoot{\footnotesize \thepage} % We want to put our page number in the center.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -92,7 +109,7 @@
 	\vspace{2mm}
         
 	% YOUR NAMES GO HERE
-	{\bf Christopher Golling, Gael Mourouga, Aaron Moser, Otto Schmidt, Author 5 }
+	{\bf Christopher Golling, Gael Mourouga, Aaron Moser, Otto Schmidt, Amirhassan Keshavarzzadeh}
 		
 \end{center}  
 %-----------------------------
@@ -172,41 +189,24 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 		  ylabel=Farmer wealth (\$),
 		  xmin=0,
 		  ymin=350,
-		  legend pos=south east
+		  legend pos=south east,
+		  cycle list name=exotic
 		]
 		  %plot 1: farmer ID 1
-		  \addplot[
-			  color={rgb:red,3;green,1;blue,2},
-			  no marks,
-			  thick
-				  ] 
+		  \addplot+[] 
 			  table[y index =1]{\budgeta};
 		  \addlegendentry{$1$}
 		  
 		  %plot 2: farmer ID 2
-		  \addplot[
-			  color={rgb:red,1;green,1;blue,2},
-			  dashed,
-			  thick,
-			  rounded corners
-				  ]  table[y index =2]{\budgeta};
+		  \addplot+[]  table[y index =2]{\budgeta};
 		  \addlegendentry{$2$}
   
 		  %plot 3: farmer ID 3
-		  \addplot[
-			  color={rgb:red,0;green,3;blue,1},
-			  loosely dotted,
-			  mark = x
-				  ] table[y index =3]{\budgeta};
+		  \addplot+[] table[y index =3]{\budgeta};
 		  \addlegendentry{$3$}
   
 		  %plot 4: farmer ID 4
-		  \addplot[
-			  color={rgb:red,3;green,0;blue,2},
-			  no marks,
-			  rounded corners,
-			  thick
-				  ] table[y index =4]{\budgeta};
+		  \addplot+[] table[y index =4]{\budgeta};
 		  \addlegendentry{$4$}
   
 		\end{axis}
@@ -226,37 +226,23 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 		  ylabel=Farmer stock,
 		  xmin=0,
 		  ymin=0,
-		  legend pos=north west
+		  legend pos=north west,
+		  cycle list name=exotic
 		]
 		  %plot 1: farmer ID 1
-	  \addplot[
-		  color={rgb:red,3;green,1;blue,2},
-		  no marks,
-		  rounded corners
-			  ] table[y index =1]{\stocka};
+	  \addplot+[] table[y index =1]{\stocka};
 	  \addlegendentry{$1$}
 	  
 	  %plot 2: farmer ID 2
-	  \addplot[
-		  color={rgb:red,1;green,1;blue,2},
-		  no marks
-			  ]  table[y index =2]{\stocka};
+	  \addplot+[]  table[y index =2]{\stocka};
 	  \addlegendentry{$2$}
 
 	  %plot 3: farmer ID 3
-	  \addplot[
-		  color={rgb:red,0;green,3;blue,1},
-		  dashed,
-		  mark = x
-			  ] table[y index =3]{\stocka};
+	  \addplot+[] table[y index =3]{\stocka};
 	  \addlegendentry{$3$}
 
 	  %plot 4: farmer ID 4
-	  \addplot[
-		  color={rgb:red,3;green,0;blue,2},
-		  no marks,
-		  rounded corners
-			  ] table[y index =4]{\stocka};
+	  \addplot+[] table[y index =4]{\stocka};
 	  \addlegendentry{$4$}
 
 	  \end{axis}
@@ -274,16 +260,17 @@ Fig. show the evolution of the budget (in \$) and stock as a function of time ov
 		  ylabel=Farmer stock,
 		  xmin=0,
 		  ymin=0,
-		  legend pos=north west
+		  legend pos=north west,
+		  cycle list name=exotic
 		]
 
-		  \addplot table[y index =5]{\stocka};
+		  \addplot+[] table[y index =5]{\stocka};
 		  \addlegendentry{$1$}
-		  \addplot table[y index =6]{\stocka};
+		  \addplot+[] table[y index =6]{\stocka};
 		  \addlegendentry{$2$}
-		  \addplot table[y index =7]{\stocka};
+		  \addplot+[] table[y index =7]{\stocka};
 		  \addlegendentry{$3$}
-		  \addplot table[y index =8]{\stocka};
+		  \addplot+[] table[y index =8]{\stocka};
 		  \addlegendentry{$4$}
 		\end{axis}
 	  \end{tikzpicture}
@@ -299,8 +286,146 @@ In the second version of the model \tagg{v1.2}, the agents can expand to neighbo
 
 \pgfplotstableread[col sep=comma]{Data/v12_budget.csv}{\budgetb}
 \pgfplotstableread[col sep=comma, skip first n=3]{Data/v12_stock.csv}{\stockb}
+\pgfplotstableread[col sep=comma, skip first n=3]{Data/v12_cellcount.csv}{\cellcountb}
 
+%figure showing 4 subfigures for v12: wealth, crop stocks (1 and 2) and the map
+\begin{figure}[H]
+	%wealth
+\begin{subfigure}[hb]{0.5\textwidth}
+	\resizebox{\linewidth}{!}{\begin{tikzpicture}
+		\pgfplotsset{
+			scale only axis,
+		}
+		%axis options:
+		\begin{axis}[
+		  xlabel=Time step (years),
+		  ylabel=Farmer land count (cells),
+		  xmin=0,
+		  legend pos=north west,
+		  cycle list name=exotic
+		]
+		  %plot 1: farmer ID 1
+		  \addplot+[] 
+			  table[y index =1]{\cellcountb};
+		  \addlegendentry{$1$}
+		  
+		  %plot 2: farmer ID 2
+		  \addplot+[]  table[y index =2]{\cellcountb};
+		  \addlegendentry{$2$}
+  
+		  %plot 3: farmer ID 3
+		  \addplot+[] table[y index =3]{\cellcountb};
+		  \addlegendentry{$3$}
+  
+		  %plot 4: farmer ID 4
+		  \addplot+[] table[y index =4]{\cellcountb};
+		  \addlegendentry{$4$}
+  
+		\end{axis}
+	  \end{tikzpicture}
+	}
+\end{subfigure}
+\hfill
+%crop 1
+\begin{subfigure}[hb]{0.5\textwidth}
+	\resizebox{\linewidth}{!}{\begin{tikzpicture}
+		\pgfplotsset{
+			scale only axis,
+		}
+		%axis options:
+		\begin{axis}[
+		  xlabel=Time step (years),
+		  ylabel=Farmer wealth (\$),
+		  xmin=0,
+		  legend pos=north east,
+		  cycle list name=exotic
+		]
+		  %plot 1: farmer ID 1
+		  \addplot+[] 
+			  table[y index =1]{\budgetb};
+		  \addlegendentry{$1$}
+		  
+		  %plot 2: farmer ID 2
+		  \addplot+[]  table[y index =2]{\budgetb};
+		  \addlegendentry{$2$}
+  
+		  %plot 3: farmer ID 3
+		  \addplot+[] table[y index =3]{\budgetb};
+		  \addlegendentry{$3$}
+  
+		  %plot 4: farmer ID 4
+		  \addplot+[] table[y index =4]{\budgetb};
+		  \addlegendentry{$4$}
+  
+		\end{axis}
+	  \end{tikzpicture}
+	  }
+\end{subfigure}
+\newline
+%crop 1
+\begin{subfigure}[hb]{0.5\textwidth}
+	\resizebox{\linewidth}{!}{\begin{tikzpicture}
+		\pgfplotsset{
+			scale only axis,
+		}
+	  
+		\begin{axis}[
+		  xlabel=Time step (years),
+		  ylabel=Farmer stock of crop A,
+		  xmin=0,
+		  ymin=0,
+		  legend pos=north west,
+		  cycle list name=exotic
+		]
+		  %plot 1: farmer ID 1
+	  \addplot+[] table[y index =1]{\stockb};
+	  \addlegendentry{$1$}
+	  
+	  %plot 2: farmer ID 2
+	  \addplot+[]  table[y index =2]{\stockb};
+	  \addlegendentry{$2$}
 
+	  %plot 3: farmer ID 3
+	  \addplot+[] table[y index =3]{\stockb};
+	  \addlegendentry{$3$}
+
+	  %plot 4: farmer ID 4
+	  \addplot+[] table[y index =4]{\stockb};
+	  \addlegendentry{$4$}
+
+	  \end{axis}
+	  \end{tikzpicture}
+  }
+\end{subfigure}
+\begin{subfigure}[hb]{0.5\textwidth}
+	\resizebox{\linewidth}{!}{\begin{tikzpicture}
+		\pgfplotsset{
+			scale only axis,
+		}
+	  
+		\begin{axis}[
+		  xlabel=Time step (years),
+		  ylabel=Farmer stock of crop B,
+		  xmin=0,
+		  ymin=0,
+		  legend pos=north west,
+		  cycle list name=exotic
+		]
+
+		  \addplot+[] table[y index =5]{\stockb};
+		  \addlegendentry{$1$}
+		  \addplot+[] table[y index =6]{\stockb};
+		  \addlegendentry{$2$}
+		  \addplot+[] table[y index =7]{\stockb};
+		  \addlegendentry{$3$}
+		  \addplot+[] table[y index =8]{\stockb};
+		  \addlegendentry{$4$}
+		\end{axis}
+	  \end{tikzpicture}
+  }
+\end{subfigure}
+\caption{Graph showing the map with four farmers, the evolution of crop stocks the and farmer's budget as a function of time over 10 time steps}
+\end{figure}
 
 \subsection{The market model}
 
