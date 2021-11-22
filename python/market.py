@@ -14,7 +14,7 @@ class Market:
         self.crop_sortiment = crop_sortiment
         self.agents = agents
         self.current_demand: Dict[int, int] = {
-            k: 1 for k in crop_sortiment.crops.keys()
+            k: 100 for k in crop_sortiment.crops.keys()
         }
         self.current_stock: Dict[int, int] = {k: 0 for k in crop_sortiment.crops.keys()}
         self.current_supply: Dict[int, int] = {
@@ -23,7 +23,7 @@ class Market:
         self.current_prices: Dict[int, int] = {
             crop_id: crop.sell_price for (crop_id, crop) in crop_sortiment.crops.items()
         }
-        self.MAX_PRICE = 1e6
+        self.MAX_PRICE = 1e9
 
     def _calc_current_demand(self) -> None:
         """
@@ -50,7 +50,7 @@ class Market:
         global_prices: Dict[int, float] = self.current_demand.copy()
         for crop_id, crop_demand in global_prices.items():
             if self.current_stock[crop_id] != 0:
-                global_prices[crop_id] = np.max(
+                global_prices[crop_id] = np.min(
                     [
                         (
                             self.crop_sortiment.crops[
@@ -64,7 +64,7 @@ class Market:
                 )
             else:
                 global_prices[crop_id] = self.MAX_PRICE
-        self.current_prices = global_prices
+        self.current_prices = global_prices.copy()
         return global_prices
 
     def calc_global_supply(self) -> np.ndarray:
@@ -88,6 +88,6 @@ class Market:
         return self.current_supply
 
     def step(self):
-        prices = self.current_prices
+        prices = self.current_prices.copy()
         supp = self.calc_global_supply()
         print(f"Market: Global supply is {supp} at prices {prices}")

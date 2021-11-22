@@ -28,7 +28,7 @@ class CropSortiment:
         harvest_yield, seed_cost, sell_price = cm.agr(area, crop_type, di)
         # generate new Crop-instance based on Crop-class and add to dict:
         # Aaron: Maybe better to add crop instances instead of creating them in here.
-        self.crops[crop_id] = Crop(crop_id, seed_cost, sell_price, harvest_yield)
+        self.crops[crop_id] = Crop(crop_id, seed_cost, sell_price, harvest_yield, 1.0)
         print(f"Done: added Crop{crop_id} to sortiment.")
 
 
@@ -43,10 +43,12 @@ class Crop:
         seed_cost: float = 0,
         sell_price: float = 0,
         harvest_yield: float = 0,
+        water_need: float = 0.0
     ):
         """Properties that every Crop must have"""
         # basically its name, used to distinct in arrays, plots etc ::
         self._id = crop_id
+        self.water_need = water_need
         self.seed_cost = seed_cost  # cost for a farmer to change crops
         self.sell_price = sell_price  # price at which a unit (1) crop can be sold. TODO: vary prices with market
         self.harvest_yield = harvest_yield  # amount of units a harvest will yield

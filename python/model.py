@@ -9,6 +9,7 @@ from PIL import Image
 import map_presenter
 from agents import Cell, Farmer
 from market import Market
+from river import River
 import os
 
 """ TODOS ::
@@ -30,6 +31,7 @@ class CropwarModel(ap.Model):
         """Setting parameters and model properties"""
         self.crop_shop = self.p.crop_shop
         self.water_row = sum(self.p.water_levels)  # <- index of center row
+        self.river = River(water_content=10.0)
         # because these water rows are symmetric
         m = 2 * sum(self.p.water_levels)
         n = m + 1  # and have one horizontal river (with thickness = 1)
@@ -96,6 +98,7 @@ class CropwarModel(ap.Model):
         n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.farmers = ap.AgentDList(self, n_farmers, Farmer)
         self.market = Market(crop_sortiment=self.crop_shop, agents=self.farmers)
+        self.crop_prices = self.market.current_prices.copy()
 
         """ Initialise Map (for GIF) Instances """
         if self.p.save_gif:
@@ -103,7 +106,7 @@ class CropwarModel(ap.Model):
                 dirname = os.path.dirname(os.path.abspath(__file__))
                 os.mkdir(dirname + "/images")
             except OSError as error:
-                print(f"Folder exists already, so: {error}")  
+                print(f"Folder exists already, so: {error}")
             self.map_frames = []  # used for png storage for the gif
             self.map_drawer = map_presenter.map_class(self)
             self.map_drawer.initialise_farmers()
@@ -137,7 +140,7 @@ class CropwarModel(ap.Model):
     def _valid_root_cell(self, farmer: Farmer, pos: tuple, _dir: str):
         """Check if one step into direction _dir the farmer ownes a cell"""
         for item in self._one_to_dir.values():
-            if item(pos[0], pos[1]) in farmer.accuired_land:
+            if item(pos[0], pos[1]) in farmer.aquired_land:
                 return True
         return False
 
@@ -154,6 +157,8 @@ class CropwarModel(ap.Model):
         highest_price_id = max(self.market.current_prices, key=self.market.current_prices.get)
         highest_price = max(self.market.current_prices.values())
         self.farmers.check_crop_change(highest_price_id, highest_price, self.market.current_demand[highest_price_id], self.market.current_supply[highest_price_id])
+        self.crop_prices = self.market.current_prices.copy()
+        self.river.refresh_water_content()
 
     def update(self):
         # record the properties of the farmers each step:
@@ -162,6 +167,7 @@ class CropwarModel(ap.Model):
         self.farmers.record("crop_id")
         self.farmers.record("stock")
         self.farmers.record("cellcount")
+        #self.record("crop_prices")
 
         if self.p.save_gif:
             self.cells.set_farmer_id()

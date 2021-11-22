@@ -33,7 +33,7 @@ class Farmer(ap.Agent):
 
         """ Setup neccessary agent attributes. """
         self.sourrounding = []  # list of accessible land coords
-        self.accuired_land = []  # list of owned land coords
+        self.aquired_land = []  # list of owned land coords
         self.budget = self.p.start_budget
         self.moneytracker = {"expansion_cost": 0, "crop_change": 0, "harvest_income": 0}
         self.crop = None
@@ -59,6 +59,8 @@ class Farmer(ap.Agent):
             0, len(self.model.crop_shop.crops) - 1
         )  # -1 since len is  >= 1 and crop id starts at 0
         self.crop = self.model.crop_shop.crops[crop_id_init]
+        self.water_need = self.crop.water_need
+        self.water_supply = None
 
         self._buy_cell(pos_init)
         self._change_to_crop(crop_id_init)
@@ -89,7 +91,8 @@ class Farmer(ap.Agent):
 
         self.budget -= cell.buy_cost
         self.moneytracker["expansion_cost"] += cell.buy_cost
-        self.accuired_land.append(_coordinates)
+        self.aquired_land.append(_coordinates)
+        self.water_need = len(self.aquired_land) * self.crop.water_need
 
         # update cells Propietary properties
         # self.model.cell_at(_coordinates).farmer_id = self.id
@@ -130,6 +133,12 @@ class Farmer(ap.Agent):
 
                 # update cell properties ::
                 _cell.crop = self.crop
+        self.water_need = len(self.aquired_land) * self.crop.water_need
+
+    def get_water_from_river(self) -> float:
+        self.water_supply = self.model.river.get_water(self.water_need)
+        print(f"Farmer {self.id} obtained {self.water_supply} water units")
+        return self.water_supply
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
         """
@@ -174,6 +183,7 @@ class Farmer(ap.Agent):
                 self._change_to_crop(crop_id)
 
     def harvest(self):
+        self.get_water_from_river()
         self.cells.harvest()
         # print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
 
@@ -226,11 +236,11 @@ class Farmer(ap.Agent):
     def step(self):
         self.harvest()
 
-        """ sell with relative boundaries """
-        amount = int(self.random.randint(0, 20) / 100 * self._stock[self.crop._id])
-        """ or: sell with fixed boundaries """
+        #""" sell with relative boundaries """
+        #amount = int(self.random.randint(0, 20) / 100 * self._stock[self.crop._id])
+        #""" or: sell with fixed boundaries """
         # amount = self.random.randint(0, 5)
-        self.sell(self.crop._id, amount)
+        #self.sell(self.crop._id, amount)
 
         dir = self.random.choice(self.model.headings)
         prob = self.random.uniform(0, 1)
@@ -270,7 +280,7 @@ class Cell(ap.Agent):
         if self.crop == None:
             print(f"No crop planted here! {self.pos}")
             return
-        self.farmer._stock[self.crop._id] += self.crop.harvest_yield
+        self.farmer._stock[self.crop._id] += self.farmer.water_supply / self.farmer.water_need * self.crop.harvest_yield
 
     def step(self):
         pass

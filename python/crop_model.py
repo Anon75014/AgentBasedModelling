@@ -63,16 +63,16 @@ def agr(area, crop_type, di):
     plott = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     y_c_a = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     price = [
-        40000,
-        23798,
-        24650,
-        68694.3,
-        20692,
-        16680.3,
-        8859.9,
-        25833,
-        20011.5,
-        28298.7,
+        4.0000,
+        2.3798,
+        2.4650,
+        6.8694,#.3,
+        2.0692,
+        1.6680,#.3,
+        8.859,#.9,
+        2.5833,
+        2.0011,#.5,
+        2.8298,#.7,
     ]  # Rial/kg
     income = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     net_benefit = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -96,16 +96,16 @@ def agr(area, crop_type, di):
 
     # Cost  Rial/ha
     cost = [
-        26891710,
-        19710930,
-        45460320,
-        50058840,
-        76835360,
-        93581210,
-        66868420,
-        32469710,
-        48214420,
-        25928570,
+        2.6891710,
+        1.9710930,
+        4.5460320,
+        5.0058840,
+        7.6835360,
+        9.3581210,
+        6.6868420,
+        3.2469710,
+        4.8214420,
+        2.5928570,
     ]
 
     # w_c_a_l=list()
@@ -132,7 +132,7 @@ def agr(area, crop_type, di):
     )  # for each crop 1000 is to convert ton to kg
     net_benefit = income - cost[crop_type] * area
 
-    exchange_rate_to_USD = 320000
+    exchange_rate_to_USD = 1#320000
     eff = 0.464  # irrigation efficiency for each subbasin
 
     # total_water_per_months = [element/eff for element in months]
