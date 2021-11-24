@@ -1,40 +1,46 @@
 #%%
 from copy import deepcopy
+import random
 
 import gym
 import numpy as np
 from gym import spaces
-import tianshou as ts
 
-from tst_model import TestModel
+from tst_model import Ml_Model
 
 # TODO implement seed function
 
 class TestEnv(gym.Env):
     def __init__(self) -> None:
-        super().__init__()
 
         """Setup of Model"""
 
         # Setup: Choose parameters for CropWar Model
         self.parameters = {
             "amount_of_crops" : 1,
-            "start_budget": 50000000,
-            "t_end": 50,  # Amount of time steps to be simulated
+            
+            "start_budget": 0,
+            "harvest_yield" : 10,
+            "max_sell" : 15,
+            
+            "t_end": 10,  
             "seed": 0,  # Use a new seed
+
             # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
         }
 
         # Create the model
-        self.model = TestModel(self.parameters)
+        self.model = Ml_Model(self.parameters)
         self.model.setup()
+
         """Setup for RL"""
         nr_stock_entries = self.parameters["amount_of_crops"]
-        self.observation_space = spaces.Box(0.0, np.inf, shape = (nr_stock_entries+1,), dtype=np.float32)
-        # self.action_space = spaces.Discrete(2) 
-        self.action_space = spaces.Discrete(2) # spaces.MultiBox([2,2])
 
-        
+        self.observation_space = spaces.Box(0.0, np.inf, shape = (nr_stock_entries+1,), dtype=np.float32)
+        self.action_space = spaces.Discrete(2)
+
+        self.reward_threshold = 200000
+
         # self.action_space = Dict(
         #     {
         #         "farm": Discrete(2),
@@ -54,47 +60,48 @@ class TestEnv(gym.Env):
         err_msg = f"{action!r} ({type(action)}) invalid"
         assert self.action_space.contains(action), err_msg
 
-        reward = 0
-        done = False
-
         """Steps and Updates"""
-        self.model.ml_step(action)
+        self.model.step(action)
 
-        state = self.model.ml_get_state()
-        done : bool = self.model.at_last_step()
+        state, done = self.model.get_state()
 
         """Reward Calculation"""
-        # if action[0]:
-        #     reward += 2
+        reward = 0
         if action:
-            reward += 2
-
+            self.action_counter += 1
+            reward = (self.action_counter/self.model.p.t_end)**1.5
+        
         if done:
-            if self.model.budget >= 100: #max(self.farmers.budget):
+            if self.model.stock == 0:
                 reward += 10
 
         info = {}
-
-        return deepcopy(state), reward, done, info
+        return state, reward, done, info
 
     def render(self):
         pass
 
     def reset(self):
         self.model.reset()
-        self.model.update()
-        state = self.model.ml_get_state()
-        # print("Reset: TestModel.")
-        return deepcopy(state)
+        self.action_counter = 0
+        state, _ = self.model.get_state()
+        return state
 
     def seed(self, seed):
-        self.model.random.seed(seed)
-        print("Set seed in model")
+        #self.model.p.seed(seed)
+        print("Set seed NOT put in model")
 
 if __name__ == "__main__":
     env = TestEnv()
-    print(env.model.ml_get_state())
+    env.reset()
+    print(f"state{env.model.get_state()}")
     print(env.observation_space.sample())
     print(env.action_space.sample())
-
+    for i in range(30):
+        act = random.randint(0,1)
+        res = env.step(act)
+        state, reward, done, info = res
+        print(act,res)
+        if done: 
+            break
 # %%
