@@ -1,5 +1,5 @@
 """ This file contains the Main structure of the Simulation. -> The AgentPy model """
-
+#%%
 import os
 from copy import deepcopy
 
@@ -111,7 +111,7 @@ class CropwarModel(ap.Model):
             self.map_drawer = map_presenter.map_class(self)
             self.map_drawer.initialise_farmers()
 
-        print("Done: setup of grid.")
+        # print("Done: setup of grid.")
 
     def cell_at(self, pos: tuple):
         """Returns cell at pos Position in Grid"""
@@ -152,16 +152,21 @@ class CropwarModel(ap.Model):
             self.stop()
 
         else:
-            print(f"\n    Start of time step: {self.t}")
+            # print(f"\n    Start of time step: {self.t}")
             self.normal_farmers.step()
 
     def ml_get_state(self):
+        time_up = False
+        if self.t >= self.p.t_end:
+            time_up = True
+
         ml_farmer = self.ml_farmers[0]
 
         stock_array = np.array(list(ml_farmer._stock.values()))
         budget = np.array([ml_farmer.budget])  # , ml_farmer.cell_count
-        state = np.concatenate([budget,stock_array], dtype=np.float32)
-        return state
+        state = np.concatenate([budget, stock_array], dtype=np.float32)
+
+        return state, int(time_up)
 
     def ml_step(self, action):
         """Applies the action decided by the DQN to the model
@@ -170,12 +175,14 @@ class CropwarModel(ap.Model):
         """
         ml_farmer = self.ml_farmers[0]
         ml_farmer.harvest()
-#        [do_farm, sell_prop] = action
-#        if do_farm:
-#            ml_farmer.harvest()
+        #        [do_farm, sell_prop] = action
+        #        if do_farm:
+        #            ml_farmer.harvest()
 
-#        amount = sell_prop * 0.2 * ml_farmer._stock[self.crop._id] # TODO generalize 0.2 by making action continuous
-        amount = action * 0.2 * ml_farmer._stock[self.crop._id] # TODO generalize 0.2 by making action continuous
+        #        amount = sell_prop * 0.2 * ml_farmer._stock[self.crop._id] # TODO generalize 0.2 by making action continuous
+        amount = int(
+            action * 0.2 * ml_farmer._stock[ml_farmer.crop._id]
+        )  # TODO generalize 0.2 by making action continuous
 
         ml_farmer.sell(ml_farmer.crop._id, amount)
 
@@ -215,3 +222,10 @@ class CropwarModel(ap.Model):
                 duration=200,
                 loop=3,
             )
+
+    def _info_dict(self) -> dict:
+        """Used to generate a dict so that the config can be saved into a json file."""
+        _pars_dict = deepcopy(self.p)
+        _pars_dict.crop_shop = _pars_dict.crop_shop._info_dict()
+        _pars_dict.seed = str(_pars_dict.seed)
+        return dict(_pars_dict)
