@@ -172,7 +172,7 @@ class Farmer(ap.Agent):
             expected_profit = (
                 cost_seed_change + (current_demand - current_supply) * price
             )
-            print("Expected profit: ", expected_profit)
+            # print("Expected profit: ", expected_profit)
             if expected_profit > 0:
                 self.choose_crop(crop_id)
 
@@ -187,9 +187,9 @@ class Farmer(ap.Agent):
             self.budget += amount * self.crop.sell_price
             self.moneytracker["harvest_income"] += amount * self.crop.sell_price
 
-            print(
-                f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
-            )
+            # print(
+            #     f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
+            # )
         else:
             # " Not enough stock. "
             pass
@@ -247,6 +247,7 @@ class Farmer(ap.Agent):
         self.cellcount = len(self.cells)
         self.stock = copy.deepcopy(self._stock)
         self.crop_id = copy.deepcopy(self.crop._id)
+        
 
 
 class Cell(ap.Agent):
@@ -271,7 +272,7 @@ class Cell(ap.Agent):
         """
 
         if self.crop == None:
-            print(f"No crop planted here! {self.pos}")
+            # print(f"No crop planted here! {self.pos}")
             return
         self.farmer._stock[self.crop._id] += self.crop.harvest_yield
 

@@ -29,4 +29,7 @@ map.gif
 python/images/*
 *.gif
 .venv_ml_abm
+.venv_ml_cuda
+python/experimental/tst_DQN/log
 python/log/*
+python/configs
