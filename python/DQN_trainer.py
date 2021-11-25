@@ -10,7 +10,7 @@ from tianshou.utils import TensorboardLogger
 from torch import nn
 from torch.utils.tensorboard import SummaryWriter
 
-from DQN_env import CropwarEnv
+from RL_env import CropwarEnv
 from helper_functions import DotDict, make_file_path, make_local_dir
 
 print("hello, we power up the DQN machine... one moment ...")
