@@ -16,7 +16,7 @@ from pandas import DataFrame as df
 # %load_ext autoreload
 # %autoreload 2
 
-if __name__ == "__main__":
+def run_full_simulation(use_ml_model=False):
     # The following parameters are provided to the Model instance and are accessible within the model by eg "self.p.water_levels"
 
     # The Crop_Shop contains the relevant information for the farmers.
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # Add two crops TODO Find good parameters for crops.
 
     crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 9, 1)
+    # crop_shop.add_crop(1, 9, 1)
 
     # These parameters are accessible within the model by"self.p.water_levels"
     parameters = {
@@ -41,15 +41,16 @@ if __name__ == "__main__":
             (1, 1),
             (1, 4),
         ],  # number of start positions must match n_farmers
-        "start_budget": 50000000,
+        "start_budget": 1000,
         "t_end": 10,  # Amount of time steps to be simulated
         "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
-        "save_gif": False,  # Save the map each timestep and generate Gif in the end
+        "save_gif": True,  # Save the map each timestep and generate Gif in the end
         "seed": 0,  # Use a new seed
         # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
-
-        "nr_ml_farmers" : 1
-
+        "nr_ml_farmers": 1,
+        "use_trained_model": use_ml_model,
+        "max_stock": 200,
+        "max_budget": 3000,
     }
 
     """ Create and run the model """
@@ -63,12 +64,12 @@ if __name__ == "__main__":
     """ Display the results using the Displayer Class """
     presenter = graph_class(results)
 
-    presenter.crops()
-    presenter.cellcount()
+    # presenter.crops()
+    # presenter.cellcount()
     presenter.stocks()
     presenter.budget()
     presenter.export()
-    presenter.traits(model)
+    # presenter.traits(model)
 
     print(f"SEED: {model.p.seed}")
 
@@ -81,3 +82,5 @@ if __name__ == "__main__":
     print(f"SEED: {model.p.seed}")
 
 # %%
+if __name__ == "__main__":
+    run_full_simulation()

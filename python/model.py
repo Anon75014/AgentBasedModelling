@@ -155,6 +155,12 @@ class CropwarModel(ap.Model):
             # print(f"\n    Start of time step: {self.t}")
             self.normal_farmers.step()
 
+            if self.p.use_trained_model:
+                obs, _ = self.ml_get_state()
+                action, _ = self.p.use_trained_model.predict(obs, deterministic=True)
+                self.ml_step(action)
+
+
     def ml_get_state(self):
         time_up = False
         if self.t >= self.p.t_end:
@@ -163,10 +169,15 @@ class CropwarModel(ap.Model):
         ml_farmer = self.ml_farmers[0]
 
         stock_array = np.array(list(ml_farmer._stock.values()))
-        budget = np.array([ml_farmer.budget])  # , ml_farmer.cell_count
-        state = np.concatenate([budget, stock_array], dtype=np.float32)
+        # budget = np.array([ml_farmer.budget])  # , ml_farmer.cell_count
+        budgets = np.array(self.farmers.budget)  # , ml_farmer.cell_count
 
-        return state, int(time_up)
+        state = np.concatenate([stock_array, budgets], dtype=np.float32)
+        """Normalisation -> important for PPO algorithm"""
+        state[0] /= self.p.max_stock
+        state[1:] /= self.p.max_budget
+
+        return state, bool(time_up)
 
     def ml_step(self, action):
         """Applies the action decided by the DQN to the model
@@ -174,17 +185,15 @@ class CropwarModel(ap.Model):
             action : [Bool: Farm, Proportion: Sell of active crop \in [0,1]]
         """
         ml_farmer = self.ml_farmers[0]
-        ml_farmer.harvest()
-        #        [do_farm, sell_prop] = action
-        #        if do_farm:
-        #            ml_farmer.harvest()
+        [do_farm, sell] = action
+        if do_farm:
+            ml_farmer.harvest()
 
-        #        amount = sell_prop * 0.2 * ml_farmer._stock[self.crop._id] # TODO generalize 0.2 by making action continuous
-        amount = int(
-            action * 0.2 * ml_farmer._stock[ml_farmer.crop._id]
-        )  # TODO generalize 0.2 by making action continuous
+        if sell:
+            # TODO generalize 0.2 by making action continuous::
+            amount = int(0.2 * ml_farmer._stock[ml_farmer.crop._id])
 
-        ml_farmer.sell(ml_farmer.crop._id, amount)
+            ml_farmer.sell(ml_farmer.crop._id, amount)
 
         return
 
@@ -200,13 +209,9 @@ class CropwarModel(ap.Model):
             self.cells.set_farmer_id()
             self.map_drawer.place_farmers()
             pil_map_img = self.map_drawer.show(return_img=True)
-            # {self.t}.png","PNG")
             self.images_path = os.path.dirname(os.path.abspath(__file__)) + "/images/"
             file_path = self.images_path + "gif_frame.png"
-            # pil_map_img.save(
-            #     file_path,
-            #     "PNG",
-            # )
+
             self.map_frames.append(pil_map_img.convert("P", palette=Image.ADAPTIVE))
 
     def end(self):
