@@ -10,11 +10,9 @@ class Market:
     Market which regulates the prices of the crops
     """
 
-    def __init__(self, crop_sortiment: CropSortiment, agents: ap.AgentList) -> None:
+    def __init__(self, crop_sortiment: CropSortiment, agents: ap.AgentList, base_demand: float, demand_fraction: float) -> None:
         self.crop_sortiment = crop_sortiment
         self.agents = agents
-        self.base_demand = 10.0
-        self.demand_fraction = 0.2
         self.current_demand: Dict[int, int] = {
             k: self.base_demand for k in crop_sortiment.crops.keys()
         }
@@ -31,24 +29,16 @@ class Market:
         """
         Calculates the current demand
         """
-        #self.current_demand = {
-        #    k: 1.0 * (0.5 + np.random.random())
-        #    for k in self.crop_sortiment.crops.keys()
-        #}
-        #self.current_demand = {
-        #    k: np.max([(1.0 - 2e-1 * self.current_supply[k] / self.current_stock[k]), 0.0]) * self.base_demand if self.current_stock[k] > 0.0 else self.base_demand
-        #    for k in self.crop_sortiment.crops.keys()
-        #}
         self.current_demand = {
-            k: self.base_demand + self.demand_fraction * self.current_supply[k]
-            for k in self.crop_sortiment.crops.keys()
+            crop_id: self.base_demand + self.demand_fraction * self.current_supply[crop_id]
+            for crop_id in self.crop_sortiment.crops.keys()
         }
 
     def _calc_global_stock(self) -> None:
         """
         Calculates all the available resources
         """
-        self.current_stock = {k: 0 for k in self.crop_sortiment.crops.keys()}
+        self.current_stock = {k: 0.0 for k in self.crop_sortiment.crops.keys()}
         for agent in self.agents:
             for crop_id, crop_stock in agent.stock.items():
                 self.current_stock[crop_id] += crop_stock
@@ -59,7 +49,7 @@ class Market:
         self._calc_global_stock()
         global_prices: Dict[int, float] = self.current_demand.copy()
         for crop_id, crop_demand in global_prices.items():
-            if self.current_stock[crop_id] != 0:
+            if self.current_stock[crop_id] != 0.0:
                 global_prices[crop_id] = np.min(
                     [
                         (

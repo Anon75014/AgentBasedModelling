@@ -97,7 +97,7 @@ class CropwarModel(ap.Model):
 
         n_farmers = self.p.n_farmers  # amount of farmer-agents
         self.farmers = ap.AgentDList(self, n_farmers, Farmer)
-        self.market = Market(crop_sortiment=self.crop_shop, agents=self.farmers)
+        self.market = Market(crop_sortiment=self.crop_shop, agents=self.farmers, base_demand=10.0, demand_fraction=0.2)
         self.crop_prices = self.market.current_prices.copy()
 
         """ Initialise Map (for GIF) Instances """
