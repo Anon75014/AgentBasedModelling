@@ -13,6 +13,8 @@ class Market:
     def __init__(self, crop_sortiment: CropSortiment, agents: ap.AgentList, base_demand: float, demand_fraction: float) -> None:
         self.crop_sortiment = crop_sortiment
         self.agents = agents
+        self.base_demand = base_demand
+        self.demand_fraction = demand_fraction
         self.current_demand: Dict[int, int] = {
             k: self.base_demand for k in crop_sortiment.crops.keys()
         }
