@@ -26,10 +26,14 @@ Report/Report.fdb_latexmk
 *.synctex.gz
 *.csv
 map.gif
-python/images/*
 *.gif
+*.zip
 .venv_ml_abm
 .venv_ml_cuda
-python/experimental/tst_DQN/log
+.venv_ml_baselines
+python/images/*
 python/log/*
+python/experimental/tst_DQN/log
+python/log_ppo
 python/configs
+python/experimental/tst_DQN_Multidiscrete/log
