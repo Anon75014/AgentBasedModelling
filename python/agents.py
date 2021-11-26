@@ -55,7 +55,7 @@ class Farmer(ap.Agent):
             pos_init = self.random.choice(self.model.unoccupied)
 
         self.model.unoccupied.remove(pos_init)
-        self.buy_cell_threash = 1  # self.random.uniform(0, 1) ## for DQN v0
+        self.buy_cell_threash = self.random.uniform(0, 1) ## for DQN v0
 
         """ Set start crop id"""
         crop_id_init = self.random.randint(
@@ -173,16 +173,12 @@ class Farmer(ap.Agent):
         current_supply: int,
     ) -> None:
         if crop_id != self.crop_id:
-            # TODO Implement the effect of having multiple cells !!!
-            cost_seed_change = (
-                self.model.crop_shop.crops[crop_id].seed_cost
-                - self.model.crop_shop.crops[self.crop_id].seed_cost
-            )
+            cost_seed_change = len(self.aquired_land) * self.model.crop_shop.crops[crop_id].seed_cost
             price = self.model.crop_shop.crops[crop_id].sell_price
             expected_profit = (
                 cost_seed_change + (current_demand - current_supply) * price
             )
-            # print("Expected profit: ", expected_profit)
+            print("Expected profit: ", expected_profit)
             if expected_profit > 0:
                 self._change_to_crop(crop_id)
 

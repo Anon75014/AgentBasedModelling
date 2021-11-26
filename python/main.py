@@ -39,22 +39,25 @@ def run_full_simulation(use_ml_model=False):
         "water_levels": [0, 0, 3],
         "n_farmers": 4,
         # "v0_pos" : None,
-        "v0_pos": [
-            (5, 4),
-            (5, 1),
+        "v0_pos": sorted([
             (1, 1),
             (1, 4),
-        ],  # number of start positions must match n_farmers
+            (5, 1),
+            (5, 4),
+        ], key=lambda x: x[0]),  # number of start positions must match n_farmers
         "start_budget": 1000,
-        "t_end": 10,  # Amount of time steps to be simulated
+        "t_end": 200,  # Amount of time steps to be simulated
         "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
         "save_gif": True,  # Save the map each timestep and generate Gif in the end
         "seed": 0,  # Use a new seed
         # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
-        "nr_ml_farmers": 1,
+        "nr_ml_farmers": 0,
         "use_trained_model": use_ml_model,
         "max_stock": 200,
         "max_budget": 3000,
+        "river_content": 12.0,
+        "market_base_demand": 10.0,
+        "market_demand_fraction": 0.7,
     }
 
     """ Create and run the model """
@@ -68,7 +71,7 @@ def run_full_simulation(use_ml_model=False):
     """ Display the results using the Displayer Class """
     presenter = graph_class(results)
 
-    # presenter.crops()
+    presenter.crops()
     # presenter.cellcount()
     presenter.stocks()
     presenter.budget()

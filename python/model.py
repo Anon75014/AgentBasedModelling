@@ -33,7 +33,7 @@ class CropwarModel(ap.Model):
         """Setting parameters and model properties"""
         self.crop_shop = self.p.crop_shop
         self.water_row = sum(self.p.water_levels)  # <- index of center row
-        self.river = River(water_content=10.0)
+        self.river = River(water_content=self.p.river_content)
         # because these water rows are symmetric
         m = 2 * sum(self.p.water_levels)
         n = m + 1  # and have one horizontal river (with thickness = 1)
@@ -109,8 +109,8 @@ class CropwarModel(ap.Model):
         self.market = Market(
             crop_sortiment=self.crop_shop,
             agents=self.farmers,
-            base_demand=10.0,
-            demand_fraction=0.2,
+            base_demand=self.p.market_base_demand,
+            demand_fraction=self.p.market_demand_fraction,
         )
         self.crop_prices = self.market.current_prices.copy()
 
