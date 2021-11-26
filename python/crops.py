@@ -3,6 +3,7 @@ Contains all the information about the crops available in CropWar.
 """
 #%%
 import crop_model as cm
+from typing import Optional
 
 
 class CropSortiment:
@@ -49,7 +50,8 @@ class Crop:
         seed_cost: float = 0,
         sell_price: float = 0,
         harvest_yield: float = 0,
-        water_need: float = 0.0
+        water_need: float = 0.0,
+        crop_type: Optional[int] = None
     ):
         """Properties that every Crop must have"""
         # basically its name, used to distinct in arrays, plots etc ::
@@ -58,6 +60,13 @@ class Crop:
         self.seed_cost = seed_cost  # cost for a farmer to change crops
         self.sell_price = sell_price  # price at which a unit (1) crop can be sold. TODO: vary prices with market
         self.harvest_yield = harvest_yield  # amount of units a harvest will yield
+        self.crop_type = self.crop_type
+
+    def get_harvest_yield(self, water_supply: float) -> float:
+        if self.crop_type is None:
+            return self.harvest_yield
+        else:
+            return cm.agr(1.0, self.crop_type, water_supply)
 
     def _info_dict(self) -> dict:
         """Used to generate a dict so that the config can be saved into a json file."""
