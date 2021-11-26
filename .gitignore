@@ -30,6 +30,10 @@ python/images/*
 *.gif
 .venv_ml_abm
 .venv_ml_cuda
+.venv_ml_baselines
 python/experimental/tst_DQN/log
 python/log/*
+python/log_ppo/*
+python/experimental/tst_DQN_Multidiscrete/log
 python/configs
+*.zip
