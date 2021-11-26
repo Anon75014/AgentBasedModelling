@@ -1,4 +1,4 @@
-""" This file contains the Agent and Cell classes. """
+""" This file contains the Agent (Farmer) and Cell classes. """
 
 import copy
 from abc import ABC, abstractmethod
@@ -10,31 +10,34 @@ import numpy as np
 
 
 class Farmer(ap.Agent):
-    """Farmer Class containing functions that CropWar farmers can do. :)
-    Numerical Todos :
-    - TODO better values for buy_cell_threash
-    - TODO check and adjust prices for cells
+    # """Farmer Class containing functions that CropWar farmers can do. :)
+    # Numerical Todos :
+    # - TODO better values for buy_cell_threash
+    # - TODO check and adjust prices for cells
 
-    Technical Todos:
-    - Done: change ALL positions to tuples s.t. no conversions necessary
-    - Done: find good order to get new land... buy->crop or other way?
-    - Done: remove farmer_id from cells. Do it via farmer.id
-    - Done: remove all seperate crop_id of cells. Access it via crop._id
-    - Done: "functions" are generated every check. maybe make this a model's property
-    """
+    # Technical Todos:
+    # - Done: change ALL positions to tuples s.t. no conversions necessary
+    # - Done: find good order to get new land... buy->crop or other way?
+    # - Done: remove farmer_id from cells. Do it via farmer.id
+    # - Done: remove all seperate crop_id of cells. Access it via crop._id
+    # - Done: "functions" are generated every check. maybe make this a model's property
+    # """
 
     def setup(self):
+        """This function intitalises the necessary parameters for each farmer."""
 
         self.ml_controlled = False
 
         """Inherit agent attributes."""
         self.grid = self.model.grid
         self.random = self.model.random
-        self.c_agent = {  # TODO re-place
+        # TODO: re-place
+        self.c_agent = {
             k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
-        }  # TODO: find good values
+        }
+        # TODO: find good values
 
-        """ Setup neccessary agent attributes. """
+        """Setup neccessary agent attributes."""
         self.sourrounding = []  # list of accessible land coords
         self.aquired_land = []  # list of owned land coords
         self.budget = self.p.start_budget
@@ -55,7 +58,7 @@ class Farmer(ap.Agent):
             pos_init = self.random.choice(self.model.unoccupied)
 
         self.model.unoccupied.remove(pos_init)
-        self.buy_cell_threash = self.random.uniform(0, 1) ## for DQN v0
+        self.buy_cell_threash = self.random.uniform(0, 1)  # for DQN v0
 
         """ Set start crop id"""
         crop_id_init = self.random.randint(
@@ -69,11 +72,11 @@ class Farmer(ap.Agent):
         self._change_to_crop(crop_id_init)
 
     def _update_cell_list(self):
-        """Update the list of a farmers cells"""
+        """Update the list of a farmers cells."""
         self.cells = self.model.cells.select(self.model.cells.farmer == self)
 
     def _update_sourrounding(self):
-        """generate complete list of the sourrounding cells of a farmers property"""
+        """Generate complete list of the sourrounding cells of a farmers property."""
         for _cell in self.cells:
             _cell_neighbours = self.grid.neighbors(_cell, distance=1)
             for _neighbor_cell in _cell_neighbours:
@@ -84,7 +87,7 @@ class Farmer(ap.Agent):
                     self.sourrounding.append(_neighbor_cell.pos)
 
     def _buy_cell(self, _coordinates):
-        """Farmer buys a cell at _coordinates and adds it to list"""
+        """Farmer buys a cell at _coordinates and adds it to list."""
         # make sure algorithm found an empty cell:
         cell = self.model.cell_at(_coordinates)
         # assert cell.farmer == None  # if river, farmer == -1
@@ -139,24 +142,24 @@ class Farmer(ap.Agent):
         self.water_need = len(self.aquired_land) * self.crop.water_need
 
     def get_water_from_river(self) -> float:
+        """Sets the Farmers water supply from the river.
+
+        :return: [description]
+        :rtype: float
+        """
         self.water_supply = self.model.river.get_water(self.water_need)
         print(f"Farmer {self.id} obtained {self.water_supply} water units")
         return self.water_supply
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
-        """
-        Calculates how much the farmer wants to supply
+        """Calculates how much the farmer wants to supply
 
-        Parameters
-        ----------
-        prices: Dict[int, int]
-            Dictionary with the global prices for each `crop_id`
-
-        Returns
-        -------
-        supplies: Dict[int, int]
-            Dictionary with the amounts that the agent supplies
+        :param prices: Dictionary with the global prices for each `crop_id`
+        :type prices: Dict[int, int]
+        :return: Dictionary with the amounts that the agent supplies
+        :rtype: Dict[int, int]
         """
+
         supplies = dict.fromkeys(self.model.crop_shop.crops.keys())
         for crop_id in self.model.crop_shop.crops.keys():
             supplies[crop_id] = np.min(
@@ -173,7 +176,9 @@ class Farmer(ap.Agent):
         current_supply: int,
     ) -> None:
         if crop_id != self.crop_id:
-            cost_seed_change = len(self.aquired_land) * self.model.crop_shop.crops[crop_id].seed_cost
+            cost_seed_change = (
+                len(self.aquired_land) * self.model.crop_shop.crops[crop_id].seed_cost
+            )
             price = self.model.crop_shop.crops[crop_id].sell_price
             expected_profit = (
                 cost_seed_change + (current_demand - current_supply) * price
@@ -183,20 +188,25 @@ class Farmer(ap.Agent):
                 self._change_to_crop(crop_id)
 
     def harvest(self):
+        """The Farmer updates the water supply from the river, then harvests all cells."""
         self.get_water_from_river()
         self.cells.harvest()
         # print(f"Farmer {self.id} harvested. New Stock: {self._stock}")
 
     def sell(self, crop_id: int, amount: int):
+        """The specified amount of crop "crop_id" will be sold, if enough in stock.
+
+        :param crop_id: ID of the crop to sell
+        :type crop_id: int
+        :param amount: amount of the crop that should be sold
+        :type amount: int
+        """
         if self._stock[crop_id] >= amount:
+            # The farmer got enogh and can sell the specified amount
             self._stock[crop_id] -= amount
 
             self.budget += amount * self.crop.sell_price
             self.moneytracker["harvest_income"] += amount * self.crop.sell_price
-
-            # print(
-            #     f"Farmer {self.id} Sold {amount} of crop {crop_id}. New Stock: {self._stock}. New Budget: {self.budget}"
-            # )
         else:
             # " Not enough stock. "
             pass
@@ -225,6 +235,14 @@ class Farmer(ap.Agent):
         return None
 
     def find_and_buy(self, water_level: float, dir: str):
+        """Find and buy a cell of water level "water_level" in direction "dir"
+        relative to the inital position of the farmer.
+
+        :param water_level: either 0.25, 0.5, 1
+        :type water_level: float
+        :param dir: direction, one of 'N','S','W','O'
+        :type dir: str
+        """
         _pos = self._find_matching_cell(water_level, dir)
         if _pos:
             self._buy_cell(_pos)
@@ -234,6 +252,9 @@ class Farmer(ap.Agent):
     """ Commands accessible by the CropWar model Class :: """
 
     def step(self):
+        """Do the following: harvest -> expand to random direction if the 
+        uniform probability sample is above the farmers buy_theshold. 
+        """        
         self.harvest()
 
         # """ sell with relative boundaries """
@@ -251,6 +272,8 @@ class Farmer(ap.Agent):
         # print(f"Stepped farmer {self.id}")
 
     def update(self):
+        """Update the farmers properties: cellcount, stock, crop_id for recording.
+        """
         self.cellcount = len(self.cells)
         self.stock = copy.deepcopy(self._stock)
         self.crop_id = copy.deepcopy(self.crop._id)

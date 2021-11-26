@@ -17,6 +17,12 @@ from pandas import DataFrame as df
 # %autoreload 2
 
 def run_full_simulation(use_ml_model=False):
+    """Run Simulation of the model and display results
+    
+    Run a full Simulation of the CropWar model and display resulting graphs and map.txt 
+    :param use_ml_model: specify wether a trained machine learning (ml) model should be used, defaults to False
+    :type use_ml_model: bool, optional
+    """    
     # The following parameters are provided to the Model instance and are accessible within the model by eg "self.p.water_levels"
 
     # The Crop_Shop contains the relevant information for the farmers.

@@ -12,11 +12,14 @@ from stable_baselines3.common.env_checker import check_env
 
 
 class CropwarEnv(gym.Env):
-    # --.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--
-    reward_threshold = 10  # 9
-    # --'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--
+    """Environment needed for RL training.
+
+    This environment is basically a wrapper for the AgentPy model
+    s.t. the SB3 training code can interact with the agent's environment.
+    """
 
     def __init__(self) -> None:
+        """initialisation"""
         super().__init__()
 
         """Setup of Model"""
@@ -40,7 +43,7 @@ class CropwarEnv(gym.Env):
                 (1, 4),
             ],  # number of start positions must match n_farmers
             "start_budget": 1000,
-            "t_end": 10,  # Amount of time steps to be simulated
+            "t_end": 2,  # Amount of time steps to be simulated
             "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
             "save_gif": False,  # Save the map each timestep and generate Gif in the end
             "seed": 0,  # Use a new seed
@@ -49,8 +52,8 @@ class CropwarEnv(gym.Env):
             # ML Variables:
             "nr_ml_farmers": 1,
             "use_trained_model": False,
-            "max_stock": 200,
-            "max_budget": 3000,
+            "max_stock": 2000,
+            "max_budget": 30000000000,
         }
 
         """ Initialise the model"""
@@ -72,7 +75,16 @@ class CropwarEnv(gym.Env):
         self.crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
         # self.crop_shop.add_crop(1, 9, 1)
 
-    def step(self, action):
+    def step(self, action: np.array):
+        """Use action to step the environment.
+
+        The "action" gets applied to the environment and a reward is calculated.
+
+        :param action: an array containing the desired actions of the ML policy
+        :type action: np.array
+        :return: state, reward, done, info
+        :rtype: np.array ; int ; bool ; dict
+        """
         # Check if the received action is valid
         err_msg = f"{action!r} ({type(action)}) invalid"
         assert self.action_space.contains(action), err_msg
@@ -108,9 +120,21 @@ class CropwarEnv(gym.Env):
         return deepcopy(self.state), reward, done, info
 
     def render(self, mode="human"):
+        """Used for displaying the training.
+
+        :param mode: for distinction of current mode, defaults to "human"
+        :type mode: str, optional
+        """
         pass
 
-    def reset(self):
+    def reset(self) -> np.array:
+        """Resets the environment to the initial state.
+
+        This way the agent can train again.
+
+        :return: copy of the new state
+        :rtype: np.array
+        """
         self._reset_Cropshop()
         self.model = CropwarModel(self.parameters)
         self.model.setup()
@@ -120,6 +144,11 @@ class CropwarEnv(gym.Env):
         return deepcopy(state)
 
     def seed(self, seed):
+        """[summary]
+
+        :param seed: [description]
+        :type seed: [type]
+        """
         np.random.seed(seed)
 
 

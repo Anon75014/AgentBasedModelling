@@ -19,13 +19,19 @@ from river import River
 
 
 class CropwarModel(ap.Model):
-    """An Agent-Based-Model to simulate the crop war of farmers."""
+    """AgentPy model used for simulation.
+    
+    An agent based model (ABM) to simulate competing farmers.
+    :param parameters: dictionary of parameters, stored as self.p
+    """
 
     # See documentation https://agentpy.readthedocs.io/en/latest/reference_grid.html#agentpy.Grid
     # def __init__(self,parameters) -> None:
     #     super().__init__(parameters)
 
     def setup(self):
+        """Setting up of the ABM model."""
+
         """Setting random seed (for reproducibility)"""
         if self.p.seed == 0:
             self.p.seed = os.urandom(10)  # a random seed of length
@@ -141,7 +147,13 @@ class CropwarModel(ap.Model):
         """Returns cell at pos Position in Grid"""
         return self._cell_dict[pos]
 
-    def generate_water_matrix(self):
+    def generate_water_matrix(self) -> np.array:
+        """Generates the hydration matrix.
+
+        Generate the distribution of hydration cells throughout the map.
+        :return: matrix containing the hydration leves; hydration = 0.25, 0.5, 1, water = 10
+        :rtype: np.array
+        """
         self._water_index = 10
         water = 1  # amount of water rows. MUST be 1 based on 'm' calculation in setup()
 
@@ -169,9 +181,22 @@ class CropwarModel(ap.Model):
         return False
 
     def at_last_step(self) -> bool:
+        """Check if at last time step.
+
+        :rtype: bool
+        """
         return self.t == self.p.t_end
 
     def step(self):
+        """Move model from t to t+1.
+        
+        Evolve the entire model by one time step:
+        - Step all the "normal" farmers
+        - Step potentially trained farmers to
+        - Step the market
+        - let farmers decide if they want to change crops
+        - refresh the river water content
+        """
         if self.t > self.p.t_end:  # model should stop after "t_end" steps
             self.stop()
 
@@ -202,6 +227,11 @@ class CropwarModel(ap.Model):
         # print(f"\n    Start of time step: {self.t}")
 
     def ml_get_state(self):
+        """Get Environment state for ML.
+
+        :return: state of env ; if done
+        :rtype: np.array ; bool
+        """        
         time_up = False
         if self.t >= self.p.t_end:
             time_up = True
@@ -219,11 +249,13 @@ class CropwarModel(ap.Model):
 
         return state, bool(time_up)
 
-    def ml_step(self, action):
-        """Applies the action decided by the DQN to the model
-        Inputs:
-            action : [Bool: Farm, Proportion: Sell of active crop \in [0,1]]
-        """
+    def ml_step(self, action : np.array):
+        """Applies action to environment.
+
+        Applies the action decided by the ML algorithm to the environment.
+        :param action: np.array of ints
+        :type action: np.array
+        """        
         ml_farmer = self.ml_farmers[0]
         [do_farm, sell] = action
         if do_farm:
@@ -238,7 +270,8 @@ class CropwarModel(ap.Model):
         return
 
     def update(self):
-        # record the properties of the farmers each step:
+        """Record the properties of the farmers each step.
+        """
         self.farmers.update()
         self.farmers.record("budget")
         self.farmers.record("crop_id")
@@ -256,6 +289,8 @@ class CropwarModel(ap.Model):
             self.map_frames.append(pil_map_img.convert("P", palette=Image.ADAPTIVE))
 
     def end(self):
+        """Performs final action at the end.
+        """
         self.cells.set_farmer_id()
 
         if self.p.save_gif:
