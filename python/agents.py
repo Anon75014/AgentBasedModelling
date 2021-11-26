@@ -30,7 +30,7 @@ class Farmer(ap.Agent):
         """Inherit agent attributes."""
         self.grid = self.model.grid
         self.random = self.model.random
-        self.c_agent = { # TODO re-place
+        self.c_agent = {  # TODO re-place
             k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
         }  # TODO: find good values
 
@@ -55,7 +55,7 @@ class Farmer(ap.Agent):
             pos_init = self.random.choice(self.model.unoccupied)
 
         self.model.unoccupied.remove(pos_init)
-        self.buy_cell_threash = 1 # self.random.uniform(0, 1) ## for DQN v0
+        self.buy_cell_threash = 1  # self.random.uniform(0, 1) ## for DQN v0
 
         """ Set start crop id"""
         crop_id_init = self.random.randint(
@@ -87,7 +87,7 @@ class Farmer(ap.Agent):
         """Farmer buys a cell at _coordinates and adds it to list"""
         # make sure algorithm found an empty cell:
         cell = self.model.cell_at(_coordinates)
-        #assert cell.farmer == None  # if river, farmer == -1
+        # assert cell.farmer == None  # if river, farmer == -1
 
         if self.budget <= cell.buy_cost:
             return  # farmer got not enough budget to buy this Cell
@@ -173,6 +173,7 @@ class Farmer(ap.Agent):
         current_supply: int,
     ) -> None:
         if crop_id != self.crop_id:
+            # TODO Implement the effect of having multiple cells !!!
             cost_seed_change = (
                 self.model.crop_shop.crops[crop_id].seed_cost
                 - self.model.crop_shop.crops[self.crop_id].seed_cost
@@ -239,11 +240,11 @@ class Farmer(ap.Agent):
     def step(self):
         self.harvest()
 
-        #""" sell with relative boundaries """
-        #amount = int(self.random.randint(0, 20) / 100 * self._stock[self.crop._id])
-        #""" or: sell with fixed boundaries """
+        # """ sell with relative boundaries """
+        # amount = int(self.random.randint(0, 20) / 100 * self._stock[self.crop._id])
+        # """ or: sell with fixed boundaries """
         # amount = self.random.randint(0, 5)
-        #self.sell(self.crop._id, amount)
+        # self.sell(self.crop._id, amount)
 
         dir = self.random.choice(self.model.headings)
         prob = self.random.uniform(0, 1)
@@ -257,7 +258,6 @@ class Farmer(ap.Agent):
         self.cellcount = len(self.cells)
         self.stock = copy.deepcopy(self._stock)
         self.crop_id = copy.deepcopy(self.crop._id)
-        
 
 
 class Cell(ap.Agent):
@@ -284,7 +284,9 @@ class Cell(ap.Agent):
         if self.crop == None:
             # print(f"No crop planted here! {self.pos}")
             return
-        self.farmer._stock[self.crop._id] += self.farmer.water_supply / self.farmer.water_need * self.crop.harvest_yield
+        self.farmer._stock[self.crop._id] += (
+            self.farmer.water_supply / self.farmer.water_need * self.crop.harvest_yield
+        )
 
     def step(self):
         pass
@@ -296,6 +298,7 @@ class Cell(ap.Agent):
             self.farmer_id = self.farmer.id
         else:
             self.farmer_id = 0
+
 
 class FarmerPersonality(ABC):
     """
@@ -316,6 +319,8 @@ class FarmerPersonality(ABC):
         current_supply: Dict[int, int],
     ) -> bool:
         """Change crop"""
+
+
 @dataclass
 class Stocker(FarmerPersonality):
 
