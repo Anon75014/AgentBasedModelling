@@ -12,19 +12,21 @@ current amount in stock -> supply.
 Market
 -------
 ```market.py``` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
-
+Another underlying assumption of this version is symmetric information for all market participants. 
+This is important in price aggregation: if all agents know the other agents stocks, they can anticipate the market volume for each iteration
+and hence infer the market prices.
 
 Supply and demand
 -------
 In order to constitute a market, demand and supply need to be defined. Throughout the basic model we will use classical linear supply and demand functions.
-The linear supply of an agent :math:`$i$` for a commodity :math:`$j$` reads:
+The linear supply of an agent :math:`i` for a commodity :math:`j` reads:
 
 .. math::
   
     S_i(p_j) = A + c_i p_j
 
 
-where $A$ is a surplus supply (willingness to supply for $p_j=0$), $p_j$ the global commodity price and $c_i$ the slope of supply (which is connected to the inverse price elasticity of supply).
+where :math:`A` is a surplus supply (willingness to supply for :math:`p_j=0`), :math:`p_j` the global commodity price and :math:`c_i` the slope of supply (which is connected to the inverse price elasticity of supply).
 
 This is a test. Here is an equation:
 :math:`X_{0:5} = (X_0, X_1, X_2, X_3, X_4)`.
