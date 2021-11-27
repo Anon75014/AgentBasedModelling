@@ -36,7 +36,7 @@ The linear demand for a commodity :math:`j` is globally defined as:
     D_j(p_j) = d_j \cdot (B(p_j) + x_{random})
 
 where :math:`B(p_j)` is a baseline demand, :math:`d_j` a demand shift and :math:`x_{random}\in [0,1]` a random variable. 
-\\
+
 Since the market, i.e. the stock and supply of the agents, expands, the baseline demand :math:`B(p_j) = B + a \cdot S(p_j)` needs to increase proportionally to account for the expanding market. 
 In each iteration the initial baseline :math:`B` is increased by a fraction :math:`a` of the global supply :math:`S_i(p_j)`.
 
