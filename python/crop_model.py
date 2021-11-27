@@ -56,7 +56,20 @@ def agr(area, crop_type, di):
         [0.2, 0.55, 0.45, 0.20],
         [0.87, 0.87, 0.87],
     ]
-
+    nut_value_per_100_g=[355,355,355,300,15,18,30,23,361,124]
+    
+        name = [
+        "Winter Wheat",
+        "Barley",
+        "Maize",
+        "Beans",
+        "Cucumbers",
+        "Tomatoes",
+        "Watermelons",
+        "Alfalfa",
+        "Sorghum",
+        "Rapeseed",
+    ]
     months = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     month_day = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     total_water_per_crop = [0]
@@ -215,12 +228,12 @@ def agr(area, crop_type, di):
     exchange_rate_to_USD = 1#320000
     eff = 0.464  # irrigation efficiency for each subbasin
 
-    # total_water_per_months = [element/eff for element in months]
+    # total_water_per_months = [element/eff for element in months
     total_water_per_crop = [element / eff for element in total_water_per_crop]
     cost = cost[crop_type]
     price = price[crop_type]
 
-    nut_value
+    nut_value=nut_value_per_100_g[crop_type]*y_c_a*10^4
     return [y_c_a, cost+(GWP_total*50) / exchange_rate_to_USD, price / exchange_rate_to_USD,nut_value]
 
 
