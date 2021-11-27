@@ -14,6 +14,18 @@ Market
 ```market.py``` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
 
 
+Supply and demand
+-------
+In order to constitute a market, demand and supply need to be defined. Throughout the basic model we will use classical linear supply and demand functions.
+The linear supply of an agent :math:`$i$` for a commodity :math:`$j$` reads:
+
+.. math::
+  
+    S_i(p_j) = A + c_i p_j
+
+
+where $A$ is a surplus supply (willingness to supply for $p_j=0$), $p_j$ the global commodity price and $c_i$ the slope of supply (which is connected to the inverse price elasticity of supply).
+
 This is a test. Here is an equation:
 :math:`X_{0:5} = (X_0, X_1, X_2, X_3, X_4)`.
 Here is another:
