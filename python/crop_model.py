@@ -108,62 +108,13 @@ def agr(area, crop_type, di):
         2.5928570,
     ]
 
-    # w_c_a_l=list()
-    # for i in range(len(k_c_y)):
-    #     n=len(k_c_y[i])
-    #     w_c_a_l.append(w_c_a[:n])
-    #     w_c_a=w_c_a[n:]
-    # w_c_a=w_c_a_l
-
-    r = list()
-    tmp = list()
-
-    for j in range(len(k_c_y[crop_type])):
-        tmp.append(
-            k_c_y[crop_type][j] * (1 - (w_c_a[j] / (crop_factor[crop_type][j] * w_c_p)))
-        )
-    r.append(tmp)
-
-    result = list(map(sum, r))
-    y_c_a = y_c_max[crop_type] * (1 - result[0])
-    if di<=0.7:
-        y_c_a=0
-    income = (
-        y_c_a * area * price[crop_type] * 1000
-    )  # for each crop 1000 is to convert ton to kg
-    net_benefit = income - cost[crop_type] * area
-
-    exchange_rate_to_USD = 1#320000
-    eff = 0.464  # irrigation efficiency for each subbasin
-
-    # total_water_per_months = [element/eff for element in months]
-    total_water_per_crop = [element / eff for element in total_water_per_crop]
-    cost = cost[crop_type]
-    price = price[crop_type]
-
-    return [y_c_a, cost / exchange_rate_to_USD, price / exchange_rate_to_USD]
-
-
-def gini(ratio):
-    diff = 0
-    gini_coef = []
-    for k in range(10):  # 10 YEARS
-        r = ratio[k]
-        for i in r:
-            for j in r:
-                diff += abs(i - j)
-        gini_coef.append((1 / (2 * len(r) * sum(r))) * diff)
-    return [gini_coef]  # it returns 10 values which is the 10 Gini coeff. of 10 years
-
-
-def GWP(total_water_per_crop, area, sub):  # area (ha)  water(M^3)
-
     GWP_fertilizer = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     GWP_biocide = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     GWP_machinery = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     GWP_fuel = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     GWP_electricity = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     GWP_total = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    i=crop_type
 
     manure = [0, 0, 0, 0, 3500, 3400, 2800, 2200, 1000, 0]  # kg/ha
     phosphorus = [
@@ -221,35 +172,72 @@ def GWP(total_water_per_crop, area, sub):  # area (ha)  water(M^3)
     ]  # h  17.81 lit/h fuel   93.38 hp  1 hp*h=2.6845 MJ  2.3477
     # electricity 0.2323 Kwh/m^3
 
-    if sub == 0:
-        area = [element * 19024 for element in area]
-    elif sub == 1:
-        area = [element * 17140 for element in area]
-    elif sub == 2:
-        area = [element * 24000 for element in area]
-    elif sub == 3:
-        area = [element * 18388 for element in area]
-    elif sub == 4:
-        area = [element * 60000 for element in area]
+   
+    GWP_fertilizer[i] = (
+        manure[i] * 8.96384
+        + phosphorus[i] * 1.5
+        + potassium[i] * 0.98
+        + nitrogen[i] * 8.3
+    ) * area[i]
+    GWP_biocide[i] = (
+        herbicide[i] * 6.3 + insecticide[i] * 5.1 + fungicide[i] * 3.9
+    ) * area[i]
+    GWP_machinery[i] = 93.38 * machinery_hour[i] * 2.6845 * 0.071 * area[i]
+    GWP_fuel[i] = machinery_hour[i] * 17.81 * 2.347 * area[i]
+    GWP_electricity[i] = total_water_per_crop[i] * 10 * 0.2323 * 0.608
+    GWP_total[i] = (
+        GWP_fertilizer[i]
+        + GWP_biocide[i]
+        + GWP_machinery[i]
+        + GWP_fuel[i]
+        + GWP_electricity[i]
+    
+    
 
-    for i in range(10):
-        GWP_fertilizer[i] = (
-            manure[i] * 8.96384
-            + phosphorus[i] * 1.5
-            + potassium[i] * 0.98
-            + nitrogen[i] * 8.3
-        ) * area[i]
-        GWP_biocide[i] = (
-            herbicide[i] * 6.3 + insecticide[i] * 5.1 + fungicide[i] * 3.9
-        ) * area[i]
-        GWP_machinery[i] = 93.38 * machinery_hour[i] * 2.6845 * 0.071 * area[i]
-        GWP_fuel[i] = machinery_hour[i] * 17.81 * 2.347 * area[i]
-        GWP_electricity[i] = total_water_per_crop[i] * 10 * 0.2323 * 0.608
-        GWP_total[i] = (
-            GWP_fertilizer[i]
-            + GWP_biocide[i]
-            + GWP_machinery[i]
-            + GWP_fuel[i]
-            + GWP_electricity[i]
+    r = list()
+    tmp = list()
+
+    for j in range(len(k_c_y[crop_type])):
+        tmp.append(
+            k_c_y[crop_type][j] * (1 - (w_c_a[j] / (crop_factor[crop_type][j] * w_c_p)))
         )
-    return GWP_total
+    r.append(tmp)
+
+    result = list(map(sum, r))
+    y_c_a = y_c_max[crop_type] * (1 - result[0])
+    if di<=0.7:
+        y_c_a=0
+    income = (
+        y_c_a * area * price[crop_type] * 1000
+    )  # for each crop 1000 is to convert ton to kg
+    net_benefit = income - cost[crop_type] * area
+
+    exchange_rate_to_USD = 1#320000
+    eff = 0.464  # irrigation efficiency for each subbasin
+
+    # total_water_per_months = [element/eff for element in months]
+    total_water_per_crop = [element / eff for element in total_water_per_crop]
+    cost = cost[crop_type]
+    price = price[crop_type]
+
+    nut_value
+    return [y_c_a, cost+(GWP_total*50) / exchange_rate_to_USD, price / exchange_rate_to_USD,nut_value]
+
+
+def gini(ratio):
+    diff = 0
+    gini_coef = []
+    for k in range(10):  # 10 YEARS
+        r = ratio[k]
+        for i in r:
+            for j in r:
+                diff += abs(i - j)
+        gini_coef.append((1 / (2 * len(r) * sum(r))) * diff)
+    return [gini_coef]  # it returns 10 values which is the 10 Gini coeff. of 10 years
+
+
+
+
+   
+
+def nut(crop_type, yielad_in_ton):    #each person ~2500 cal/100 gram
