@@ -11,10 +11,10 @@ current amount in stock -> supply.
 
 Market
 -------
-```market.py``` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
+``market.py`` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
 Another underlying assumption of this version is symmetric information for all market participants. 
 This is important in price aggregation: if all agents know the other agents stocks, they can anticipate the market volume for each iteration
-and hence infer the market prices. The transparency of stocks is incorporated via the function :class:`market.Market._calc_global_stock`.
+and hence infer the market prices. The transparency of stocks is incorporated via the function :ref:`market.Market._calc_global_stock`.
 
 The p
 
