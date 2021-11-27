@@ -106,8 +106,8 @@ class CropwarModel(ap.Model):
         self.unoccupied = [tuple(coord) for coord in self.unoccupied]
 
         self.p.n_farmers = sum(self.p.farmers.values())
-        n_farmers = self.p.n_farmers  # amount of farmer-agents 
-        #TODO n_farmers NOT NEEDED HERE ANYMORE ONCE ML CODE Updated
+        n_farmers = self.p.n_farmers  # amount of farmer-agents
+        # TODO n_farmers NOT NEEDED HERE ANYMORE ONCE ML CODE Updated
 
         farmers = []
         for kind, amount in self.p.farmers.items():
@@ -115,7 +115,7 @@ class CropwarModel(ap.Model):
         self.random.shuffle(farmers)
 
         self.farmers = ap.AgentDList(self, 1, farmers.pop(0))
-        for _ in range(self.p.n_farmers-1):
+        for _ in range(self.p.n_farmers - 1):
             self.farmers += ap.AgentDList(self, 1, farmers.pop(0))
         # TODO check THIS FARMER SETUP
 
@@ -130,14 +130,19 @@ class CropwarModel(ap.Model):
 
         """ MACHINE LEARNING """
         self.time_is_up = False
-        ml_mask = np.array(
-            [False for _ in range(n_farmers - self.p.nr_ml_farmers)]
-            + [True for _ in range(self.p.nr_ml_farmers)],
-            dtype=bool,
+        self.ml_trainee = None  # default
+        # deterministic farmers:
+        self.det_farmers = self.model.farmers.select(
+            [name[:2] != "ML" for name in self.model.farmers.type]
         )
-        self.farmers.select(ml_mask).ml_controlled = True
-        self.ml_farmers = self.farmers.select(self.farmers.ml_controlled == True)
-        self.normal_farmers = self.farmers.select(self.farmers.ml_controlled == False)
+        nr_det = len(self.det_farmers)
+        if nr_det < self.p.n_farmers and nr_det + 1 == self.p.n_farmers:
+            self.ml_trainee = self.model.farmers.select(
+                [name[:2] == "ML" for name in self.model.farmers.type]
+            )[0]
+            self.p.ml_env.ml_trainee = self.ml_trainee
+        else:
+            raise ValueError("It seems like there is more than one ML trainee...")
 
         """ Initialise Map (for GIF) Instances """
         if self.p.save_gif:
@@ -150,7 +155,6 @@ class CropwarModel(ap.Model):
             self.map_drawer = map_presenter.map_class(self)
             self.map_drawer.initialise_farmers()
 
-        # print("Done: setup of grid.")
 
     def cell_at(self, pos: tuple):
         """Returns cell at pos Position in Grid"""
@@ -208,64 +212,43 @@ class CropwarModel(ap.Model):
         - let farmers decide if they want to change crops
         - refresh the river water content
         """
-        if self.t > self.p.t_end:  # model should stop after "t_end" steps
-            self.time_is_up = True
-            self.stop()  # end the current simulation
+        # if self.t > self.p.t_end:  # model should stop after "t_end" steps
+        #     self.time_is_up = True
+        #     self.stop()  # end the current simulation
 
         self.farmers.pre_market_step()
 
-        if self.p.use_trained_model:
-            obs, _ = self.ml_get_state()
-            action, _ = self.p.use_trained_model.predict(obs, deterministic=True)
-            self.ml_step(action)
+        # if self.p.use_trained_model:
+        #     obs, _ = self.ml_get_state()
+        #     action, _ = self.p.use_trained_model.predict(obs, deterministic=True)
+        #     self.ml_step(action)
 
         self.market.step()
 
         self.farmers.post_market_step()
         self.river.refresh_water_content()
 
-    def ml_get_state(self):
-        """Get Environment state for ML.
+    
 
-        :return: state of env ; if done
-        :rtype: np.array ; bool
-        """
-        time_up = False
-        if self.t >= self.p.t_end:
-            time_up = True
+    # def ml_step(self, action: np.array):
+    #     """Applies action to environment.
 
-        ml_farmer = self.ml_farmers[0]
+    #     Applies the action decided by the ML algorithm to the environment.
+    #     :param action: np.array of ints
+    #     :type action: np.array
+    #     """
+    #     ml_farmer = self.ml_farmers[0]
+    #     [do_farm, sell] = action
+    #     if do_farm:
+    #         ml_farmer.harvest()
 
-        stock_array = np.array(list(ml_farmer._stock.values()))
-        # budget = np.array([ml_farmer.budget])  # , ml_farmer.cell_count
-        budgets = np.array(self.farmers.budget)  # , ml_farmer.cell_count
+    #     if sell:
+    #         # TODO generalize 0.2 by making action continuous::
+    #         amount = int(0.2 * ml_farmer._stock[ml_farmer.crop._id])
 
-        state = np.concatenate([stock_array, budgets], dtype=np.float32)
-        """Normalisation -> important for PPO algorithm"""
-        state[0] /= self.p.max_stock
-        state[1:] /= self.p.max_budget
+    #         ml_farmer.sell(ml_farmer.crop._id, amount)
 
-        return state, bool(time_up)
-
-    def ml_step(self, action: np.array):
-        """Applies action to environment.
-
-        Applies the action decided by the ML algorithm to the environment.
-        :param action: np.array of ints
-        :type action: np.array
-        """
-        ml_farmer = self.ml_farmers[0]
-        [do_farm, sell] = action
-        if do_farm:
-            ml_farmer.harvest()
-
-        if sell:
-            # TODO generalize 0.2 by making action continuous::
-            amount = int(0.2 * ml_farmer._stock[ml_farmer.crop._id])
-
-            ml_farmer.sell(ml_farmer.crop._id, amount)
-
-        return
+    #     return
 
     def update(self):
         """Record the properties of the farmers each step."""

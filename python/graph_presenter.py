@@ -167,7 +167,7 @@ class graph_class:
         """Export Stockdata and Budget&Crop_id data to
         two .csv files for plotting in Latex."""
         # self.stock_data.to_csv("stock_results.csv")
-        # self.data.to_csv("data.csv")
+        self.data.to_csv("data.csv")
         self.export_budget()
         self.export_cellcount()
         self.export_stock()

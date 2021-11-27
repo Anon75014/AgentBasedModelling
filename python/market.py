@@ -68,7 +68,7 @@ class Market:
         for agent in self.agents:
             for crop_id, crop_stock in agent.stock.items():
                 self.current_stock[crop_id] += crop_stock
-        print("Global stock is {}".format(self.current_stock))
+        #print("Global stock is {}".format(self.current_stock))
 
     def calc_global_price(self) -> Dict[int, float]:
         """
@@ -112,9 +112,9 @@ class Market:
             current_supply = self.current_supply[crop_id]
             # Correct for oversupply, i.e. each farmer only supplies the demand
             # if the total supply is larger than the demand
-            try:
+            if current_supply != 0:
                 correction_factor = np.min([current_demand / current_supply, 1.0])
-            except:
+            else:
                 correction_factor = 1.0
 
             for agent in self.agents:
@@ -126,7 +126,7 @@ class Market:
     def step(self):
         prices = self.current_prices.copy()
         supp = self.market_interaction()
-        print(f"Market: Global supply is {supp} at prices {prices}")
+        #print(f"Market: Global supply is {supp} at prices {prices}")
 
         # Update prices of crops & get highest price
         for crop_id, price in self.current_prices.items():

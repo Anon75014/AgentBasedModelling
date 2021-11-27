@@ -18,10 +18,10 @@ def run_trainer():
     """
 
     # Parallel environments
-    env = make_vec_env(CropwarEnv, n_envs=4)
+    env = make_vec_env(CropwarEnv, n_envs=10)
     #%%
     model = PPO("MlpPolicy", env, verbose=1, tensorboard_log="python\log_ppo")
-    model.learn(total_timesteps=10000)
+    model.learn(total_timesteps=100000)
 
     model.save("CropWar_PPO")
     print(

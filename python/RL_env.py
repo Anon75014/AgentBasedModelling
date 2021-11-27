@@ -4,11 +4,12 @@ from copy import deepcopy
 import gym
 import numpy as np
 from gym import spaces
+from stable_baselines3.common.env_checker import check_env
 
+from agents import *
+from ml_agents import *
 from crops import CropSortiment
 from model import CropwarModel
-
-from stable_baselines3.common.env_checker import check_env
 
 
 class CropwarEnv(gym.Env):
@@ -26,7 +27,6 @@ class CropwarEnv(gym.Env):
         # Initialise: CROPS
         self._reset_Cropshop()
 
-        # Setup: Choose parameters for CropWar Model
         self.parameters = {
             # FIXED:
             "crop_shop": self.crop_shop,
@@ -34,49 +34,55 @@ class CropwarEnv(gym.Env):
             # TUNABLE:
             # --.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--
             "water_levels": [0, 0, 3],
-            "n_farmers": 4,
             # "v0_pos" : None,
-            "v0_pos": [
-                (5, 4),
-                (5, 1),
-                (1, 1),
-                (1, 4),
-            ],  # number of start positions must match n_farmers
+            "v0_pos": sorted(
+                [
+                    (1, 1),
+                    (1, 4),
+                    (5, 1),
+                    (5, 4),
+                ],
+                key=lambda x: x[0],
+            ),  # number of start positions must match n_farmers
             "start_budget": 1000,
-            "t_end": 2,  # Amount of time steps to be simulated
+            "t_end": 50,  # Amount of time steps to be simulated
             "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
             "save_gif": False,  # Save the map each timestep and generate Gif in the end
             "seed": 0,  # Use a new seed
             # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
             # --'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--
-            # ML Variables:
             "nr_ml_farmers": 1,
+            "n_farmers": 4,
+            "farmers": {Trader: 0, Introvert: 3, ML_Introvert: 1},
+            "ml_env": self,
             "use_trained_model": False,
             "max_stock": 2000,
-            "max_budget": 30000000000,
+            "max_budget": 1e8,
             "river_content": 12.0,
             "market_base_demand": 10.0,
             "market_demand_fraction": 0.7,
         }
 
-        """ Initialise the model"""
-        self.model = CropwarModel(self.parameters)
-        self.model.setup()
+        """ Infer Machine Learning Base-Personalty """
+        self.ml_type = [
+            k
+            for k, v in self.parameters["farmers"].items()
+            if k.__name__[:2] == "ML" and v > 0
+        ][0]
+        print(f"Info: The active ML model is of type {self.ml_type.__name__}")
 
         """Setup for RL"""
         nr_stock_entries = self.parameters["amount_of_crops"]
+        nr_seeds = nr_stock_entries
         nr_farmers = self.parameters["n_farmers"]
 
         self.observation_space = spaces.Box(
-            0.0, 1.0, shape=(nr_stock_entries + nr_farmers,), dtype=np.float32
+            0.0,
+            1.0,
+            shape=(self.ml_type.data.obs_dim(nr_stock_entries, nr_seeds, nr_farmers),),
+            dtype=np.float32,
         )
-        self.action_space = spaces.MultiDiscrete([2, 2])
-
-    def _reset_Cropshop(self):
-        """Reset the CropShop used in the CropWar Model"""
-        self.crop_shop = CropSortiment()
-        self.crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
-        # self.crop_shop.add_crop(1, 9, 1)
+        self.action_space = self.ml_type.data.action_space
 
     def step(self, action: np.array):
         """Use action to step the environment.
@@ -93,34 +99,37 @@ class CropwarEnv(gym.Env):
         assert self.action_space.contains(action), err_msg
 
         """Steps and Updates"""
+        self.ml_trainee.planned_action = action
+
         self.model.step()
-        self.model.ml_step(action)
 
-        self.model.update()
+        state, done = self.ml_trainee.get_state()
 
-        self.state, done = self.model.ml_get_state()
-
-        if (self.state > 1).any():
-            print("LIMIT REACHED")
+        if (state > 1).any():
+            # Ensure normailsed observation-states:
+            print("LIMIT REACHED. Training episode STOPS.")
             done = True
 
+        if self.model.running == False:
+            # Reached end of simulation
+            done = True
+            
         """Reward Calculation"""
         reward = 0
-        ml_farmer = self.model.ml_farmers[0]
-
         # --.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--
         # Idea: The farmer gets max reward if richest. Then quadratically less for lower places
         _budgets = self.model.farmers.budget
         budgets = np.array(_budgets)
         budgets.sort()
-        ranking = np.where(budgets == ml_farmer.budget)[0][-1] / (len(budgets) - 1)
-        # print(ranking)
+        ranking = np.where(budgets == self.ml_trainee.budget)[0][-1] / (
+            len(budgets) - 1
+        )
+        # print(ranking)  # for debug
         reward = ranking ** 2
         # --'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--
 
         info = {}
-        self.model.t += 1
-        return deepcopy(self.state), reward, done, info
+        return state, reward, done, info
 
     def render(self, mode="human"):
         """Used for displaying the training.
@@ -139,12 +148,14 @@ class CropwarEnv(gym.Env):
         :rtype: np.array
         """
         self._reset_Cropshop()
-        self.model = CropwarModel(self.parameters)
-        self.model.setup()
-        self.model.update()
-        state, done = self.model.ml_get_state()
 
-        return deepcopy(state)
+        """ Initialise the model"""
+        self.model = CropwarModel(self.parameters)
+        self.model.sim_setup()
+
+        state, _ = self.ml_trainee.get_state()
+
+        return state
 
     def seed(self, seed):
         """[summary]
@@ -152,7 +163,16 @@ class CropwarEnv(gym.Env):
         :param seed: [description]
         :type seed: [type]
         """
-        np.random.seed(seed)
+        pass
+
+    def _reset_Cropshop(self):
+        """Reset the CropShop used in the CropWar Model"""
+        self.crop_shop = CropSortiment()
+        self.crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
+        self.crop_shop.add_crop(1, 2, 1)  # area, crop_type, available water
+        self.crop_shop.add_crop(1, 3, 1)  # area, crop_type, available water
+        self.crop_shop.add_crop(1, 4, 1)  # area, crop_type, available water
+        self.crop_shop.add_crop(1, 9, 1)
 
 
 if __name__ == "__main__":

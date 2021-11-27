@@ -241,7 +241,7 @@ class BaseFarmer(ap.Agent):
         :rtype: float
         """
         self.water_supply = self.model.river.get_water(self.water_need)
-        print(f"Farmer {self.id} obtained {self.water_supply} water units")
+        #print(f"Farmer {self.id} obtained {self.water_supply} water units")
         return self.water_supply
 
     def harvest(self):
