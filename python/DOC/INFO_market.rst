@@ -9,6 +9,7 @@ It's functions get called by the ``CropwarModel`` and
 current amount in stock -> supply. 
 
 
+.. _market
 Market
 -------
 ``market.py`` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
@@ -44,7 +45,7 @@ Since the market, i.e. the stock and supply of the agents, expands, the baseline
 In each iteration the initial baseline :math:`B` is increased by a fraction :math:`a` of the global supply :math:`S_i(p_j)`.
 
 
-
+go to market :ref:`market`
 
 
 .. automodule:: market
