@@ -9,7 +9,7 @@ It's functions get called by the ``CropwarModel`` and
 current amount in stock -> supply. 
 
 
-.. _market
+.. _market:
 Market
 -------
 ``market.py`` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
