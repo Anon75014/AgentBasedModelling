@@ -14,7 +14,10 @@ Market
 ```market.py``` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
 Another underlying assumption of this version is symmetric information for all market participants. 
 This is important in price aggregation: if all agents know the other agents stocks, they can anticipate the market volume for each iteration
-and hence infer the market prices.
+and hence infer the market prices. The transparency of stocks is incorporated via the function :class:`market.Market._calc_global_stock`.
+
+The p
+
 
 Supply and demand
 -------
@@ -28,7 +31,7 @@ The linear supply :math:`S_i(p_j)` of an agent :math:`i` for a commodity :math:`
 
 
 where :math:`A` is a surplus supply (willingness to supply for :math:`p_j=0`), :math:`p_j` the global commodity price and :math:`c_i` the slope of supply (which is connected to the inverse price elasticity of supply).
-
+The supply function is implemented via :class:`market.Market._calc_global_supply`.
 
 The linear demand for a commodity :math:`j` is globally defined as:
 
