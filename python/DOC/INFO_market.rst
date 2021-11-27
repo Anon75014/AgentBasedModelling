@@ -19,7 +19,8 @@ and hence infer the market prices.
 Supply and demand
 -------
 In order to constitute a market, demand and supply need to be defined. Throughout the basic model we will use classical linear supply and demand functions.
-The linear supply of an agent :math:`i` for a commodity :math:`j` reads:
+
+The linear supply :math:`S_i(p_j)` of an agent :math:`i` for a commodity :math:`j` reads:
 
 .. math::
   
@@ -28,19 +29,17 @@ The linear supply of an agent :math:`i` for a commodity :math:`j` reads:
 
 where :math:`A` is a surplus supply (willingness to supply for :math:`p_j=0`), :math:`p_j` the global commodity price and :math:`c_i` the slope of supply (which is connected to the inverse price elasticity of supply).
 
-This is a test. Here is an equation:
-:math:`X_{0:5} = (X_0, X_1, X_2, X_3, X_4)`.
-Here is another:
+
+The linear demand for a commodity $j$ is globally defined as:
 
 .. math::
-    :label: This is a label
+    D_j(p_j) = d_j \cdot (B(p_j) + x_{random})
 
-    \nabla^2 f =
-    \frac{1}{r^2} \frac{\partial}{\partial r}
-    \left( r^2 \frac{\partial f}{\partial r} \right) +
-    \frac{1}{r^2 \sin \theta} \frac{\partial f}{\partial \theta}
-    \left( \sin \theta \, \frac{\partial f}{\partial \theta} \right) +
-    \frac{1}{r^2 \sin^2\theta} \frac{\partial^2 f}{\partial \phi^2}
+where :math:`B(p_j)` is a baseline demand, :math:`d_j` a demand shift and :math:`x_{random}\in [0,1]` a random variable. 
+\\
+Since the market, i.e. the stock and supply of the agents, expands, the baseline demand :math:`B(p_j) = B + a \cdot S(p_j)` needs to increase proportionally to account for the expanding market. 
+In each iteration the initial baseline :math:`B` is increased by a fraction :math:`a` of the global supply :math:`S_i(p_j)`.
+
 
 
 
