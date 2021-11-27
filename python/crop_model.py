@@ -125,8 +125,9 @@ def agr(area, crop_type, di):
     r.append(tmp)
 
     result = list(map(sum, r))
-
     y_c_a = y_c_max[crop_type] * (1 - result[0])
+    if di<=0.7:
+        y_c_a=0
     income = (
         y_c_a * area * price[crop_type] * 1000
     )  # for each crop 1000 is to convert ton to kg
