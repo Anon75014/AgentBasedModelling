@@ -30,7 +30,7 @@ The linear supply :math:`S_i(p_j)` of an agent :math:`i` for a commodity :math:`
 where :math:`A` is a surplus supply (willingness to supply for :math:`p_j=0`), :math:`p_j` the global commodity price and :math:`c_i` the slope of supply (which is connected to the inverse price elasticity of supply).
 
 
-The linear demand for a commodity $j$ is globally defined as:
+The linear demand for a commodity :math:`j` is globally defined as:
 
 .. math::
     D_j(p_j) = d_j \cdot (B(p_j) + x_{random})
