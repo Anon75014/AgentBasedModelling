@@ -37,16 +37,3 @@ python/log_ppo/*
 python/experimental/tst_DQN_Multidiscrete/log
 python/configs
 *.zip
-python/DOC/_build
-python/DOC/_static
-python/DOC/_templates
-python/DOC/code
-python/DOC/generated
-*.bat
-*.ico
-*.png
-python/DOC/Makefile
-
-
-python/source
-python/build
