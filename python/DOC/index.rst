@@ -80,9 +80,7 @@ Simulation Pseudo Code
    :maxdepth: 2
    :caption: Documentation
 
-.. 
    code/modules
-
    api
 
 

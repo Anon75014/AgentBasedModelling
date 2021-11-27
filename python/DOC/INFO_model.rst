@@ -16,13 +16,13 @@ Model
 Farmers 
 -------
 
-.. autoclass:: Farmer
+..  automodule:: agents
     :members:
 
 Cells 
 -----
 
-.. autoclass:: Cell
+..  autoclass:: agents_base.Cell
     :members:
 
 

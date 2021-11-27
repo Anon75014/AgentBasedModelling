@@ -1,4 +1,4 @@
-elper\_functions module
+helper\_functions module
 ========================
 
 .. automodule:: helper_functions

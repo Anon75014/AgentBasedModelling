@@ -1,7 +1,7 @@
-﻿agents
-======
+﻿agents\_base
+============
 
-.. automodule:: agents
+.. automodule:: agents_base
 
    
    
@@ -17,8 +17,8 @@
 
    .. autosummary::
    
-      Introvert
-      Trader
+      BaseFarmer
+      Cell
    
    
 
