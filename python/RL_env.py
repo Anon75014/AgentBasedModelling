@@ -54,6 +54,9 @@ class CropwarEnv(gym.Env):
             "use_trained_model": False,
             "max_stock": 2000,
             "max_budget": 30000000000,
+            "river_content": 12.0,
+            "market_base_demand": 10.0,
+            "market_demand_fraction": 0.7,
         }
 
         """ Initialise the model"""

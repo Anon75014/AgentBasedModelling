@@ -4,16 +4,20 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from pandas import DataFrame as df
+from tabulate import tabulate
+
+from model import CropwarModel
 
 
 class graph_class:
     """Displayer Class to show the Agnetpy Run results."""
 
-    def __init__(self, _results) -> None:
+    def __init__(self, model:CropwarModel, _results) -> None:
         """
         Parameters:
         -   _results: A pandas dataframe, containing the results of Model.run()
         """
+        self.model = model
         self.results = _results
         self.data = _results.arrange_variables()
         self.data = self.data.rename(columns={"obj_id": "Farmer ID"})
@@ -123,19 +127,40 @@ class graph_class:
         ax.set_xticks(farmer_ids)
         ax.set_title("Buy Threashold for the farmers")
 
+    def personalities(self):
+        """show Personality database
+        
+        Pretty print a table into the Console with ID, Farmer Types and Buy threashold
+        """
+
+        ids = self.model.farmers.id
+        types = self.model.farmers.type
+        buy_vals = [round(val,3) for val in self.model.farmers.buy_cell_threash]
+
+        data = {"IDs": ids,
+                "Farmer type": types,
+                "Buy Threashold\n(rounded)": buy_vals,    
+                }
+        # source : https://pypi.org/project/tabulate/
+        print(tabulate(data, headers="keys",tablefmt="fancy_grid",numalign='center',stralign='center'))
+
     def export_budget(self):
-        """ export the relevant data for plotting in LaTeX """
-        budget_df = df.pivot(self.data,index='t',columns="Farmer ID",values="budget")
+        """export the relevant data for plotting in LaTeX"""
+        budget_df = df.pivot(self.data, index="t", columns="Farmer ID", values="budget")
         budget_df.to_csv("exported_budget.csv")
-    
+
     def export_cellcount(self):
-        """ export the relevant data for plotting in LaTeX """
-        cellcount_df = df.pivot(self.data,index='t',columns="Farmer ID",values="cellcount")
+        """export the relevant data for plotting in LaTeX"""
+        cellcount_df = df.pivot(
+            self.data, index="t", columns="Farmer ID", values="cellcount"
+        )
         cellcount_df.to_csv("exported_cellcount.csv")
 
     def export_stock(self):
-        """ export the relevant data for plotting in LaTeX """
-        stock_df = df.pivot(self.stock_data,index='t',columns=["Crop","Farmer ID"],values="Amount")
+        """export the relevant data for plotting in LaTeX"""
+        stock_df = df.pivot(
+            self.stock_data, index="t", columns=["Crop", "Farmer ID"], values="Amount"
+        )
         stock_df.to_csv("exported_stock.csv")
 
     def export(self):
