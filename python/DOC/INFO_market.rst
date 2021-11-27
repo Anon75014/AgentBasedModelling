@@ -9,7 +9,7 @@ It's functions get called by the ``CropwarModel`` and
 current amount in stock -> supply. 
 
 
-.. _market:
+.. _market-target:
 Market
 -------
 ``market.py`` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
@@ -17,7 +17,7 @@ Another underlying assumption of this version is symmetric information for all m
 This is important in price aggregation: if all agents know the other agents stocks, they can anticipate the market volume for each iteration
 and hence infer the market prices. The transparency of stocks is incorporated via the function :ref:`market.Market._calc_global_stock`.
 
-The p
+The price is determined
 
 
 Supply and demand
@@ -45,7 +45,7 @@ Since the market, i.e. the stock and supply of the agents, expands, the baseline
 In each iteration the initial baseline :math:`B` is increased by a fraction :math:`a` of the global supply :math:`S_i(p_j)`.
 
 
-go to market :ref:`market`
+go to market :ref:`market-target`
 
 
 .. automodule:: market
