@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graph Visualisation &mdash; CropWar 06.12.2021 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Map Visualisation" href="VIS_map.html" />
+    <link rel="prev" title="RL Environment" href="INFO_RL_env.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html">
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview of CropWar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INFO_model.html">Model Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INFO_market.html">Market Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INFO_crops.html">Crops Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INFO_weather.html">Weather Scenarios</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reinforcement Learning</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="INFO_SB3.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="INFO_RL_env.html">RL Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualisation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Graph Visualisation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-graph_presenter">Implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="VIS_map.html">Map Visualisation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CropWar</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Graph Visualisation</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/Anon75014/AgentBasedModelling/blob/VIS_graphs.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graph-visualisation">
+<h1>Graph Visualisation<a class="headerlink" href="#graph-visualisation" title="Permalink to this headline"></a></h1>
+<p>Graphs are used to visualise interesting Farmer parameters.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>During the AgentPy simulation properties are stored internally with <code class="docutils literal notranslate"><span class="pre">record()</span></code> functions during the <code class="docutils literal notranslate"><span class="pre">update()</span></code> calls. Once the simulation has ended, the results are handed over to the <code class="docutils literal notranslate"><span class="pre">graph_presenter</span></code> which then visualises them.</p>
+</div>
+<section id="module-graph_presenter">
+<span id="implementation"></span><h2>Implementation<a class="headerlink" href="#module-graph_presenter" title="Permalink to this headline"></a></h2>
+<p>Presentation File for the Results of the  CropWar Simulation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="graph_presenter.graph_class">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graph_presenter.</span></span><span class="sig-name descname"><span class="pre">graph_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_results</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class" title="Permalink to this definition"></a></dt>
+<dd><p>Displayer Class to show the Agnetpy Run results.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.budget">
+<span class="sig-name descname"><span class="pre">budget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.budget" title="Permalink to this definition"></a></dt>
+<dd><p>Plot budget data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.cellcount">
+<span class="sig-name descname"><span class="pre">cellcount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.cellcount" title="Permalink to this definition"></a></dt>
+<dd><p>Cellcount data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.crops">
+<span class="sig-name descname"><span class="pre">crops</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.crops" title="Permalink to this definition"></a></dt>
+<dd><p>Plot crop_id evolution for the different farmers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.export">
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.export" title="Permalink to this definition"></a></dt>
+<dd><p>Export Stockdata and Budget&amp;Crop_id data to
+two .csv files for plotting in Latex.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.export_budget">
+<span class="sig-name descname"><span class="pre">export_budget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.export_budget" title="Permalink to this definition"></a></dt>
+<dd><p>export the relevant data for plotting in LaTeX</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.export_cellcount">
+<span class="sig-name descname"><span class="pre">export_cellcount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.export_cellcount" title="Permalink to this definition"></a></dt>
+<dd><p>export the relevant data for plotting in LaTeX</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.export_stock">
+<span class="sig-name descname"><span class="pre">export_stock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.export_stock" title="Permalink to this definition"></a></dt>
+<dd><p>export the relevant data for plotting in LaTeX</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.new_plot">
+<span class="sig-name descname"><span class="pre">new_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_parameter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.new_plot" title="Permalink to this definition"></a></dt>
+<dd><p>Basic properties for a new plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.preprocess_data">
+<span class="sig-name descname"><span class="pre">preprocess_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.preprocess_data" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the results-pd-series to a dataframe w/out dictionaries</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.stocks">
+<span class="sig-name descname"><span class="pre">stocks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.stocks" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the stock evolution for all the farmers seperately.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_presenter.graph_class.traits">
+<span class="sig-name descname"><span class="pre">traits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graph_presenter.graph_class.traits" title="Permalink to this definition"></a></dt>
+<dd><p>Personality traits</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="INFO_RL_env.html" class="btn btn-neutral float-left" title="RL Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="VIS_map.html" class="btn btn-neutral float-right" title="Map Visualisation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Christopher Golling, Gael Mourouga, Aaron Moser, Otto Schmidt, Amirhassan Keshavarzzadeh.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

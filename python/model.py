@@ -8,8 +8,10 @@ import numpy as np
 from PIL import Image
 
 import map_presenter
-from agents import Cell, Farmer
+from agents_base import Cell
+from agents import Trader
 from market import Market
+from agents_base import BaseFarmer
 from river import River
 
 """ TODOS ::
@@ -19,13 +21,19 @@ from river import River
 
 
 class CropwarModel(ap.Model):
-    """An Agent-Based-Model to simulate the crop war of farmers."""
+    """AgentPy model used for simulation.
+
+    An agent based model (ABM) to simulate competing farmers.
+    :param parameters: dictionary of parameters, stored as self.p
+    """
 
     # See documentation https://agentpy.readthedocs.io/en/latest/reference_grid.html#agentpy.Grid
     # def __init__(self,parameters) -> None:
     #     super().__init__(parameters)
 
     def setup(self):
+        """Setting up of the ABM model."""
+
         """Setting random seed (for reproducibility)"""
         if self.p.seed == 0:
             self.p.seed = os.urandom(10)  # a random seed of length
@@ -97,13 +105,19 @@ class CropwarModel(ap.Model):
         ].tolist()  # avoid river cells
         self.unoccupied = [tuple(coord) for coord in self.unoccupied]
 
+        self.p.n_farmers = sum(self.p.farmers.values())
         n_farmers = self.p.n_farmers  # amount of farmer-agents
+        # TODO n_farmers NOT NEEDED HERE ANYMORE ONCE ML CODE Updated
 
-        # n_traders
-        # n_stockers
-        # n_ml_farmers
+        farmers = []
+        for kind, amount in self.p.farmers.items():
+            farmers += [kind] * amount
+        self.random.shuffle(farmers)
 
-        self.farmers = ap.AgentDList(self, n_farmers, Farmer)
+        self.farmers = ap.AgentDList(self, 1, farmers.pop(0))
+        for _ in range(self.p.n_farmers - 1):
+            self.farmers += ap.AgentDList(self, 1, farmers.pop(0))
+        # TODO check THIS FARMER SETUP
 
         """ MARKET """
         self.market = Market(
@@ -115,14 +129,20 @@ class CropwarModel(ap.Model):
         self.crop_prices = self.market.current_prices.copy()
 
         """ MACHINE LEARNING """
-        ml_mask = np.array(
-            [False for _ in range(n_farmers - self.p.nr_ml_farmers)]
-            + [True for _ in range(self.p.nr_ml_farmers)],
-            dtype=bool,
+        self.time_is_up = False
+        self.ml_trainee = None  # default
+        # deterministic farmers:
+        self.det_farmers = self.model.farmers.select(
+            [name[:2] != "ML" for name in self.model.farmers.type]
         )
-        self.farmers.select(ml_mask).ml_controlled = True
-        self.ml_farmers = self.farmers.select(self.farmers.ml_controlled == True)
-        self.normal_farmers = self.farmers.select(self.farmers.ml_controlled == False)
+        nr_det = len(self.det_farmers)
+        if nr_det < self.p.n_farmers and nr_det + 1 == self.p.n_farmers:
+            self.ml_trainee = self.model.farmers.select(
+                [name[:2] == "ML" for name in self.model.farmers.type]
+            )[0]
+            self.p.ml_env.ml_trainee = self.ml_trainee
+        else:
+            raise ValueError("It seems like there is more than one ML trainee...")
 
         """ Initialise Map (for GIF) Instances """
         if self.p.save_gif:
@@ -135,13 +155,18 @@ class CropwarModel(ap.Model):
             self.map_drawer = map_presenter.map_class(self)
             self.map_drawer.initialise_farmers()
 
-        # print("Done: setup of grid.")
 
     def cell_at(self, pos: tuple):
         """Returns cell at pos Position in Grid"""
         return self._cell_dict[pos]
 
-    def generate_water_matrix(self):
+    def generate_water_matrix(self) -> np.array:
+        """Generates the hydration matrix.
+
+        Generate the distribution of hydration cells throughout the map.
+        :return: matrix containing the hydration leves; hydration = 0.25, 0.5, 1, water = 10
+        :rtype: np.array
+        """
         self._water_index = 10
         water = 1  # amount of water rows. MUST be 1 based on 'm' calculation in setup()
 
@@ -161,7 +186,9 @@ class CropwarModel(ap.Model):
 
         return water_matrix
 
-    def _valid_root_cell(self, farmer: Farmer, pos: tuple, _dir: str):
+    def _valid_root_cell(
+        self, farmer: BaseFarmer, pos: tuple, _dir: str
+    ):  # TODO CHeck if THIS baseFARMER ref works
         """Check if one step into direction _dir the farmer ownes a cell"""
         for item in self._one_to_dir.values():
             if item(pos[0], pos[1]) in farmer.aquired_land:
@@ -169,76 +196,62 @@ class CropwarModel(ap.Model):
         return False
 
     def at_last_step(self) -> bool:
+        """Check if at last time step.
+
+        :rtype: bool
+        """
         return self.t == self.p.t_end
 
     def step(self):
-        if self.t > self.p.t_end:  # model should stop after "t_end" steps
-            self.stop()
+        """Move model from t to t+1.
 
-        # self.farmers.step()
-        self.normal_farmers.step()
+        Evolve the entire model by one time step:
+        - Step all the "normal" farmers
+        - Step potentially trained farmers to
+        - Step the market
+        - let farmers decide if they want to change crops
+        - refresh the river water content
+        """
+        # if self.t > self.p.t_end:  # model should stop after "t_end" steps
+        #     self.time_is_up = True
+        #     self.stop()  # end the current simulation
 
-        if self.p.use_trained_model:
-            obs, _ = self.ml_get_state()
-            action, _ = self.p.use_trained_model.predict(obs, deterministic=True)
-            self.ml_step(action)
+        self.farmers.pre_market_step()
+
+        # if self.p.use_trained_model:
+        #     obs, _ = self.ml_get_state()
+        #     action, _ = self.p.use_trained_model.predict(obs, deterministic=True)
+        #     self.ml_step(action)
 
         self.market.step()
-        # Update prices of crops
-        for crop_id, price in self.market.current_prices.items():
-            self.crop_shop.crops[crop_id].sell_price = price
-        highest_price_id = max(
-            self.market.current_prices, key=self.market.current_prices.get
-        )
-        highest_price = max(self.market.current_prices.values())
-        self.normal_farmers.check_crop_change(
-            highest_price_id,
-            highest_price,
-            self.market.current_demand[highest_price_id],
-            self.market.current_supply[highest_price_id],
-        )
-        self.crop_prices = self.market.current_prices.copy()
+
+        self.farmers.post_market_step()
         self.river.refresh_water_content()
-        # print(f"\n    Start of time step: {self.t}")
 
-    def ml_get_state(self):
-        time_up = False
-        if self.t >= self.p.t_end:
-            time_up = True
+    
 
-        ml_farmer = self.ml_farmers[0]
+    # def ml_step(self, action: np.array):
+    #     """Applies action to environment.
 
-        stock_array = np.array(list(ml_farmer._stock.values()))
-        # budget = np.array([ml_farmer.budget])  # , ml_farmer.cell_count
-        budgets = np.array(self.farmers.budget)  # , ml_farmer.cell_count
+    #     Applies the action decided by the ML algorithm to the environment.
+    #     :param action: np.array of ints
+    #     :type action: np.array
+    #     """
+    #     ml_farmer = self.ml_farmers[0]
+    #     [do_farm, sell] = action
+    #     if do_farm:
+    #         ml_farmer.harvest()
 
-        state = np.concatenate([stock_array, budgets], dtype=np.float32)
-        """Normalisation -> important for PPO algorithm"""
-        state[0] /= self.p.max_stock
-        state[1:] /= self.p.max_budget
+    #     if sell:
+    #         # TODO generalize 0.2 by making action continuous::
+    #         amount = int(0.2 * ml_farmer._stock[ml_farmer.crop._id])
 
-        return state, bool(time_up)
+    #         ml_farmer.sell(ml_farmer.crop._id, amount)
 
-    def ml_step(self, action):
-        """Applies the action decided by the DQN to the model
-        Inputs:
-            action : [Bool: Farm, Proportion: Sell of active crop \in [0,1]]
-        """
-        ml_farmer = self.ml_farmers[0]
-        [do_farm, sell] = action
-        if do_farm:
-            ml_farmer.harvest()
-
-        if sell:
-            # TODO generalize 0.2 by making action continuous::
-            amount = int(0.2 * ml_farmer._stock[ml_farmer.crop._id])
-
-            ml_farmer.sell(ml_farmer.crop._id, amount)
-
-        return
+    #     return
 
     def update(self):
-        # record the properties of the farmers each step:
+        """Record the properties of the farmers each step."""
         self.farmers.update()
         self.farmers.record("budget")
         self.farmers.record("crop_id")
@@ -256,6 +269,7 @@ class CropwarModel(ap.Model):
             self.map_frames.append(pil_map_img.convert("P", palette=Image.ADAPTIVE))
 
     def end(self):
+        """Performs final action at the end."""
         self.cells.set_farmer_id()
 
         if self.p.save_gif:
@@ -275,3 +289,6 @@ class CropwarModel(ap.Model):
         _pars_dict.crop_shop = _pars_dict.crop_shop._info_dict()
         _pars_dict.seed = str(_pars_dict.seed)
         return dict(_pars_dict)
+
+
+# %%

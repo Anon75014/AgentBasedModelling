@@ -1,5 +1,6 @@
 """ File contains the Map class, to generate and display the CropWar map. """
 
+import os
 from copy import deepcopy
 
 import matplotlib._color_data as mcd
@@ -9,16 +10,16 @@ import numpy as np
 import PIL.Image
 from matplotlib.colors import from_levels_and_colors
 
-import os
-
 
 class map_class:
+    """This class is used to visualise the spatial map of CropWar.
+    """
     def __init__(self, _model):
-        """
-        Initialise Visualisation Class
+        """Initialise Visualisation Class.
 
-        Assumptions:
-        - low = 0.25, medium = 0.5, high = 1, water index = 10
+        Assumptions: Hydration levels are:low = 0.25, medium = 0.5, high = 1, water index = 10
+        :param _model: the CropWar model at a certain time
+        :type _model: ap.model (agentpy model)
         """
 
         self.model = _model
@@ -43,7 +44,8 @@ class map_class:
         print("Done: Initialised map_class.")
 
     def initialise_farmers(self):
-        """Assign colours and modify colourlimits"""
+        """Assign colours and modify colourlimits.
+        """
         for farmer in self.model.farmers:
             _color = self.model.random.choice(list(mcd.XKCD_COLORS.values()))
             self.colours.append(_color)
@@ -55,7 +57,8 @@ class map_class:
         print("Done: initialised farmer in map_class.")
 
     def place_farmers(self):
-        """Add locations of farmer into the map"""
+        """Add locations of farmer into the map.
+        :"""
 
         """ Modify the watermap by replaciing entries with farmer_id """
         _raw_id_matrix = np.array(self.model.grid.attr_grid("farmer_id"))
@@ -66,9 +69,13 @@ class map_class:
         print("Done: updated farmers in map_class.")
 
     def show(self, return_img=False):
-        """
-        Show the map in colours
-        """
+        """Show the map in colours.
+
+        :param return_img: [description], defaults to False
+        :type return_img: bool, optional
+        :return: the PIL image at the current time step
+        :rtype: PIL.image
+        """        
         # Generate Matplotlib figure
         fig = plt.figure()
         ax = plt.subplot(111)  # idk why 111, recommended in source
