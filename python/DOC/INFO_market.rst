@@ -2,7 +2,7 @@ Market Description
 ===================
 
 
-The ``market.py`` file contains ``market`` class.
+The ``market.py`` file contains :meth:`market` class.
 
 It's functions get called by the ``CropwarModel`` and 
 ``Farmer`` in order to update the market each time step with the 
@@ -12,7 +12,7 @@ current amount in stock -> supply.
 .. _market-target:
 Market
 -------
-``market.py`` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
+:meth:`market` implements a basic market model. Prices aggregate globally and demand remains a quantity independent of the market decisions.
 Another underlying assumption of this version is symmetric information for all market participants. 
 This is important in price aggregation: if all agents know the other agents stocks, they can anticipate the market volume for each iteration
 and hence infer the market prices. The transparency of stocks is incorporated via the function :ref:`market.Market._calc_global_stock`.

@@ -10,7 +10,13 @@ class Market:
     Market which regulates the prices of the crops
     """
 
-    def __init__(self, crop_sortiment: CropSortiment, agents: ap.AgentList, base_demand: float, demand_fraction: float) -> None:
+    def __init__(
+        self,
+        crop_sortiment: CropSortiment,
+        agents: ap.AgentList,
+        base_demand: float,
+        demand_fraction: float,
+    ) -> None:
         """
         Market model
 
@@ -33,7 +39,9 @@ class Market:
         self.current_demand: Dict[int, int] = {
             k: self.base_demand for k in crop_sortiment.crops.keys()
         }
-        self.current_stock: Dict[int, int] = {k: 1.0 for k in crop_sortiment.crops.keys()} # Initialize to 1 for initial demand calculation
+        self.current_stock: Dict[int, int] = {
+            k: 1.0 for k in crop_sortiment.crops.keys()
+        }  # Initialize to 1 for initial demand calculation
         self.current_supply: Dict[int, int] = {
             k: 0 for k in crop_sortiment.crops.keys()
         }
@@ -47,7 +55,8 @@ class Market:
         Calculates the current demand using an expansive market model
         """
         self.current_demand = {
-            crop_id: self.base_demand + self.demand_fraction * self.current_stock[crop_id]
+            crop_id: self.base_demand
+            + self.demand_fraction * self.current_stock[crop_id]
             for crop_id in self.crop_sortiment.crops.keys()
         }
 
@@ -59,13 +68,13 @@ class Market:
         for agent in self.agents:
             for crop_id, crop_stock in agent.stock.items():
                 self.current_stock[crop_id] += crop_stock
-        print("Global stock is {}".format(self.current_stock))
+        #print("Global stock is {}".format(self.current_stock))
 
     def calc_global_price(self) -> Dict[int, float]:
         """
         Calculates the global price according to supply and demand
         """
-        self._calc_current_demand()
+        self._calc_current_demand()  # based on t-1 stock
         self._calc_global_stock()
         for crop_id, crop_demand in self.current_demand.items():
             if self.current_stock[crop_id] != 0.0:
@@ -85,7 +94,7 @@ class Market:
                 self.current_prices[crop_id] = self.MAX_PRICE
         return self.current_prices
 
-    def calc_global_supply(self) -> Dict[int, float]:
+    def market_interaction(self) -> Dict[int, float]:
         """
         Calculates the total supply that is provided by the agents
         """
@@ -103,7 +112,11 @@ class Market:
             current_supply = self.current_supply[crop_id]
             # Correct for oversupply, i.e. each farmer only supplies the demand
             # if the total supply is larger than the demand
-            correction_factor = np.min([current_demand / current_supply, 1.0])
+            if current_supply != 0:
+                correction_factor = np.min([current_demand / current_supply, 1.0])
+            else:
+                correction_factor = 1.0
+
             for agent in self.agents:
                 supply_from_agent = agent.supply[crop_id]
                 agent.sell(crop_id, correction_factor * supply_from_agent)
@@ -112,5 +125,15 @@ class Market:
 
     def step(self):
         prices = self.current_prices.copy()
-        supp = self.calc_global_supply()
-        print(f"Market: Global supply is {supp} at prices {prices}")
+        supp = self.market_interaction()
+        #print(f"Market: Global supply is {supp} at prices {prices}")
+
+        # Update prices of crops & get highest price
+        for crop_id, price in self.current_prices.items():
+            self.crop_sortiment.crops[crop_id].sell_price = price
+
+        self.highest_price_id = max(
+            self.current_prices, key=self.current_prices.get
+        )
+        self.highest_price = max(self.current_prices.values())
+        self.crop_prices = self.current_prices.copy()
