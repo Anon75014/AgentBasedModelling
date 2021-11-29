@@ -47,7 +47,7 @@ class Farmer(ap.Agent):
             pos_init = self.random.choice(self.model.unoccupied)
 
         self.model.unoccupied.remove(pos_init)
-        self.buy_cell_threash = self.random.uniform(0, 1)
+        self.buy_cell_threash = 1 #self.random.uniform(0, 1)
 
         """ Set start crop id"""
         crop_id_init = self.random.randint(
