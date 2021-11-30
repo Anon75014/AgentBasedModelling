@@ -62,7 +62,7 @@ def run_full_simulation(use_ml_model=False):
         "seed": 0,  # Use a new seed
         # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
         "nr_ml_farmers": 0,
-        "farmers": {Trader: 1, Introvert: 2, ML_Introvert: 1},
+        "farmers": {Trader: 1, Introvert: 3, ML_Introvert: 0},
         "use_trained_model": False,
         "max_stock": 200,
         "max_budget": 3000,
