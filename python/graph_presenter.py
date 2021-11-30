@@ -30,6 +30,7 @@ class graph_class:
             "stock": "Stock Evolution",
             "cellcount": "Evolution of Cells per Farmer",
             "buy_cell_threash": "Buy Threashold",
+            "prices": "Crop Prices",
         }
         self.y_labels = {
             "budget": "Budget",
@@ -37,6 +38,8 @@ class graph_class:
             "stock": "Stock Units",
             "cellcount": "Amount of Cells",
             "buy_cell_threash": r"Parameter $\in [0,1]}$",
+            "prices": "Price",
+
         }
         self._stock_data = None
         print("OK: initialised Displayer instance")
@@ -126,6 +129,13 @@ class graph_class:
         ax.bar_label(rects1, padding=3, fmt="%.2f")
         ax.set_xticks(farmer_ids)
         ax.set_title("Buy Threashold for the farmers")
+
+    def prices(self):
+        print(f"prices have so many pars: {len(self.model.price_history)}")
+        prices_df = pd.DataFrame(self.model.price_history)
+        self.new_plot("prices")
+        sns.lineplot(data = prices_df)
+
 
     def personalities(self):
         """show Personality database
