@@ -131,11 +131,13 @@ class graph_class:
         ax.set_title("Buy Threashold for the farmers")
 
     def prices(self):
+        """Presents the evolution of the Market-influenced crop prices.
+        """
         print(f"prices have so many pars: {len(self.model.price_history)}")
         prices_df = pd.DataFrame(self.model.price_history)
         self.new_plot("prices")
         sns.lineplot(data = prices_df)
-
+        prices_df.to_csv('exported_prices.csv')
 
     def personalities(self):
         """show Personality database
