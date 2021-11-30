@@ -45,7 +45,7 @@ class map_class:
     def initialise_farmers(self):
         """Assign colours and modify colourlimits"""
         for farmer in self.model.farmers:
-            _color = self.model.random.choice(list(mcd.XKCD_COLORS.values()))
+            _color = "#4170ba"
             self.colours.append(_color)
             self.weights.append(farmer.id)
             self._plot_names.append(f"Farmer {farmer.id}")
