@@ -56,17 +56,17 @@ def run_full_simulation(use_ml_model=False):
             key=lambda x: x[0],
         ),  # number of start positions must match n_farmers
         "start_budget": 1000,
-        "steps": 230,  # Amount of time steps to be simulated
+        "steps": 50,  # Amount of time steps to be simulated
         "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
         "save_gif": False,  # Save the map each timestep and generate Gif in the end
-        "seed": 0,  # Use a new seed
+        "seed": b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi',  # Use a new seed
         # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
         "nr_ml_farmers": 0,
-        "farmers": {Trader: 1, Introvert: 3, ML_Introvert: 0},
+        "farmers": {Trader: 4, Introvert: 0, ML_Introvert: 0},
         "use_trained_model": False,
         "max_stock": 200,
         "max_budget": 3000,
-        "river_content": 12.0,
+        "river_content": 200000,
         "market_base_demand": 10.0,
         "market_demand_fraction": 0.7,
     }
@@ -89,6 +89,7 @@ def run_full_simulation(use_ml_model=False):
     presenter.export()
     # presenter.traits(model)
     presenter.personalities()
+    presenter.prices()
 
     print(f"SEED: {model.p.seed}")
 
