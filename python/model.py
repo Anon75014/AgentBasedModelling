@@ -10,13 +10,12 @@ from PIL import Image
 import map_presenter
 from agents_base import Cell
 from agents import Trader
+from ml_agents import ML_Introvert
 from market import Market
 from agents_base import BaseFarmer
 from river import River
 
 """ TODOS ::
-# TODO Change all positions to 2D-tuples
-
 """
 
 
@@ -127,7 +126,7 @@ class CropwarModel(ap.Model):
             demand_fraction=self.p.market_demand_fraction,
         )
         self.crop_prices = self.market.current_prices.copy()
-
+        self.price_history = []
         """ MACHINE LEARNING """
         self.time_is_up = False
         self.ml_trainee = None  # default
@@ -136,12 +135,13 @@ class CropwarModel(ap.Model):
             [name[:2] != "ML" for name in self.model.farmers.type]
         )
         nr_det = len(self.det_farmers)
-        if nr_det < self.p.n_farmers and nr_det + 1 == self.p.n_farmers:
+        # if nr_det < self.p.n_farmers and nr_det + 1 == self.p.n_farmers:
+        if self.p.farmers[ML_Introvert] == 1: # TODO or other ML_Type
             self.ml_trainee = self.model.farmers.select(
                 [name[:2] == "ML" for name in self.model.farmers.type]
             )[0]
             self.p.ml_env.ml_trainee = self.ml_trainee
-        else:
+        elif self.p.farmers[ML_Introvert] > 1:
             raise ValueError("It seems like there is more than one ML trainee...")
 
         """ Initialise Map (for GIF) Instances """
@@ -257,6 +257,7 @@ class CropwarModel(ap.Model):
         self.farmers.record("crop_id")
         self.farmers.record("stock")
         self.farmers.record("cellcount")
+        self.price_history.append(list(self.market.current_prices.values()))
         # self.record("crop_prices")
 
         if self.p.save_gif:
