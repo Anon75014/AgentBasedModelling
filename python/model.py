@@ -126,7 +126,7 @@ class CropwarModel(ap.Model):
             demand_fraction=self.p.market_demand_fraction,
         )
         self.crop_prices = self.market.current_prices.copy()
-
+        self.price_history = []
         """ MACHINE LEARNING """
         self.time_is_up = False
         self.ml_trainee = None  # default
@@ -257,6 +257,7 @@ class CropwarModel(ap.Model):
         self.farmers.record("crop_id")
         self.farmers.record("stock")
         self.farmers.record("cellcount")
+        self.price_history.append(list(self.market.current_prices.values()))
         # self.record("crop_prices")
 
         if self.p.save_gif:
