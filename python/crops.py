@@ -7,9 +7,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-EFF = 0.464  # irrigation efficiency for each subbasin
-EXCHANGE_RATE_TO_USD = 1#320000
-
 class Crop:
     """Crop Super Class"""
 
@@ -66,16 +63,18 @@ class Crop:
         self.machinery_hour = machinery_hour
 
     def change_crop_id(self, new_id: int):
-        self.crop_id = new_id
+        self._id = new_id
 
     def get_harvest_yield(self, di: float) -> List[float]:
-        assert(self.crop_factor is not None and self.k_c_y is not None)
-        rain = 9.0 # mm / ha
-        w_c_a = [di * i * rain for i in self.crop_factor]
-        s = 0.0
-        for j, k_c_y in enumerate(self.k_c_y):
-            s += k_c_y * (1.0 - (w_c_a[j] / (self.crop_factor[j] * rain)))
-        harvest_yield = self.max_harvest_yield * (1.0 - s)
+        # TODO: Make Amir's yield calculation work
+        #assert(self.crop_factor is not None and self.k_c_y is not None)
+        #rain = 9.0 # mm / ha
+        #w_c_a = [di * i * rain for i in self.crop_factor]
+        #s = 0.0
+        #for j, k_c_y in enumerate(self.k_c_y):
+        #    s += k_c_y * (1.0 - (w_c_a[j] / (self.crop_factor[j] * rain)))
+        #harvest_yield = self.max_harvest_yield * (1.0 - s)
+        harvest_yield = self.max_harvest_yield * di
         return harvest_yield
 
     def _get_gwp(self, area):
@@ -101,7 +100,6 @@ class Crop:
             + GWP_electricity[i]
         ) for i in range(len(area))]
         return GWP_total
-
 
     def _info_dict(self) -> dict:
         """Used to generate a dict so that the config can be saved into a json file.
@@ -140,7 +138,7 @@ class CropSortiment:
         crop_id = self.amount_of_crops
         self.amount_of_crops += 1
         # generate new Crop-instance based on Crop-class and add to dict:
-        self.crops[crop_id] = Crop(crop_id, seed_cost, sell_price, max_harvest_yield, water_need=1.0)
+        self.crops[crop_id] = Crop(crop_id, seed_cost, sell_price, max_harvest_yield, water_need)
         # print(f"Done: added Crop{crop_id} to sortiment.")
 
     def add_crop(self, new_crop: Crop):
@@ -148,7 +146,6 @@ class CropSortiment:
         self.amount_of_crops += 1
         new_crop.change_crop_id(crop_id)
         self.crops[crop_id] = new_crop
-        print(f"Changed crop_id to {crop_id}")
 
     def _info_dict(self) -> dict:
         """Reformat for storage in config_file
@@ -161,8 +158,8 @@ class CropSortiment:
 
 WinterWheat = Crop(
     crop_id=1,
-    seed_cost=26891710,
-    sell_price=40000,
+    seed_cost=84.03,
+    sell_price=0.125,
     max_harvest_yield=7.0,
     water_need=1.0,
     crop_factor=[0.6, 1.2, 0.75, 0.25],
@@ -180,8 +177,8 @@ WinterWheat = Crop(
 
 Barley = Crop(
     crop_id=2,
-    seed_cost=19710930,
-    sell_price=23798,
+    seed_cost=61.60,
+    sell_price=0.074,
     max_harvest_yield=4.7,
     water_need=1.0,
     crop_factor=[0.8, 1.0, 1.05, 0.4],
@@ -199,8 +196,8 @@ Barley = Crop(
 
 Maize = Crop(
     crop_id=3,
-    seed_cost=45460320,
-    sell_price=24650,
+    seed_cost=142.06,
+    sell_price=0.077,
     max_harvest_yield=10.0,
     water_need=1.0,
     crop_factor=[0.7, 1.2, 1.15, 1.1],
@@ -218,8 +215,8 @@ Maize = Crop(
 
 Beans = Crop(
     crop_id=4,
-    seed_cost=50058840,
-    sell_price=68694.3,
+    seed_cost=156.43,
+    sell_price=0.2146,
     max_harvest_yield=12.0,
     water_need=1.0,
     crop_factor=[0.6, 1.2, 0.75, 0.3],
@@ -237,8 +234,8 @@ Beans = Crop(
 
 Cucumbers = Crop(
     crop_id=5,
-    seed_cost=76835360,
-    sell_price=20692,
+    seed_cost=240.11,
+    sell_price=0.065,
     max_harvest_yield=25.0,
     water_need=1.0,
     crop_factor=[0.5, 1.0, 0.80],
@@ -256,8 +253,8 @@ Cucumbers = Crop(
 
 Tomatoes = Crop(
     crop_id=6,
-    seed_cost=93581210,
-    sell_price=16680.3,
+    seed_cost=292.44,
+    sell_price=0.052,
     max_harvest_yield=35.0,
     water_need=1.0,
     crop_factor=[0.65, 1.25, 0.95, 0.65],
@@ -275,8 +272,8 @@ Tomatoes = Crop(
 
 Watermelons = Crop(
     crop_id=7,
-    seed_cost=66868420,
-    sell_price=8859.9,
+    seed_cost=208.96,
+    sell_price=0.028,
     max_harvest_yield=40.0,
     water_need=1.0,
     crop_factor=[0.65, 1.05, 0.9, 0.75],
@@ -294,8 +291,8 @@ Watermelons = Crop(
 
 Alfalfa = Crop(
     crop_id=8,
-    seed_cost=32469710,
-    sell_price=25833,
+    seed_cost=101.47,
+    sell_price=0.81,
     max_harvest_yield=3.5,
     water_need=1.0,
     crop_factor=[0.4, 1.2],
@@ -313,8 +310,8 @@ Alfalfa = Crop(
 
 Sorghum = Crop(
     crop_id=9,
-    seed_cost=48214420,
-    sell_price=20011.5,
+    seed_cost=150.67,
+    sell_price=0.063,
     max_harvest_yield=8.0,
     water_need=1.0,
     crop_factor=[0.575, 1.15, 0.8, 0.55],
@@ -332,8 +329,8 @@ Sorghum = Crop(
 
 Rapeseed = Crop(
     crop_id=10,
-    seed_cost=25928570,
-    sell_price=28298.7,
+    seed_cost=81.03,
+    sell_price=0.088,
     max_harvest_yield=4.0,
     water_need=1.0,
     crop_factor=[0.35, 1.15, 0.35],

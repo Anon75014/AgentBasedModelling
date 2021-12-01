@@ -262,9 +262,6 @@ class BaseFarmer(ap.Agent):
 
             self.budget += amount * self.crop.sell_price
             self.moneytracker["harvest_income"] += amount * self.crop.sell_price
-        else:
-            # " Not enough stock. "
-            pass
 
     """Advanced, Personal Functions that depend on Personality"""
 

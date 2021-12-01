@@ -66,7 +66,7 @@ def run_full_simulation(use_ml_model=False):
         "max_stock": 200,
         "max_budget": 3000,
         "river_content": 12.0,
-        "market_base_demand": 10.0,
+        "market_base_demand": 20.0,
         "market_demand_fraction": 0.7,
     }
 
