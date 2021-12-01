@@ -4,7 +4,7 @@
 
 from agents import *
 from ml_agents import *
-from crops import CropSortiment
+from crops import *
 from graph_presenter import graph_class
 from map_presenter import map_class
 from model import CropwarModel
@@ -32,11 +32,10 @@ def run_full_simulation(use_ml_model=False):
     crop_shop = CropSortiment()
     # Add two crops TODO Find good parameters for crops.
 
-    crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 2, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 3, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 4, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 9, 1)
+    crop_shop.add_crop(WinterWheat)
+    crop_shop.add_crop(Barley)
+    crop_shop.add_crop(Maize)
+    crop_shop.add_crop(Beans)
 
     # These parameters are accessible within the model by"self.p.water_levels"
     parameters = {

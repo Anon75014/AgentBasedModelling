@@ -100,7 +100,7 @@ class Trader(BaseFarmer):
             self.change_to_crop(self.crop._id)
 
         # Diese Personality kann crop wechseln!
-        
+
         self.market = self.model.market # get access to the CropWar market infos
         # potentially change crop:
         self.check_crop_change(

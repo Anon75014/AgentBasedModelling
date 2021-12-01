@@ -33,9 +33,7 @@ class Cell(ap.Agent):
         if self.crop == None:
             # print(f"No crop planted here! {self.pos}")
             return
-        self.farmer._stock[self.crop._id] += (
-            self.farmer.water_supply / self.farmer.water_need * self.crop.harvest_yield
-        )
+        self.farmer._stock[self.crop._id] += self.crop.get_harvest_yield(self.farmer.water_supply / self.farmer.water_need)
 
     def set_farmer_id(self):
         """Used to extract the farmer id easily."""
