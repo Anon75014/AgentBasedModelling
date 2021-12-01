@@ -52,7 +52,7 @@ class Market:
 
     def _calc_current_demand(self) -> None:
         """
-        Calculates the current demand using an expansive market model
+        Calculates the current demand using an expansive market model, i.e. the demand increases every iteration by a fixed fraction of the total stock.
         """
         self.current_demand = {
             crop_id: self.base_demand
@@ -62,7 +62,8 @@ class Market:
 
     def _calc_global_stock(self) -> None:
         """
-        Calculates all the available resources
+        Calculates all the available resources. Due to the assumption of symmetric information, the total stock will be aggregated
+        by adding the individual stocks of every agent for a certain commodity.
         """
         self.current_stock = {k: 0.0 for k in self.crop_sortiment.crops.keys()}
         for agent in self.agents:
@@ -96,7 +97,7 @@ class Market:
 
     def market_interaction(self) -> Dict[int, float]:
         """
-        Calculates the total supply that is provided by the agents
+        Calculates the total supply that is provided by the agents. The agents act according to their specification, i.e. their supply function.
         """
         self.calc_global_price()
         self.current_supply = {k: 0.0 for k in self.crop_sortiment.crops.keys()}
