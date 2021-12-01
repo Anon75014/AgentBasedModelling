@@ -30,35 +30,40 @@ class CropwarEnv(gym.Env):
         """Setup of Model"""
         self._reset_Cropshop()
 
-        self.parameters = experiment_settings["ML_Introvert_vs_3_Trader"][
+        self.p = experiment_settings["ML_Introvert_vs_3_Trader"][
             "base_parameters"
         ]
-        self.parameters.update(
+        self.p.update(
             {
                 # FIXED for the ML Environment:
                 "crop_shop": self.crop_shop,
                 "amount_of_crops": self.crop_shop.amount_of_crops,
                 "ml_env": self,
-                "trainee_type": ML_Introvert
+                "trainee_type": ML_Introvert,
+                "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
             }
         )
 
-        """ Infer Machine Learning Base-Personalty """
+        self.p = DotDict(self.p)
         
-        print(f"Info: The active ML model is of type {self.ml_type.__name__}")
+        """ Infer Machine Learning Base-Personalty """
+
+        print(f"Info: The active ML model is of type {self.p.trainee_type.__name__}")
+
 
         """Setup for RL"""
-        nr_stock_entries = self.parameters["amount_of_crops"]
+        nr_stock_entries = self.p.amount_of_crops
         nr_seeds = nr_stock_entries
-        nr_farmers = self.parameters["n_farmers"]
+        nr_farmers = sum(self.p.farmers.values())
+        self.trainee_type = self.p.trainee_type
 
         self.observation_space = spaces.Box(
             0.0,
             1.0,
-            shape=(self.ml_type.data.obs_dim(nr_stock_entries, nr_seeds, nr_farmers),),
+            shape=(self.trainee_type.data.obs_dim(nr_stock_entries, nr_seeds, nr_farmers),),
             dtype=np.float32,
         )
-        self.action_space = self.ml_type.data.action_space(nr_stock_entries)
+        self.action_space = self.trainee_type.data.action_space(nr_stock_entries)
 
     def step(self, action: np.array):
         """Use action to step the environment.
@@ -117,7 +122,7 @@ class CropwarEnv(gym.Env):
         self._reset_Cropshop()
 
         """ Initialise the model"""
-        self.model = CropwarModel(self.parameters)
+        self.model = CropwarModel(dict(self.p))
         self.model.sim_setup()
 
         state, _ = self.ml_trainee.get_state()

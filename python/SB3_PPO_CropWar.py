@@ -9,7 +9,7 @@ from main import run_full_simulation
 from ml_agents import *
 from RL_env import CropwarEnv
 
-name = "CropWar_PPO_vDezCanChange"
+name = "CropWar_PPO_vs_pretrained"
 
 
 def run_trainer():
@@ -22,8 +22,8 @@ def run_trainer():
     """
     global name
     # Parallel environments
-    env = make_vec_env(CropwarEnv, n_envs=2)
-    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log="python\log_ppo_vsTraders")
+    env = make_vec_env(CropwarEnv, n_envs=4)
+    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log="python\log_ppo_vs_pretrained")
     model.learn(total_timesteps=1e5)
 
     model.save(name)
@@ -31,7 +31,7 @@ def run_trainer():
         f"Saved Model as {name}.\
          Rename this file if you like the results for permanent storage."
     )
-    return deepcopy(model)
+    return model
 
 
 def run_interactive():
@@ -78,7 +78,7 @@ def evaluate():
 
 
 if __name__ == "__main__":
-    # run_trainer()
+    run_trainer()
     # run_interactive()
-    evaluate()
+    # evaluate()
 #%%

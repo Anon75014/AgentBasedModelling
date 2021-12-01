@@ -130,7 +130,7 @@ class CropwarModel(ap.Model):
             assert self.p.ml_env
             # Train a farmer with the right type. Others use pretrained model
             self.ml_trainee = self.model.farmers.select(
-                self.model.farmers.type == self.p.trainee_type
+                self.model.farmers.type == self.p.trainee_type.__name__
             )[0]
             self.p.ml_env.ml_trainee = self.ml_trainee
             self.ml_trainee.ACTIVE_TRAINING = True
