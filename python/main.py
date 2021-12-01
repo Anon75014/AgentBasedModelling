@@ -34,11 +34,11 @@ if __name__ == "__main__":
         # "v0_pos" : None,
         "v0_pos": [(5, 4), (5, 1), (1, 1), (1, 4)],             # number of start positions must match n_farmers 
         "start_budget": 500,
-        "t_end": 10,                                            # Amount of time steps to be simulated
+        "t_end": 50,                                            # Amount of time steps to be simulated
         "diagonal expansion": False,                            # Only expand along the owned edges. like + and not x
         "save_gif": True,                                       # Save the map each timestep and generate Gif in the end
-        "seed" : 0,                                             # Use a new seed
-        #"seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed 
+        #"seed" : 0,                                             # Use a new seed
+        "seed" : b'G\x11\xd9\xec0H\xfb\x83n\n'      # Use a custom seed 
     }
 
     """ Create and run the model """
