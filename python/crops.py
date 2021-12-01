@@ -68,18 +68,18 @@ class Crop:
     def get_harvest_yield(self, di: float) -> List[float]:
         # TODO: Make Amir's yield calculation work
         #assert(self.crop_factor is not None and self.k_c_y is not None)
-        #rain = 9.0 # mm / ha
-        #w_c_a = [di * i * rain for i in self.crop_factor]
-        #s = 0.0
-        #for j, k_c_y in enumerate(self.k_c_y):
-        #    s += k_c_y * (1.0 - (w_c_a[j] / (self.crop_factor[j] * rain)))
-        #harvest_yield = self.max_harvest_yield * (1.0 - s)
-        harvest_yield = self.max_harvest_yield * di
+ 
+        s = 0.0
+        for j, k_c_y in enumerate(self.k_c_y):
+            s += k_c_y * (1.0 - (di / (self.crop_factor[j])))
+        harvest_yield = self.max_harvest_yield * (1.0 - s)
+        if harvest_yield<0:
+            harvest_yield=0
         return harvest_yield
 
     def _get_gwp(self, area):
         # TODO: Implement correctly
-        area = [element * 19024 for element in area]
+        #area = [element * 19024 for element in area] This line is not needed 
         GWP_fertilizer = [(
             self.manure_need[i] * 8.96384
             + self.phosphorus_need[i] * 1.5
