@@ -62,7 +62,7 @@ class Trader(BaseFarmer):
             k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
         }
 
-        self.buy_cell_threash =  1# self.random.uniform(0, 1) # ALTERNATIVE
+        self.buy_cell_threash = 1  # self.random.uniform(0, 1) # ALTERNATIVE
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
@@ -91,7 +91,6 @@ class Trader(BaseFarmer):
         uniform probability sample is above the farmers buy_theshold.
         """
 
-
         dir = self.random.choice(self.model.headings)
         prob = self.random.uniform(0, 1)
         # Diese Personality expandiert (manchmal)!
@@ -100,8 +99,8 @@ class Trader(BaseFarmer):
             self.change_to_crop(self.crop._id)
 
         # Diese Personality kann crop wechseln!
-        
-        self.market = self.model.market # get access to the CropWar market infos
+
+        self.market = self.model.market  # get access to the CropWar market infos
         # potentially change crop:
         self.check_crop_change(
             # TODO CLEAN UP these references because highest price in market. no need to hand it to the check function
@@ -112,25 +111,24 @@ class Trader(BaseFarmer):
         )
 
     def check_crop_change(
-                self,
-                crop_id: int,
-                price: int,
-                current_demand: int,
-                current_supply: int,
-            ) -> None:
-                """[summary]"""
-                if crop_id != self.crop_id:
-                    cost_seed_change = (
-                        len(self.aquired_land)
-                        * self.model.crop_shop.crops[crop_id].seed_cost
-                    )
-                    price = self.model.crop_shop.crops[crop_id].sell_price
-                    expected_profit = (
-                        cost_seed_change + (current_demand - current_supply) * price
-                    )
-                    print("Expected profit: ", expected_profit)
-                    if expected_profit > 0:
-                        self.change_to_crop(crop_id)
+        self,
+        crop_id: int,
+        price: int,
+        current_demand: int,
+        current_supply: int,
+    ) -> None:
+        """[summary]"""
+        if crop_id != self.crop_id:
+            cost_seed_change = (
+                len(self.aquired_land) * self.model.crop_shop.crops[crop_id].seed_cost
+            )
+            price = self.model.crop_shop.crops[crop_id].sell_price
+            expected_profit = (
+                cost_seed_change + (current_demand - current_supply) * price
+            )
+            # print("Expected profit: ", expected_profit)
+            if expected_profit > 0:
+                self.change_to_crop(crop_id)
 
 
 # %%

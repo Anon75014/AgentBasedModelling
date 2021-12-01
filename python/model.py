@@ -8,11 +8,10 @@ import numpy as np
 from PIL import Image
 
 import map_presenter
-from agents_base import Cell
 from agents import Trader
-from ml_agents import ML_Introvert
+from agents_base import BaseFarmer, Cell
 from market import Market
-from agents_base import BaseFarmer
+from ml_agents import ML_Introvert
 from river import River
 
 """ TODOS ::
@@ -130,17 +129,19 @@ class CropwarModel(ap.Model):
         """ MACHINE LEARNING """
         self.time_is_up = False
         self.ml_trainee = None  # default
+        self.total_reward = 0
         # deterministic farmers:
         self.det_farmers = self.model.farmers.select(
             [name[:2] != "ML" for name in self.model.farmers.type]
         )
         nr_det = len(self.det_farmers)
         # if nr_det < self.p.n_farmers and nr_det + 1 == self.p.n_farmers:
-        if self.p.farmers[ML_Introvert] == 1: # TODO or other ML_Type
+        if self.p.farmers[ML_Introvert] == 1:  # TODO or other ML_Type
             self.ml_trainee = self.model.farmers.select(
                 [name[:2] == "ML" for name in self.model.farmers.type]
             )[0]
-            self.p.ml_env.ml_trainee = self.ml_trainee
+            if self.p.ml_env:  # if not, then called by main
+                self.p.ml_env.ml_trainee = self.ml_trainee
         elif self.p.farmers[ML_Introvert] > 1:
             raise ValueError("It seems like there is more than one ML trainee...")
 
@@ -154,7 +155,6 @@ class CropwarModel(ap.Model):
             self.map_frames = []  # used for png storage for the gif
             self.map_drawer = map_presenter.map_class(self)
             self.map_drawer.initialise_farmers()
-
 
     def cell_at(self, pos: tuple):
         """Returns cell at pos Position in Grid"""
@@ -195,13 +195,6 @@ class CropwarModel(ap.Model):
                 return True
         return False
 
-    def at_last_step(self) -> bool:
-        """Check if at last time step.
-
-        :rtype: bool
-        """
-        return self.t == self.p.t_end
-
     def step(self):
         """Move model from t to t+1.
 
@@ -212,9 +205,6 @@ class CropwarModel(ap.Model):
         - let farmers decide if they want to change crops
         - refresh the river water content
         """
-        # if self.t > self.p.t_end:  # model should stop after "t_end" steps
-        #     self.time_is_up = True
-        #     self.stop()  # end the current simulation
 
         self.farmers.pre_market_step()
 
@@ -228,27 +218,9 @@ class CropwarModel(ap.Model):
         self.farmers.post_market_step()
         self.river.refresh_water_content()
 
-    
-
-    # def ml_step(self, action: np.array):
-    #     """Applies action to environment.
-
-    #     Applies the action decided by the ML algorithm to the environment.
-    #     :param action: np.array of ints
-    #     :type action: np.array
-    #     """
-    #     ml_farmer = self.ml_farmers[0]
-    #     [do_farm, sell] = action
-    #     if do_farm:
-    #         ml_farmer.harvest()
-
-    #     if sell:
-    #         # TODO generalize 0.2 by making action continuous::
-    #         amount = int(0.2 * ml_farmer._stock[ml_farmer.crop._id])
-
-    #         ml_farmer.sell(ml_farmer.crop._id, amount)
-
-    #     return
+        # Measure Reward if Evaluation of trained ml_model
+        if self.p.use_trained_model:
+            self.total_reward += self.rewarder()
 
     def update(self):
         """Record the properties of the farmers each step."""
@@ -258,7 +230,6 @@ class CropwarModel(ap.Model):
         self.farmers.record("stock")
         self.farmers.record("cellcount")
         self.price_history.append(list(self.market.current_prices.values()))
-        # self.record("crop_prices")
 
         if self.p.save_gif:
             self.cells.set_farmer_id()
@@ -290,6 +261,19 @@ class CropwarModel(ap.Model):
         _pars_dict.crop_shop = _pars_dict.crop_shop._info_dict()
         _pars_dict.seed = str(_pars_dict.seed)
         return dict(_pars_dict)
+
+    def rewarder(self):
+        reward = 0
+        # Idea: The farmer gets max reward if richest. Then quadratically less for lower places
+        _budgets = self.farmers.budget.copy()
+        budgets = np.array(_budgets)
+        budgets.sort()
+        ranking = np.where(budgets == self.ml_trainee.budget)[0][-1] / (
+            len(budgets) - 1
+        )
+        # print(ranking)  # for debug
+        reward = ranking ** 2
+        return reward
 
 
 # %%

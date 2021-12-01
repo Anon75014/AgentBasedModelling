@@ -3,11 +3,12 @@
 # %%
 
 from agents import *
-from ml_agents import *
 from crops import CropSortiment
 from graph_presenter import graph_class
 from map_presenter import map_class
+from ml_agents import *
 from model import CropwarModel
+from settings import experiment_settings
 
 """ TODOS:
 # TODO Find good parameters for crops.
@@ -39,39 +40,18 @@ def run_full_simulation(use_ml_model=False):
     crop_shop.add_crop(1, 9, 1)
 
     # These parameters are accessible within the model by"self.p.water_levels"
-    parameters = {
-        # FIXED:
-        "crop_shop": crop_shop,
-        "amount_of_crops": crop_shop.amount_of_crops,
-        # TUNABLE:
-        "water_levels": [0, 0, 3],
-        # "v0_pos" : None,
-        "v0_pos": sorted(
-            [
-                (1, 1),
-                (1, 4),
-                (5, 1),
-                (5, 4),
-            ],
-            key=lambda x: x[0],
-        ),  # number of start positions must match n_farmers
-        "start_budget": 1000,
-        "steps": 230,  # Amount of time steps to be simulated
-        "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
-        "save_gif": False,  # Save the map each timestep and generate Gif in the end
-        "seed": 0,  # Use a new seed
-        # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
-        "nr_ml_farmers": 0,
-        "farmers": {Trader: 1, Introvert: 3, ML_Introvert: 0},
-        "use_trained_model": False,
-        "max_stock": 200,
-        "max_budget": 3000,
-        "river_content": 12.0,
-        "market_base_demand": 10.0,
-        "market_demand_fraction": 0.7,
-    }
+    parameters = experiment_settings["Stationary_ML_vs_3_Trader"]["base_parameters"]
+    parameters.update(
+        {  # FIXED for main.py:
+            "crop_shop": crop_shop,
+            "amount_of_crops": crop_shop.amount_of_crops,
+        }
+    )
 
     """ Create and run the model """
+    if use_ml_model:
+        parameters["use_trained_model"] = use_ml_model
+
     model = CropwarModel(parameters)  # create model instance
 
     results = model.run()
@@ -89,6 +69,10 @@ def run_full_simulation(use_ml_model=False):
     presenter.export()
     # presenter.traits(model)
     presenter.personalities()
+    presenter.prices()
+
+    if use_ml_model:
+        print(f"ML: Reached total reward: {model.total_reward}")
 
     print(f"SEED: {model.p.seed}")
 
