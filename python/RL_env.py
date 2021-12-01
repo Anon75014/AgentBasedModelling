@@ -28,10 +28,9 @@ class CropwarEnv(gym.Env):
         super().__init__()
 
         """Setup of Model"""
-        # Initialise: CROPS
         self._reset_Cropshop()
 
-        self.parameters = experiment_settings["Stationary_ML_vs_3_Trader"][
+        self.parameters = experiment_settings["ML_Introvert_vs_3_Trader"][
             "base_parameters"
         ]
         self.parameters.update(
@@ -40,15 +39,12 @@ class CropwarEnv(gym.Env):
                 "crop_shop": self.crop_shop,
                 "amount_of_crops": self.crop_shop.amount_of_crops,
                 "ml_env": self,
+                "trainee_type": ML_Introvert
             }
         )
 
         """ Infer Machine Learning Base-Personalty """
-        self.ml_type = [
-            k
-            for k, v in self.parameters["farmers"].items()
-            if k.__name__[:2] == "ML" and v > 0
-        ][0]
+        
         print(f"Info: The active ML model is of type {self.ml_type.__name__}")
 
         """Setup for RL"""
@@ -83,7 +79,9 @@ class CropwarEnv(gym.Env):
 
         self.model.sim_step()
 
+        """Evaluate the Action"""
         state, done = self.ml_trainee.get_state()
+        reward = self.ml_trainee.rewarder()
 
         if (state > 1).any():
             # Ensure normailsed observation-states:
@@ -95,11 +93,8 @@ class CropwarEnv(gym.Env):
             # Reached end of simulation
             # print("MODEL NOT running anymore ",self.model.t)
             # time.sleep(2)
-
             done = True
 
-        """Reward Calculation"""
-        reward = self.model.rewarder()
         info = {}
         return state, reward, done, info
 

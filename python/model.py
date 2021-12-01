@@ -8,10 +8,8 @@ import numpy as np
 from PIL import Image
 
 import map_presenter
-from agents import Trader
 from agents_base import BaseFarmer, Cell
 from market import Market
-from ml_agents import ML_Introvert
 from river import River
 
 """ TODOS ::
@@ -104,18 +102,15 @@ class CropwarModel(ap.Model):
         self.unoccupied = [tuple(coord) for coord in self.unoccupied]
 
         self.p.n_farmers = sum(self.p.farmers.values())
-        n_farmers = self.p.n_farmers  # amount of farmer-agents
-        # TODO n_farmers NOT NEEDED HERE ANYMORE ONCE ML CODE Updated
 
         farmers = []
         for kind, amount in self.p.farmers.items():
             farmers += [kind] * amount
-        self.random.shuffle(farmers)
+        self.random.shuffle(farmers)  # s.t. placement on map is random
 
         self.farmers = ap.AgentDList(self, 1, farmers.pop(0))
         for _ in range(self.p.n_farmers - 1):
             self.farmers += ap.AgentDList(self, 1, farmers.pop(0))
-        # TODO check THIS FARMER SETUP
 
         """ MARKET """
         self.market = Market(
@@ -126,24 +121,19 @@ class CropwarModel(ap.Model):
         )
         self.crop_prices = self.market.current_prices.copy()
         self.price_history = []
+
         """ MACHINE LEARNING """
         self.time_is_up = False
         self.ml_trainee = None  # default
-        self.total_reward = 0
-        # deterministic farmers:
-        self.det_farmers = self.model.farmers.select(
-            [name[:2] != "ML" for name in self.model.farmers.type]
-        )
-        nr_det = len(self.det_farmers)
-        # if nr_det < self.p.n_farmers and nr_det + 1 == self.p.n_farmers:
-        if self.p.farmers[ML_Introvert] == 1:  # TODO or other ML_Type
+
+        if self.p.trainee_type:
+            assert self.p.ml_env
+            # Train a farmer with the right type. Others use pretrained model
             self.ml_trainee = self.model.farmers.select(
-                [name[:2] == "ML" for name in self.model.farmers.type]
+                self.model.farmers.type == self.p.trainee_type
             )[0]
-            if self.p.ml_env:  # if not, then called by main
-                self.p.ml_env.ml_trainee = self.ml_trainee
-        elif self.p.farmers[ML_Introvert] > 1:
-            raise ValueError("It seems like there is more than one ML trainee...")
+            self.p.ml_env.ml_trainee = self.ml_trainee
+            self.ml_trainee.ACTIVE_TRAINING = True
 
         """ Initialise Map (for GIF) Instances """
         if self.p.save_gif:
@@ -188,7 +178,7 @@ class CropwarModel(ap.Model):
 
     def _valid_root_cell(
         self, farmer: BaseFarmer, pos: tuple, _dir: str
-    ):  # TODO CHeck if THIS baseFARMER ref works
+    ):  
         """Check if one step into direction _dir the farmer ownes a cell"""
         for item in self._one_to_dir.values():
             if item(pos[0], pos[1]) in farmer.aquired_land:
@@ -199,30 +189,25 @@ class CropwarModel(ap.Model):
         """Move model from t to t+1.
 
         Evolve the entire model by one time step:
-        - Step all the "normal" farmers
-        - Step potentially trained farmers to
+        - Step all the farmers
         - Step the market
-        - let farmers decide if they want to change crops
+        - let farmers decide if they want to change crops/expand
         - refresh the river water content
         """
 
         self.farmers.pre_market_step()
-
-        # if self.p.use_trained_model:
-        #     obs, _ = self.ml_get_state()
-        #     action, _ = self.p.use_trained_model.predict(obs, deterministic=True)
-        #     self.ml_step(action)
-
         self.market.step()
-
         self.farmers.post_market_step()
+
         self.river.refresh_water_content()
 
-        # Measure Reward if Evaluation of trained ml_model
-        if self.p.use_trained_model:
-            self.total_reward += self.rewarder()
-
     def update(self):
+        """Update farmers and record farmer properties."""
+
+        """Create sorted Budget array for """
+        budgets = np.array(self.model.farmers.budget.copy())
+        budgets.sort()
+        self.sorted_budgets = budgets
         """Record the properties of the farmers each step."""
         self.farmers.update()
         self.farmers.record("budget")
@@ -261,19 +246,6 @@ class CropwarModel(ap.Model):
         _pars_dict.crop_shop = _pars_dict.crop_shop._info_dict()
         _pars_dict.seed = str(_pars_dict.seed)
         return dict(_pars_dict)
-
-    def rewarder(self):
-        reward = 0
-        # Idea: The farmer gets max reward if richest. Then quadratically less for lower places
-        _budgets = self.farmers.budget.copy()
-        budgets = np.array(_budgets)
-        budgets.sort()
-        ranking = np.where(budgets == self.ml_trainee.budget)[0][-1] / (
-            len(budgets) - 1
-        )
-        # print(ranking)  # for debug
-        reward = ranking ** 2
-        return reward
 
 
 # %%

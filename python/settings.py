@@ -2,7 +2,7 @@ from agents import *
 from ml_agents import *
 
 experiment_settings = {
-    "Stationary_ML_vs_3_Trader": {
+    "ML_Introvert_vs_3_Trader": {
         "saved_ML_models": [],
         "base_parameters": {
             # ---- MAP ----
@@ -25,11 +25,10 @@ experiment_settings = {
             "save_gif": False,  # Save map as Gif
             "seed": 0,  # Use a new seed
             # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
-            "n_farmers": 4,
             "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
             # ---- ML Parameters ----
-            "nr_ml_farmers": 1,
             "ml_env": None,  # spec in RL_env
+            "trainee_type" : None,
             "use_trained_model": False,
             # ---- Parameters ----
             "start_budget": 1000,

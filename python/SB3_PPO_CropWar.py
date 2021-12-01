@@ -4,7 +4,9 @@ from copy import deepcopy
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 
+from agents import *
 from main import run_full_simulation
+from ml_agents import *
 from RL_env import CropwarEnv
 
 name = "CropWar_PPO_vDezCanChange"
@@ -49,7 +51,11 @@ def run_interactive():
 
     print("done with model generation part...")
     if int(input("Do you want to see plots? 1:yes, 0:no")):
-        run_full_simulation(use_ml_model=ml_model)
+        training_parameters = {
+        "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
+        "use_trained_model" : ml_model
+        }   
+        run_full_simulation(custom_parameters=training_parameters)
 
 
 def evaluate():
@@ -62,8 +68,13 @@ def evaluate():
         print(f"Loaded the mode {name}.")
     except:
         print("Could not find that file. Did you specify the right model name?")
+        raise FileNotFoundError
 
-    run_full_simulation(use_ml_model=ml_model)
+    evaluate_parameters = {
+        "farmers": {Trader: 2, Introvert: 0, ML_Introvert: 2},
+        "use_trained_model" : ml_model
+    }
+    run_full_simulation(custom_parameters=evaluate_parameters)
 
 
 if __name__ == "__main__":

@@ -24,10 +24,11 @@ class ML_Introvert(BaseFarmer):
     planned_action = [None, None]
 
     def personality_traits(self):
-        self.ml_controlled = False
+        self.ACTIVE_TRAINING = False
+        self.total_reward = 0
 
-        self.c_agent = {}
         self.buy_cell_threash = 1
+        self.c_agent = {}
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
@@ -76,8 +77,8 @@ class ML_Introvert(BaseFarmer):
         """Used to step the agent: eg. do the following: harvest -> define their supply"""
         self.harvest()
 
-        if self.model.p.use_trained_model:
-            state, done = self.get_state()
+        if not self.ACTIVE_TRAINING:
+            state, _ = self.get_state()
             self.planned_action, _ = self.model.p.use_trained_model.predict(
                 state, deterministic=True
             )
@@ -90,6 +91,30 @@ class ML_Introvert(BaseFarmer):
         # Introvert: Diese Personality wechselt VIELLEICHT crop!
 
         self.change_to_crop(self.planned_action[1])
+
+    def update(self):
+        """Update base class and calculate reward."""
+        super().update()
+
+        # Measure Reward
+        self.total_reward += self.rewarder()
+
+    def rewarder(self) -> float:
+        """Calculate Reward for this ML Farmers
+
+        :return: ranking**2
+        :rtype: float
+        """
+        reward = 0
+        # Idea: The farmer gets max reward if richest. Then quadratically less for lower places
+        # Info: if he has same budget as smb else, he is given the lower place reward
+        ranking = (
+            np.where(self.model.sorted_budgets == self.budget)[0][0] 
+            / (self.model.p.n_farmers-1)
+        )
+        # print(ranking)  # for debug
+        reward = ranking ** 2
+        return reward
 
 
 class ML_Expander(BaseFarmer):
@@ -174,3 +199,7 @@ class ML_Expander(BaseFarmer):
         # Introvert: Diese Personality wechselt VIELLEICHT crop!
 
         self.change_to_crop(self.planned_action[1])
+
+
+#%%
+# %%
