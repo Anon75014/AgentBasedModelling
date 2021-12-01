@@ -62,7 +62,7 @@ class Trader(BaseFarmer):
             k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
         }
 
-        self.buy_cell_threash =  1# self.random.uniform(0, 1) # ALTERNATIVE
+        self.buy_cell_threash = self.random.uniform(0, 1) # ALTERNATIVE
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:

@@ -60,7 +60,7 @@ def run_full_simulation(use_ml_model=False):
         "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
         "save_gif": False,  # Save the map each timestep and generate Gif in the end
         #"seed": 0,  # Use a new seed
-         "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi'      # Use a custom seed
+         "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
         "nr_ml_farmers": 0,
         "farmers": {Trader: 4, Introvert: 0, ML_Introvert: 0},
         "use_trained_model": False,
