@@ -9,10 +9,13 @@ from agents_base import BaseFarmer
 class Introvert(BaseFarmer):
     """Introvert Farmer class.
 
-    This Personality is based on the idea that, ...
+    This personality class implements the baseline agent of the model. 
     """
 
     def personality_traits(self):
+        """Initialise class characteristics.
+
+        """
         self.ml_controlled = False
 
         self.c_agent = {}
@@ -20,7 +23,8 @@ class Introvert(BaseFarmer):
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
-        """Calculates how much the farmer wants to supply
+        """Initialises the agents supply function. The introvert farmer supplies independent of market prices 20% of the current stock 
+        of a certain crop.
 
         :param prices: Dictionary with the global prices for each `crop_id`
         :type prices: Dict[int, int]
@@ -37,12 +41,11 @@ class Introvert(BaseFarmer):
         return supplies
 
     def pre_market_step(self):
-        """Used to step the agent: eg. do the following: harvest -> define their supply"""
+        """The pre-market step executes agents actions before market inteactions take place. In this case the agents farm and stock their harvest"""
         self.harvest()
 
     def post_market_step(self):
-        """Do the following: -> expand to random direction if the
-        uniform probability sample is above the farmers buy_theshold.
+        """The post-market step executes strategy dependent actions. The introvert farmer is a baseline agents and therefore does not act.
         """
         # Diese Personality expandiert nicht!
         # Diese Personality wechselt kein crop!
@@ -51,22 +54,26 @@ class Introvert(BaseFarmer):
 class Trader(BaseFarmer):
     """Trader Farmer class.
 
-    This Personality is based on the idea that, ...
+    The trader simulates a basic market agents. This agents class reacts on market outcomes, i.e. prices, and chooses an action that increases
+    the profit in future iterations.
     """
 
     def personality_traits(self):
-        """Distinctive personality traits of this farmer."""
+        """Initialise class characteristics.
+
+        """
         self.ml_controlled = False
 
         self.c_agent = {
             k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
         }
 
-        self.buy_cell_threash =   self.random.uniform(0, 1) # ALTERNATIVE
+        self.buy_cell_threash = self.random.uniform(0, 1) # ALTERNATIVE
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
-        """Calculates how much the farmer wants to supply
+        """Initialises the agents supply function. The introvert farmer supplies independent of market prices 20% of the current stock 
+        of a certain crop.
 
         :param prices: Dictionary with the global prices for each `crop_id`
         :type prices: Dict[int, int]
@@ -83,12 +90,12 @@ class Trader(BaseFarmer):
         return supplies
 
     def pre_market_step(self):
-        """Used to step the agent: eg. do the following: harvest -> define their supply"""
+        """The pre-market step executes agents actions before market inteactions take place. In this case the agents farm and stock their harvest"""
         self.harvest()
 
     def post_market_step(self):
-        """Do the following: -> expand to random direction if the
-        uniform probability sample is above the farmers buy_theshold.
+        """The post-market step executes strategy dependent actions. The trader can choose to change to another crop if the expected profit
+        is positive.
         """
 
 
@@ -118,7 +125,8 @@ class Trader(BaseFarmer):
                 current_demand: int,
                 current_supply: int,
             ) -> None:
-                """[summary]"""
+                """Calculates the expected profit of a crop change based on previous market prices and execute the crop changes if expected
+                profit is positive"""
                 if crop_id != self.crop_id:
                     cost_seed_change = (
                         len(self.aquired_land)
