@@ -4,7 +4,7 @@
 
 from agents import *
 from ml_agents import *
-from crops import CropSortiment
+from crops import *
 from graph_presenter import graph_class
 from map_presenter import map_class
 from model import CropwarModel
@@ -32,11 +32,10 @@ def run_full_simulation(use_ml_model=False):
     crop_shop = CropSortiment()
     # Add two crops TODO Find good parameters for crops.
 
-    crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 2, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 3, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 4, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 9, 1)
+    crop_shop.add_crop(WinterWheat)
+    crop_shop.add_crop(Barley)
+    crop_shop.add_crop(Maize)
+    crop_shop.add_crop(Beans)
 
     # These parameters are accessible within the model by"self.p.water_levels"
     parameters = {
@@ -66,9 +65,13 @@ def run_full_simulation(use_ml_model=False):
         "use_trained_model": False,
         "max_stock": 200,
         "max_budget": 3000,
-        "river_content": 200000.0,
-        "market_base_demand": 10.0,
-        "market_demand_fraction": 0.7,
+        "river_content": 100.0,
+        "market_base_demand": 30.0,
+        "market_base_supply": 0.0,
+        "market_demand_fraction": 0.5,
+        "market_max_price": 500.0,
+        "farmer_price_elasticity": 100.0,
+        "farmer_starting_stock": 0.0,
     }
 
     """ Create and run the model """
@@ -82,13 +85,19 @@ def run_full_simulation(use_ml_model=False):
     """ Display the results using the Displayer Class """
     presenter = graph_class(model, results)
 
-    presenter.crops()
-    presenter.cellcount()
+    #presenter.crops()
+    #presenter.cellcount()
     presenter.stocks()
     presenter.budget()
-    presenter.export()
-    # presenter.traits(model)
-    presenter.personalities()
+    #presenter.export()
+    #presenter.traits(model)
+    #presenter.personalities()
+    presenter.prices()
+    presenter.demand()
+    presenter.supply()
+    presenter.global_stock()
+    import matplotlib.pyplot as plt
+    plt.show()
 
     print(f"SEED: {model.p.seed}")
 
@@ -96,7 +105,7 @@ def run_full_simulation(use_ml_model=False):
     mapper = map_class(model)
     mapper.initialise_farmers()
     mapper.place_farmers()
-    mapper.show()
+    #mapper.show()
 
     print(f"SEED: {model.p.seed}")
 
