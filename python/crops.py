@@ -69,12 +69,11 @@ class Crop:
         s = 0.0
         for j, k_c_y in enumerate(self.k_c_y):
             s += k_c_y * (1.0 - (di / (self.crop_factor[j])))
-        harvest_yield = self.max_harvest_yield * (1.0 - s)
-        if harvest_yield<0:
-            harvest_yield=0
+        harvest_yield = np.max([self.max_harvest_yield * (1.0 - s), 0.0])
         return harvest_yield
 
     def _get_gwp(self, area):
+        # TODO: Make actually work
         #Area must be in ha
         GWP_fertilizer = [(
             self.manure_need[i] * 8.96384

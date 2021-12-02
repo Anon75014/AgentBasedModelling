@@ -65,9 +65,11 @@ def run_full_simulation(use_ml_model=False):
         "use_trained_model": False,
         "max_stock": 200,
         "max_budget": 3000,
-        "river_content": 12.0,
-        "market_base_demand": 20.0,
-        "market_demand_fraction": 0.7,
+        "river_content": 100.0,
+        "market_base_demand": 30.0,
+        "market_demand_fraction": 0.5,
+        "market_max_price": 500.0,
+        "farmer_price_elasticity": 100.0,
     }
 
     """ Create and run the model """
@@ -81,13 +83,19 @@ def run_full_simulation(use_ml_model=False):
     """ Display the results using the Displayer Class """
     presenter = graph_class(model, results)
 
-    presenter.crops()
-    presenter.cellcount()
+    #presenter.crops()
+    #presenter.cellcount()
     presenter.stocks()
     presenter.budget()
-    presenter.export()
-    # presenter.traits(model)
-    presenter.personalities()
+    #presenter.export()
+    #presenter.traits(model)
+    #presenter.personalities()
+    presenter.prices()
+    presenter.demand()
+    presenter.supply()
+    presenter.global_stock()
+    import matplotlib.pyplot as plt
+    plt.show()
 
     print(f"SEED: {model.p.seed}")
 
@@ -95,7 +103,7 @@ def run_full_simulation(use_ml_model=False):
     mapper = map_class(model)
     mapper.initialise_farmers()
     mapper.place_farmers()
-    mapper.show()
+    #mapper.show()
 
     print(f"SEED: {model.p.seed}")
 

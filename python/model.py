@@ -124,9 +124,13 @@ class CropwarModel(ap.Model):
             agents=self.farmers,
             base_demand=self.p.market_base_demand,
             demand_fraction=self.p.market_demand_fraction,
+            max_price=self.p.market_max_price,
         )
         self.crop_prices = self.market.current_prices.copy()
         self.price_history = []
+        self.demand_history = []
+        self.supply_history = []
+        self.global_stock_history = []
         """ MACHINE LEARNING """
         self.time_is_up = False
         self.ml_trainee = None  # default
@@ -258,6 +262,9 @@ class CropwarModel(ap.Model):
         self.farmers.record("stock")
         self.farmers.record("cellcount")
         self.price_history.append(list(self.market.current_prices.values()))
+        self.demand_history.append(list(self.market.current_demand.values()))
+        self.supply_history.append(list(self.market.current_supply.values()))
+        self.global_stock_history.append(list(self.market.current_stock.values()))
         # self.record("crop_prices")
 
         if self.p.save_gif:

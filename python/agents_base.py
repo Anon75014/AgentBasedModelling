@@ -62,7 +62,7 @@ class BaseFarmer(ap.Agent):
         self.ml_controlled = False
 
         self.c_agent = {
-            k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
+            k: self.model.p.farmer_price_elasticity * self.model.random.random() for k in self.model.crop_shop.crops
         }
         self.buy_cell_threash = 1  # self.random.uniform(0, 1)  # for DQN v0
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)

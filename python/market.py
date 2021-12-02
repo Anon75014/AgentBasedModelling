@@ -16,6 +16,7 @@ class Market:
         agents: ap.AgentList,
         base_demand: float,
         demand_fraction: float,
+        max_price: float,
     ) -> None:
         """
         Market model
@@ -43,12 +44,12 @@ class Market:
             k: 1.0 for k in crop_sortiment.crops.keys()
         }  # Initialize to 1 for initial demand calculation
         self.current_supply: Dict[int, int] = {
-            k: 0 for k in crop_sortiment.crops.keys()
+            k: 0.0 for k in crop_sortiment.crops.keys()
         }
         self.current_prices: Dict[int, int] = {
             crop_id: crop.sell_price for (crop_id, crop) in crop_sortiment.crops.items()
         }
-        self.MAX_PRICE = 1e5
+        self.max_price = max_price
 
     def _calc_current_demand(self) -> None:
         """
@@ -59,6 +60,7 @@ class Market:
             + self.demand_fraction * self.current_stock[crop_id]
             for crop_id in self.crop_sortiment.crops.keys()
         }
+        print(f"Global demand is {self.current_demand}")
 
     def _calc_global_stock(self) -> None:
         """
@@ -67,9 +69,9 @@ class Market:
         """
         self.current_stock = {k: 0.0 for k in self.crop_sortiment.crops.keys()}
         for agent in self.agents:
-            for crop_id, crop_stock in agent.stock.items():
+            for crop_id, crop_stock in agent._stock.items():
                 self.current_stock[crop_id] += crop_stock
-        #print("Global stock is {}".format(self.current_stock))
+        print(f"Global stock is {self.current_stock}")
 
     def calc_global_price(self) -> Dict[int, float]:
         """
@@ -88,20 +90,20 @@ class Market:
                             * crop_demand
                             / self.current_stock[crop_id]
                         ),
-                        self.MAX_PRICE,
+                        self.max_price,
                     ]
                 )
             else:
-                self.current_prices[crop_id] = self.MAX_PRICE
+                self.current_prices[crop_id] = self.max_price
         return self.current_prices
 
     def market_interaction(self) -> Dict[int, float]:
         """
         Calculates the total supply that is provided by the agents. The agents act according to their specification, i.e. their supply function.
         """
+        self.agents.calc_supply(self.current_prices)
         self.calc_global_price()
         self.current_supply = {k: 0.0 for k in self.crop_sortiment.crops.keys()}
-        self.agents.calc_supply(self.current_prices)
 
         # Sum the supply of the agents
         for agent in self.agents:

@@ -65,7 +65,7 @@ class Trader(BaseFarmer):
         self.ml_controlled = False
 
         self.c_agent = {
-            k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
+            k: self.model.p.farmer_price_elasticity * self.model.random.random() for k in self.model.crop_shop.crops
         }
 
         self.buy_cell_threash = self.random.uniform(0, 1) # ALTERNATIVE
