@@ -67,9 +67,11 @@ def run_full_simulation(use_ml_model=False):
         "max_budget": 3000,
         "river_content": 100.0,
         "market_base_demand": 30.0,
+        "market_base_supply": 0.0,
         "market_demand_fraction": 0.5,
         "market_max_price": 500.0,
         "farmer_price_elasticity": 100.0,
+        "farmer_starting_stock": 0.0,
     }
 
     """ Create and run the model """

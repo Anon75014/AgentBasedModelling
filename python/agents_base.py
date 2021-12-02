@@ -91,7 +91,7 @@ class BaseFarmer(ap.Agent):
         self.cellcount = 0
         self._stock = {}  # setup and initiate stock = 0
         for crop_id in self.model.crop_shop.crops.keys():
-            self._stock[crop_id] = 0
+            self._stock[crop_id] = self.model.p.farmer_starting_stock
         self.stock = copy.deepcopy(self._stock)  # this is recorded...
         self.supply = dict.fromkeys(self.model.crop_shop.crops.keys())
 
@@ -277,60 +277,14 @@ class BaseFarmer(ap.Agent):
         :rtype: Dict[int, int]
         """
 
-        supplies = dict.fromkeys(self.model.crop_shop.crops.keys())
-        for crop_id in self.model.crop_shop.crops.keys():
-            supplies[crop_id] = np.min(
-                [self.c_agent[crop_id] * prices[crop_id], self._stock[crop_id]]
-            )
-        self.supply = supplies
-        return supplies
-
     # INFO : this function must be defined by each Farmer Personality
     @property
     @abstractmethod
     def pre_market_step(self):
         """Used to step the agent: eg. do the following: harvest -> define their supply"""
-        self.harvest()
 
     # INFO : the step function must be defined by each Farmer Personality
     @property
     @abstractmethod
     def post_market_step(self):
         """Used to do strategic actions: e.g. change crop, expand"""
-
-        # potentially expand:
-        dir = self.random.choice(self.model.headings)
-        prob = self.random.uniform(0, 1)
-        if prob > self.buy_cell_threash:
-            self.find_and_buy(1, dir)  # TODO set water level
-            self.change_to_crop(self.crop._id)  # TODO for now crop is constant
-
-        # potentially change crop:
-        def check_crop_change(
-            self,
-            crop_id: int,
-            price: int,
-            current_demand: int,
-            current_supply: int,
-        ) -> None:
-            """[summary]"""
-            if crop_id != self.crop_id:
-                cost_seed_change = (
-                    len(self.aquired_land)
-                    * self.model.crop_shop.crops[crop_id].seed_cost
-                )
-                price = self.model.crop_shop.crops[crop_id].sell_price
-                expected_profit = (
-                    cost_seed_change + (current_demand - current_supply) * price
-                )
-                print("Expected profit: ", expected_profit)
-                if expected_profit > 0:
-                    self.change_to_crop(crop_id)
-
-        self.check_crop_change(
-            # TODO CLEAN UP these references because highest price in market. no need to hand it to the check function
-            self.market.highest_price_id,
-            self.highest_price,
-            self.market.current_demand[self.market.highest_price_id],
-            self.market.current_supply[self.market.highest_price_id],
-        )
