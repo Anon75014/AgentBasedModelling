@@ -68,8 +68,8 @@ def run_full_simulation(custom_parameters=None):
     presenter.demand()
     presenter.supply()
     presenter.global_stock()
-    #import matplotlib.pyplot as plt
-    #plt.show()
+    import matplotlib.pyplot as plt
+    plt.show()
 
     for farmer in model.farmers:
         if farmer.type[:2] == "ML":

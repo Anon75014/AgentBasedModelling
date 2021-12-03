@@ -78,7 +78,7 @@ def evaluate():
 
 
 if __name__ == "__main__":
-    # run_trainer()
+    run_trainer()
     # run_interactive()
     evaluate()
 #%%

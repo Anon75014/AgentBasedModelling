@@ -8,7 +8,7 @@ from gym import spaces
 from stable_baselines3.common.env_checker import check_env
 
 from agents import *
-from crops import CropSortiment
+from crops import *
 from graph_presenter import graph_class
 from map_presenter import map_class
 from ml_agents import *
@@ -140,11 +140,10 @@ class CropwarEnv(gym.Env):
     def _reset_Cropshop(self):
         """Reset the CropShop used in the CropWar Model"""
         self.crop_shop = CropSortiment()
-        self.crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
-        self.crop_shop.add_crop(1, 2, 1)  # area, crop_type, available water
-        self.crop_shop.add_crop(1, 3, 1)  # area, crop_type, available water
-        self.crop_shop.add_crop(1, 4, 1)  # area, crop_type, available water
-        self.crop_shop.add_crop(1, 9, 1)
+        self.crop_shop.add_crop(WinterWheat)
+        self.crop_shop.add_crop(Barley)
+        self.crop_shop.add_crop(Maize)
+        self.crop_shop.add_crop(Beans)
 
 
 def show_results(_model):

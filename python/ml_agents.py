@@ -64,7 +64,7 @@ class ML_Introvert(BaseFarmer):
 
         """Normalisation -> important for PPO algorithm"""
         stock_array /= self.p.max_stock
-        price_array /= self.model.market.MAX_PRICE
+        price_array /= self.model.market.max_price
         budget_array /= self.p.max_budget
 
         state = np.concatenate(
@@ -172,7 +172,7 @@ class ML_Expander(BaseFarmer):
 
         """Normalisation -> important for PPO algorithm"""
         stock_array /= self.p.max_stock
-        price_array /= self.model.market.MAX_PRICE
+        price_array /= self.model.market.max_price
         budget_array /= self.p.max_budget
 
         state = np.concatenate(

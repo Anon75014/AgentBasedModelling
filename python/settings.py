@@ -31,13 +31,23 @@ experiment_settings = {
             "trainee_type" : None,
             "use_trained_model": False,
             # ---- Parameters ----
-            "start_budget": 1000,
+            "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
+            "nr_ml_farmers": 0,
+            "farmers": {Trader: 2, Introvert: 2, ML_Introvert: 0},
+            "max_stock": 2000.0,
             "max_budget": 1e8,
-            "max_stock": 2000,
-            "market_base_demand": 10.0,
-            "market_demand_fraction": 0.7,
-            "river_content": 200.0,
+            "start_budget": 1000.,
+            "river_content": 100.0,
+            "market_base_demand": 400.0,
+            "market_base_supply": 0.0,
+            "market_demand_fraction": 0.5,
+            "market_max_price": 1000000000000000000.0,
+            "market_max_price": 1000.0,
+            "market_demand_growth_factor": 0.05,
+            "market_price_sensitivity": 2.5,
+            "farmer_price_elasticity": 10.0,
+            "farmer_starting_stock": 0.0,
+            "farmer_starting_stock": 100.0,
         },
-        
     }
 }
