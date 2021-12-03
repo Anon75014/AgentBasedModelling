@@ -8,7 +8,7 @@ from crops import *
 from graph_presenter import graph_class
 from map_presenter import map_class
 from model import CropwarModel
-
+import numpy as np
 """ TODOS:
 # TODO Find good parameters for crops.
 """
@@ -61,17 +61,17 @@ def run_full_simulation(use_ml_model=False):
         #"seed": 0,  # Use a new seed
          "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
         "nr_ml_farmers": 0,
-        "farmers": {Trader: 4, Introvert: 0, ML_Introvert: 0},
+        "farmers": {Trader: 2, Introvert: 2, ML_Introvert: 0},
         "use_trained_model": False,
         "max_stock": 200,
         "max_budget": 3000,
         "river_content": 100.0,
-        "market_base_demand": 30.0,
-        "market_base_supply": 0.0,
+        "market_base_demand": 400.0,
+        "market_base_supply": 1.0,
         "market_demand_fraction": 0.5,
-        "market_max_price": 500.0,
-        "farmer_price_elasticity": 100.0,
-        "farmer_starting_stock": 0.0,
+        "market_max_price": 1000000000000000000.0,
+        "farmer_price_elasticity": 1.0,
+        "farmer_starting_stock": 50.0,
     }
 
     """ Create and run the model """

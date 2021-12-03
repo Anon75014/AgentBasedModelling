@@ -3,6 +3,7 @@ import numpy as np
 import agentpy as ap
 from dataclasses import dataclass
 from typing import Dict, Optional
+from random import random
 
 
 class Market:
@@ -56,8 +57,8 @@ class Market:
         Calculates the current demand using an expansive market model, i.e. the demand increases every iteration by a fixed fraction of the total stock.
         """
         self.current_demand = {
-            crop_id: self.base_demand
-            + self.demand_fraction * self.current_stock[crop_id]
+            crop_id: (self.base_demand
+            + self.demand_fraction * (np.random.uniform(0.5,1.5) * self.current_stock[crop_id]))
             for crop_id in self.crop_sortiment.crops.keys()
         }
 

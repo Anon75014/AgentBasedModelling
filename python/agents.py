@@ -35,7 +35,7 @@ class Introvert(BaseFarmer):
         # Diese Personality schaut nicht auf den Markt!
         supplies = dict.fromkeys(self.model.crop_shop.crops.keys())
         for crop_id in self.model.crop_shop.crops.keys():
-            supplies[crop_id] = 0.2 * self._stock[crop_id]
+            supplies[crop_id] = 0.9 * self._stock[crop_id]
 
         self.supply = supplies
         return supplies
@@ -72,8 +72,7 @@ class Trader(BaseFarmer):
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
-        """Initialises the agents supply function. The introvert farmer supplies independent of market prices 20% of the current stock 
-        of a certain crop.
+        """Initialises the agents supply function. The trader supplies according to a linear supply function.
 
         :param prices: Dictionary with the global prices for each `crop_id`
         :type prices: Dict[int, int]
