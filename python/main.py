@@ -62,13 +62,13 @@ def run_full_simulation(use_ml_model=False):
         #"seed": 0,  # Use a new seed
          "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
         "nr_ml_farmers": 0,
-        "farmers": {Trader: 4, Introvert: 0, ML_Introvert: 0},
+        "farmers": {Trader: 2, Introvert: 2, ML_Introvert: 0},
         "use_trained_model": False,
         "max_stock": 200,
         "max_budget": 3000,
         "river_content": 200000.0,
         "market_base_demand": 10.0,
-        "market_demand_fraction": 0.7,
+        "market_demand_fraction": 0.5,
     }
 
     """ Create and run the model """
