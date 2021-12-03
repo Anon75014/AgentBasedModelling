@@ -55,7 +55,7 @@ def run_full_simulation(use_ml_model=False):
             key=lambda x: x[0],
         ),  # number of start positions must match n_farmers
         "start_budget": 1000,
-        "steps": 50,  # Amount of time steps to be simulated
+        "steps": 10,  # Amount of time steps to be simulated
         "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
         "save_gif": False,  # Save the map each timestep and generate Gif in the end
         #"seed": 0,  # Use a new seed
@@ -67,11 +67,11 @@ def run_full_simulation(use_ml_model=False):
         "max_budget": 3000,
         "river_content": 100.0,
         "market_base_demand": 400.0,
-        "market_base_supply": 1.0,
+        "market_base_supply": 0.0,
         "market_demand_fraction": 0.5,
         "market_max_price": 1000000000000000000.0,
-        "farmer_price_elasticity": 1.0,
-        "farmer_starting_stock": 50.0,
+        "farmer_price_elasticity": 10.0,
+        "farmer_starting_stock": 0.0,
     }
 
     """ Create and run the model """
