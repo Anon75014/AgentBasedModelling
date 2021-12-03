@@ -122,9 +122,12 @@ class CropwarModel(ap.Model):
         self.market = Market(
             crop_sortiment=self.crop_shop,
             agents=self.farmers,
+            model=self,
             base_demand=self.p.market_base_demand,
             demand_fraction=self.p.market_demand_fraction,
             max_price=self.p.market_max_price,
+            demand_growth_factor=self.p.market_demand_growth_factor,
+            price_sensitivity=self.p.market_price_sensitivity,
         )
         self.crop_prices = self.market.current_prices.copy()
         self.price_history = []

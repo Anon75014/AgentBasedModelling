@@ -55,7 +55,7 @@ def run_full_simulation(use_ml_model=False):
             key=lambda x: x[0],
         ),  # number of start positions must match n_farmers
         "start_budget": 1000,
-        "steps": 10,  # Amount of time steps to be simulated
+        "steps": 20,  # Amount of time steps to be simulated
         "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
         "save_gif": False,  # Save the map each timestep and generate Gif in the end
         #"seed": 0,  # Use a new seed
@@ -69,9 +69,11 @@ def run_full_simulation(use_ml_model=False):
         "market_base_demand": 400.0,
         "market_base_supply": 0.0,
         "market_demand_fraction": 0.5,
-        "market_max_price": 1000000000000000000.0,
+        "market_max_price": 1000.0,
+        "market_demand_growth_factor": 0.05,
+        "market_price_sensitivity": 2.5,
         "farmer_price_elasticity": 10.0,
-        "farmer_starting_stock": 0.0,
+        "farmer_starting_stock": 100.0,
     }
 
     """ Create and run the model """
@@ -85,7 +87,7 @@ def run_full_simulation(use_ml_model=False):
     """ Display the results using the Displayer Class """
     presenter = graph_class(model, results)
 
-    #presenter.crops()
+    presenter.crops()
     #presenter.cellcount()
     presenter.stocks()
     presenter.budget()

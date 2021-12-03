@@ -15,9 +15,12 @@ class Market:
         self,
         crop_sortiment: CropSortiment,
         agents: ap.AgentList,
+        model: object,
         base_demand: float,
         demand_fraction: float,
         max_price: float,
+        demand_growth_factor: float,
+        price_sensitivity: float,
     ) -> None:
         """
         Market model
@@ -35,8 +38,11 @@ class Market:
         """
         self.crop_sortiment = crop_sortiment
         self.agents = agents
+        self.model = model
         self.base_demand = base_demand
         self.demand_fraction = demand_fraction
+        self.demand_growth_factor = demand_growth_factor
+        self.price_sensitivity = price_sensitivity
 
         self.current_demand: Dict[int, int] = {
             k: self.base_demand for k in crop_sortiment.crops.keys()
@@ -56,9 +62,13 @@ class Market:
         """
         Calculates the current demand using an expansive market model, i.e. the demand increases every iteration by a fixed fraction of the total stock.
         """
+        #self.current_demand = {
+        #    crop_id: (self.base_demand
+        #    + self.demand_fraction * (np.random.uniform(0.5,1.5) * self.current_stock[crop_id]))
+        #    for crop_id in self.crop_sortiment.crops.keys()
+        #}
         self.current_demand = {
-            crop_id: (self.base_demand
-            + self.demand_fraction * (np.random.uniform(0.5,1.5) * self.current_stock[crop_id]))
+            crop_id: (self.base_demand + self.demand_growth_factor * self.model.t ** 2) * np.exp(self.price_sensitivity * (self.current_prices[crop_id] - self.crop_sortiment.crops[crop_id].base_price))
             for crop_id in self.crop_sortiment.crops.keys()
         }
 

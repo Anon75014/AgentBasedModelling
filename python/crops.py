@@ -49,6 +49,7 @@ class Crop:
         self.water_need = water_need
         self.seed_cost = seed_cost  # cost for a farmer to change crops
         self.sell_price = sell_price  # price at which a unit (1) crop can be sold. TODO: vary prices with market
+        self.base_price = sell_price
         self.max_harvest_yield = max_harvest_yield  # amount of units a harvest will yield
         self.crop_factor = crop_factor
         self.k_c_y = k_c_y
