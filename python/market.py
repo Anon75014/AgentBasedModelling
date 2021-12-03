@@ -68,7 +68,7 @@ class Market:
         #    for crop_id in self.crop_sortiment.crops.keys()
         #}
         self.current_demand = {
-            crop_id: (self.base_demand + self.demand_growth_factor * self.model.t ** 2) * np.exp(self.price_sensitivity * (self.current_prices[crop_id] - self.crop_sortiment.crops[crop_id].base_price))
+            crop_id: (self.base_demand + self.demand_growth_factor * self.model.t ** 2) * np.exp(-self.price_sensitivity * (self.current_prices[crop_id] - self.crop_sortiment.crops[crop_id].base_price))
             for crop_id in self.crop_sortiment.crops.keys()
         }
 
