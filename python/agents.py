@@ -83,7 +83,7 @@ class Trader(BaseFarmer):
         # Diese Personality beobachtet und benutzt den Markt!
         for crop_id in self.model.crop_shop.crops.keys():
             self.supply[crop_id] = np.min(
-                [self.model.p.market_base_supply + self.c_agent[crop_id] * prices[crop_id], self._stock[crop_id]]
+                [self.model.p.market_base_supply * (1.0 + self.c_agent[crop_id] * prices[crop_id]), self._stock[crop_id]]
             )
         return self.supply
 
@@ -102,40 +102,29 @@ class Trader(BaseFarmer):
         if prob > self.buy_cell_threash:
             self.find_and_buy(1, dir)
             self.change_to_crop(self.crop._id)
-
-        # Diese Personality kann crop wechseln!
-
         self.market = self.model.market  # get access to the CropWar market infos
         # potentially change crop:
-        # if self.change_to_crop:
-        self.check_crop_change(
-            self.market.highest_price_id,
-            self.market.highest_price,
-            self.market.current_demand[self.market.highest_price_id],
-            self.market.current_stock[self.market.highest_price_id],
-        )
 
-    def check_crop_change(
-        self,
-        crop_id: int,
-        price: int,
-        current_demand: int,
-        current_stock: int,
-    ) -> None:
         """Calculates the expected profit of a crop change based on previous market prices and execute the crop changes if expected
         profit is positive"""
-        if crop_id != self.crop_id:
-            cost_seed_change = (
-                len(self.aquired_land)
-                * self.model.crop_shop.crops[crop_id].seed_cost
-            )
-            price = self.model.crop_shop.crops[crop_id].sell_price
-            expected_profit = (
-                cost_seed_change + (current_demand - current_stock) * price
-            )
-            #print("Expected profit: ", expected_profit)
-            if expected_profit > 0:
-                self.change_to_crop(crop_id)
+        for crop_id in self.random.choices(list(self.model.crop_shop.crops.keys()), k=2):
+            if crop_id != self.crop_id:
+                cost_seed_change = (
+                    len(self.aquired_land)
+                    * self.model.crop_shop.crops[crop_id].seed_cost
+                )
+                price = self.model.crop_shop.crops[crop_id].sell_price
+                expected_profit = (
+                    (self.market.current_demand[crop_id] - self.market.current_stock[crop_id])
+                    * self.model.crop_shop.crops[crop_id].sell_price
+                )
+                expected_profit_old = (
+                    (self.market.current_demand[self.crop_id] - self.market.current_stock[self.crop_id])
+                    * self.model.crop_shop.crops[self.crop_id].sell_price
+                )
+                if expected_profit > expected_profit_old:
+                    print(f"Expected profit of {self}: ", expected_profit - expected_profit_old)
+                    self.change_to_crop(crop_id)
 
 
 # %%

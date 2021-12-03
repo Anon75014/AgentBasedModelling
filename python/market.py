@@ -93,9 +93,7 @@ class Market:
                 self.current_prices[crop_id] = np.min(
                     [
                         (
-                            self.crop_sortiment.crops[
-                                crop_id
-                            ].sell_price  # Current crop price
+                            self.crop_sortiment.crops[crop_id].base_price
                             * crop_demand
                             / self.current_stock[crop_id]
                         ),
@@ -103,6 +101,7 @@ class Market:
                     ]
                 )
             else:
+                #pass
                 self.current_prices[crop_id] = self.max_price
         return self.current_prices
 
@@ -127,8 +126,10 @@ class Market:
             correction_factor = 1.0
             if current_supply != 0.0:
                 correction_factor = np.min([current_demand / current_supply, 1.0])
+            self.current_supply[crop_id] *= correction_factor
 
             for agent in self.agents:
+                agent.supply[crop_id] *= correction_factor
                 supply_from_agent = agent.supply[crop_id]
                 agent.sell(crop_id, correction_factor * supply_from_agent)
 

@@ -20,34 +20,29 @@ experiment_settings = {
             # ---- General Simulation Settings ----
             "crop_shop": None,
             "amount_of_crops": None,
-            "steps": 50,  # Amount of time steps
+            "steps": 100,  # Amount of time steps
             "diagonal expansion": False,  # Only expand along edges
             "save_gif": False,  # Save map as Gif
-            "seed": 0,  # Use a new seed
-            # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
+            "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
+            "nr_ml_farmers": 0,
             "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
             # ---- ML Parameters ----
             "ml_env": None,  # spec in RL_env
             "trainee_type" : None,
             "use_trained_model": False,
             # ---- Parameters ----
-            "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
-            "nr_ml_farmers": 0,
-            "farmers": {Trader: 2, Introvert: 2, ML_Introvert: 0},
             "max_stock": 2000.0,
             "max_budget": 1e8,
-            "start_budget": 1000.,
+            "start_budget": 200.0,
             "river_content": 100.0,
-            "market_base_demand": 400.0,
-            "market_base_supply": 0.0,
+            "market_base_demand": 90.0,
+            "market_base_supply": 50.0,
             "market_demand_fraction": 0.5,
-            "market_max_price": 1000000000000000000.0,
-            "market_max_price": 1000.0,
-            "market_demand_growth_factor": 0.05,
-            "market_price_sensitivity": 2.5,
+            "market_max_price": 1.0,
+            "market_demand_growth_factor": 1e-2,
+            "market_price_sensitivity": 1.0,
             "farmer_price_elasticity": 10.0,
-            "farmer_starting_stock": 0.0,
-            "farmer_starting_stock": 100.0,
+            "farmer_starting_stock": 15.0,
         },
     }
 }

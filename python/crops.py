@@ -154,7 +154,7 @@ class CropSortiment:
 
 WinterWheat = Crop(
     crop_id=1,
-    seed_cost=84.03,
+    seed_cost=84.03e-2,
     sell_price=0.125,
     max_harvest_yield=7.0,
     water_need=1.0,
@@ -173,7 +173,7 @@ WinterWheat = Crop(
 
 Barley = Crop(
     crop_id=2,
-    seed_cost=61.60,
+    seed_cost=61.60e-2,
     sell_price=0.074,
     max_harvest_yield=4.7,
     water_need=1.0,
@@ -192,7 +192,7 @@ Barley = Crop(
 
 Maize = Crop(
     crop_id=3,
-    seed_cost=142.06,
+    seed_cost=142.06e-2,
     sell_price=0.077,
     max_harvest_yield=10.0,
     water_need=1.0,
@@ -211,7 +211,7 @@ Maize = Crop(
 
 Beans = Crop(
     crop_id=4,
-    seed_cost=156.43,
+    seed_cost=156.43e-2,
     sell_price=0.2146,
     max_harvest_yield=12.0,
     water_need=1.0,

@@ -43,7 +43,7 @@ def run_full_simulation(custom_parameters=None):
             "crop_shop": crop_shop,
             "amount_of_crops": crop_shop.amount_of_crops,
             # Set amounts of Deterministic / PreTrained farmers
-            "farmers": {Trader: 2, Introvert: 2, ML_Introvert: 0},
+            "farmers": {Trader: 4, Introvert: 0, ML_Introvert: 0},
         }
     )
     """Update Model Parameters"""
@@ -58,7 +58,7 @@ def run_full_simulation(custom_parameters=None):
     presenter = graph_class(model, results)
 
     presenter.crops()
-    #presenter.cellcount()
+    presenter.cellcount()
     presenter.stocks()
     presenter.budget()
     #presenter.export()
@@ -68,8 +68,6 @@ def run_full_simulation(custom_parameters=None):
     presenter.demand()
     presenter.supply()
     presenter.global_stock()
-    import matplotlib.pyplot as plt
-    plt.show()
 
     for farmer in model.farmers:
         if farmer.type[:2] == "ML":
@@ -81,7 +79,7 @@ def run_full_simulation(custom_parameters=None):
     mapper = map_class(model)
     mapper.initialise_farmers()
     mapper.place_farmers()
-    #mapper.show()
+    mapper.show()
 
     print(f"SEED: {model.p.seed}")
 
