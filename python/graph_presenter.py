@@ -31,6 +31,9 @@ class graph_class:
             "cellcount": "Evolution of Cells per Farmer",
             "buy_cell_threash": "Buy Threashold",
             "prices": "Crop Prices",
+            "demand": "Crop Demand",
+            "supply": "Crop Supply",
+            "global_stock": "Global Crop Stock",
         }
         self.y_labels = {
             "budget": "Budget",
@@ -39,7 +42,9 @@ class graph_class:
             "cellcount": "Amount of Cells",
             "buy_cell_threash": r"Parameter $\in [0,1]}$",
             "prices": "Price",
-
+            "demand": "Demand in Stock Units",
+            "supply": "Supply in Stock Units",
+            "global_stock": "Stock Units",
         }
         self._stock_data = None
         print("OK: initialised Displayer instance")
@@ -138,6 +143,34 @@ class graph_class:
         self.new_plot("prices")
         sns.lineplot(data = prices_df)
         prices_df.to_csv('exported_prices.csv')
+
+    def demand(self):
+        """Presents the evolution of the Market-influenced crop demand.
+        """
+        print(f"demand have so many pars: {len(self.model.demand_history)}")
+        demand_df = pd.DataFrame(self.model.demand_history)
+        self.new_plot("demand")
+        sns.lineplot(data = demand_df)
+        demand_df.to_csv('exported_demand.csv')
+
+    def supply(self):
+        """Presents the evolution of the Market-influenced crop supply.
+        """
+        print(f"supply have so many pars: {len(self.model.supply_history)}")
+        supply_df = pd.DataFrame(self.model.supply_history)
+        self.new_plot("supply")
+        sns.lineplot(data = supply_df)
+        supply_df.to_csv('exported_supply.csv')
+
+    def global_stock(self):
+        """Presents the evolution of the Market-influenced crop global stock.
+        """
+        print(f"global_stock have so many pars: {len(self.model.global_stock_history)}")
+        global_stock_df = pd.DataFrame(self.model.global_stock_history)
+        self.new_plot("global_stock")
+        sns.lineplot(data = global_stock_df)
+        global_stock_df.to_csv('exported_global_stock.csv')
+
 
     def personalities(self):
         """show Personality database

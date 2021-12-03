@@ -82,11 +82,14 @@ def run_full_simulation(use_ml_model=False):
     """ Display the results using the Displayer Class """
     presenter = graph_class(model, results)
 
-    presenter.crops()
-    presenter.cellcount()
+    # presenter.cellcount()
     presenter.stocks()
     presenter.budget()
     presenter.export()
+    presenter.supply()
+    presenter.prices()
+    presenter.demand()
+    presenter.crops()
     # presenter.traits(model)
     presenter.personalities()
 
