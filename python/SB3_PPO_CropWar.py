@@ -71,14 +71,14 @@ def evaluate():
         raise FileNotFoundError
 
     evaluate_parameters = {
-        "farmers": {Trader: 2, Introvert: 0, ML_Introvert: 2},
+        "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
         "use_trained_model" : ml_model
     }
     run_full_simulation(custom_parameters=evaluate_parameters)
 
 
 if __name__ == "__main__":
-    run_trainer()
+    # run_trainer()
     # run_interactive()
-    # evaluate()
+    evaluate()
 #%%

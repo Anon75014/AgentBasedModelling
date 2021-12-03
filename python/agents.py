@@ -62,7 +62,8 @@ class Trader(BaseFarmer):
             k: 0.001 * self.model.random.random() for k in self.model.crop_shop.crops
         }
 
-        self.buy_cell_threash = 1  # self.random.uniform(0, 1) # ALTERNATIVE
+        self.buy_cell_threash = 1#self.random.uniform(0, 1) # ALTERNATIVE
+        self.can_change_crop = True
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
@@ -102,6 +103,7 @@ class Trader(BaseFarmer):
 
         self.market = self.model.market  # get access to the CropWar market infos
         # potentially change crop:
+        # if self.change_to_crop:
         self.check_crop_change(
             # TODO CLEAN UP these references because highest price in market. no need to hand it to the check function
             self.market.highest_price_id,

@@ -42,7 +42,7 @@ def run_full_simulation(custom_parameters=None):
             "crop_shop": crop_shop,
             "amount_of_crops": crop_shop.amount_of_crops,
             # Set amounts of Deterministic / PreTrained farmers
-            "farmers": {Trader: 4, Introvert: 0, ML_Introvert: 0},
+            "farmers": {Trader: 2, Introvert: 2, ML_Introvert: 0},
         }
     )
     """Update Model Parameters"""
