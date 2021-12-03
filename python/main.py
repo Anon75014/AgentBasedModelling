@@ -1,14 +1,15 @@
 """ Main File for the CropWar agent Based Simulation. """
 # %%
-# %%
-
 from agents import *
 from ml_agents import *
 from crops import *
 from graph_presenter import graph_class
 from map_presenter import map_class
+from ml_agents import *
 from model import CropwarModel
 import numpy as np
+from settings import experiment_settings
+
 """ TODOS:
 # TODO Find good parameters for crops.
 """
@@ -19,70 +20,39 @@ from pandas import DataFrame as df
 # %autoreload 2
 
 
-def run_full_simulation(use_ml_model=False):
+def run_full_simulation(custom_parameters=None):
     """Run Simulation of the model and display results
 
     Run a full Simulation of the CropWar model and display resulting graphs and map.txt
-    :param use_ml_model: specify wether a trained machine learning (ml) model should be used, defaults to False
-    :type use_ml_model: bool, optional
+    Infos: The 'parameters' are provided to the Model instance and are accessible within the model by eg "self.p.water_levels"
+    The Crop_Shop contains the relevant information for the farmers.
+    :param custom_parameters: dictionary of new parameters that should be used 
+    :type custom_parameters: dict, optional
     """
-    # The following parameters are provided to the Model instance and are accessible within the model by eg "self.p.water_levels"
-
-    # The Crop_Shop contains the relevant information for the farmers.
+    # 
     crop_shop = CropSortiment()
-    # Add two crops TODO Find good parameters for crops.
 
     crop_shop.add_crop(WinterWheat)
     crop_shop.add_crop(Barley)
     crop_shop.add_crop(Maize)
     crop_shop.add_crop(Beans)
 
-    # These parameters are accessible within the model by"self.p.water_levels"
-    parameters = {
-        # FIXED:
-        "crop_shop": crop_shop,
-        "amount_of_crops": crop_shop.amount_of_crops,
-        # TUNABLE:
-        "water_levels": [0, 0, 3],
-        # "v0_pos" : None,
-        "v0_pos": sorted(
-            [
-                (1, 1),
-                (1, 4),
-                (5, 1),
-                (5, 4),
-            ],
-            key=lambda x: x[0],
-        ),  # number of start positions must match n_farmers
-        "start_budget": 1000,
-        "steps": 20,  # Amount of time steps to be simulated
-        "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
-        "save_gif": False,  # Save the map each timestep and generate Gif in the end
-        #"seed": 0,  # Use a new seed
-         "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
-        "nr_ml_farmers": 0,
-        "farmers": {Trader: 2, Introvert: 2, ML_Introvert: 0},
-        "use_trained_model": False,
-        "max_stock": 200,
-        "max_budget": 3000,
-        "river_content": 100.0,
-        "market_base_demand": 400.0,
-        "market_base_supply": 0.0,
-        "market_demand_fraction": 0.5,
-        "market_max_price": 1000.0,
-        "market_demand_growth_factor": 0.05,
-        "market_price_sensitivity": 2.5,
-        "farmer_price_elasticity": 10.0,
-        "farmer_starting_stock": 100.0,
-    }
+    parameters = experiment_settings["ML_Introvert_vs_3_Trader"]["base_parameters"]
+    parameters.update(
+        {
+            "crop_shop": crop_shop,
+            "amount_of_crops": crop_shop.amount_of_crops,
+            # Set amounts of Deterministic / PreTrained farmers
+            "farmers": {Trader: 2, Introvert: 2, ML_Introvert: 0},
+        }
+    )
+    """Update Model Parameters"""
+    if custom_parameters:
+        parameters.update(custom_parameters)
 
     """ Create and run the model """
-    model = CropwarModel(parameters)  # create model instance
-
+    model = CropwarModel(parameters)
     results = model.run()
-    # print(f"The results are {results}.")
-    # print(results.variables.Farmer)
-    # print(f"The farmers got this land: {list(model.farmers.accuired_land)}")
 
     """ Display the results using the Displayer Class """
     presenter = graph_class(model, results)
@@ -98,8 +68,12 @@ def run_full_simulation(use_ml_model=False):
     presenter.demand()
     presenter.supply()
     presenter.global_stock()
-    import matplotlib.pyplot as plt
-    plt.show()
+    #import matplotlib.pyplot as plt
+    #plt.show()
+
+    for farmer in model.farmers:
+        if farmer.type[:2] == "ML":
+            print(f"Farmer {farmer.id} got total reward: {farmer.total_reward}")
 
     print(f"SEED: {model.p.seed}")
 

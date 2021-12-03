@@ -8,11 +8,8 @@ import numpy as np
 from PIL import Image
 
 import map_presenter
-from agents_base import Cell
-from agents import Trader
-from ml_agents import ML_Introvert
+from agents_base import BaseFarmer, Cell
 from market import Market
-from agents_base import BaseFarmer
 from river import River
 
 """ TODOS ::
@@ -105,18 +102,15 @@ class CropwarModel(ap.Model):
         self.unoccupied = [tuple(coord) for coord in self.unoccupied]
 
         self.p.n_farmers = sum(self.p.farmers.values())
-        n_farmers = self.p.n_farmers  # amount of farmer-agents
-        # TODO n_farmers NOT NEEDED HERE ANYMORE ONCE ML CODE Updated
 
         farmers = []
         for kind, amount in self.p.farmers.items():
             farmers += [kind] * amount
-        self.random.shuffle(farmers)
+        self.random.shuffle(farmers)  # s.t. placement on map is random
 
         self.farmers = ap.AgentDList(self, 1, farmers.pop(0))
         for _ in range(self.p.n_farmers - 1):
             self.farmers += ap.AgentDList(self, 1, farmers.pop(0))
-        # TODO check THIS FARMER SETUP
 
         """ MARKET """
         self.market = Market(
@@ -134,22 +128,19 @@ class CropwarModel(ap.Model):
         self.demand_history = []
         self.supply_history = []
         self.global_stock_history = []
+
         """ MACHINE LEARNING """
         self.time_is_up = False
         self.ml_trainee = None  # default
-        # deterministic farmers:
-        self.det_farmers = self.model.farmers.select(
-            [name[:2] != "ML" for name in self.model.farmers.type]
-        )
-        nr_det = len(self.det_farmers)
-        # if nr_det < self.p.n_farmers and nr_det + 1 == self.p.n_farmers:
-        if self.p.farmers[ML_Introvert] == 1: # TODO or other ML_Type
+
+        if self.p.trainee_type:
+            assert self.p.ml_env
+            # Train a farmer with the right type. Others use pretrained model
             self.ml_trainee = self.model.farmers.select(
-                [name[:2] == "ML" for name in self.model.farmers.type]
+                self.model.farmers.type == self.p.trainee_type.__name__
             )[0]
             self.p.ml_env.ml_trainee = self.ml_trainee
-        elif self.p.farmers[ML_Introvert] > 1:
-            raise ValueError("It seems like there is more than one ML trainee...")
+            self.ml_trainee.ACTIVE_TRAINING = True
 
         """ Initialise Map (for GIF) Instances """
         if self.p.save_gif:
@@ -161,7 +152,6 @@ class CropwarModel(ap.Model):
             self.map_frames = []  # used for png storage for the gif
             self.map_drawer = map_presenter.map_class(self)
             self.map_drawer.initialise_farmers()
-
 
     def cell_at(self, pos: tuple):
         """Returns cell at pos Position in Grid"""
@@ -195,69 +185,36 @@ class CropwarModel(ap.Model):
 
     def _valid_root_cell(
         self, farmer: BaseFarmer, pos: tuple, _dir: str
-    ):  # TODO CHeck if THIS baseFARMER ref works
+    ):  
         """Check if one step into direction _dir the farmer ownes a cell"""
         for item in self._one_to_dir.values():
             if item(pos[0], pos[1]) in farmer.aquired_land:
                 return True
         return False
 
-    def at_last_step(self) -> bool:
-        """Check if at last time step.
-
-        :rtype: bool
-        """
-        return self.t == self.p.t_end
-
     def step(self):
         """Move model from t to t+1.
 
         Evolve the entire model by one time step:
-        - Step all the "normal" farmers
-        - Step potentially trained farmers to
+        - Step all the farmers
         - Step the market
-        - let farmers decide if they want to change crops
+        - let farmers decide if they want to change crops/expand
         - refresh the river water content
         """
-        # if self.t > self.p.t_end:  # model should stop after "t_end" steps
-        #     self.time_is_up = True
-        #     self.stop()  # end the current simulation
 
         self.farmers.pre_market_step()
-
-        # if self.p.use_trained_model:
-        #     obs, _ = self.ml_get_state()
-        #     action, _ = self.p.use_trained_model.predict(obs, deterministic=True)
-        #     self.ml_step(action)
-
         self.market.step()
-
         self.farmers.post_market_step()
+
         self.river.refresh_water_content()
 
-    
-
-    # def ml_step(self, action: np.array):
-    #     """Applies action to environment.
-
-    #     Applies the action decided by the ML algorithm to the environment.
-    #     :param action: np.array of ints
-    #     :type action: np.array
-    #     """
-    #     ml_farmer = self.ml_farmers[0]
-    #     [do_farm, sell] = action
-    #     if do_farm:
-    #         ml_farmer.harvest()
-
-    #     if sell:
-    #         # TODO generalize 0.2 by making action continuous::
-    #         amount = int(0.2 * ml_farmer._stock[ml_farmer.crop._id])
-
-    #         ml_farmer.sell(ml_farmer.crop._id, amount)
-
-    #     return
-
     def update(self):
+        """Update farmers and record farmer properties."""
+
+        """Create sorted Budget array for """
+        budgets = np.array(self.model.farmers.budget.copy())
+        budgets.sort()
+        self.sorted_budgets = budgets
         """Record the properties of the farmers each step."""
         self.farmers.update()
         self.farmers.record("budget")

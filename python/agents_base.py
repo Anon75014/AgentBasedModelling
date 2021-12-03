@@ -77,7 +77,7 @@ class BaseFarmer(ap.Agent):
         """Inherit agent attributes."""
         self.grid = self.model.grid
         self.random = self.model.random
-        
+
         # INFO : the personality_traits function must be defined by each Farmer Personality
         self.personality_traits()
 
@@ -221,7 +221,7 @@ class BaseFarmer(ap.Agent):
             else:
                 self.crop = _new_crop
 
-                print(f"Farmer {self.id} changed crop to {self.crop._id}.")
+                # print(f"Farmer {self.id} changed crop to {self.crop._id}.")
 
         for _cell in active_cells:
             if self.budget >= _new_crop.seed_cost:
@@ -239,7 +239,7 @@ class BaseFarmer(ap.Agent):
         :rtype: float
         """
         self.water_supply = self.model.river.get_water(self.water_need)
-        #print(f"Farmer {self.id} obtained {self.water_supply} water units")
+        # print(f"Farmer {self.id} obtained {self.water_supply} water units")
         return self.water_supply
 
     def harvest(self):

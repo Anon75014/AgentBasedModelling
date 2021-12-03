@@ -1,4 +1,5 @@
 #%%
+import time
 from copy import deepcopy
 
 import gym
@@ -7,9 +8,12 @@ from gym import spaces
 from stable_baselines3.common.env_checker import check_env
 
 from agents import *
-from ml_agents import *
 from crops import CropSortiment
+from graph_presenter import graph_class
+from map_presenter import map_class
+from ml_agents import *
 from model import CropwarModel
+from settings import experiment_settings
 
 
 class CropwarEnv(gym.Env):
@@ -24,65 +28,42 @@ class CropwarEnv(gym.Env):
         super().__init__()
 
         """Setup of Model"""
-        # Initialise: CROPS
         self._reset_Cropshop()
 
-        self.parameters = {
-            # FIXED:
-            "crop_shop": self.crop_shop,
-            "amount_of_crops": self.crop_shop.amount_of_crops,
-            # TUNABLE:
-            # --.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--
-            "water_levels": [0, 0, 3],
-            # "v0_pos" : None,
-            "v0_pos": sorted(
-                [
-                    (1, 1),
-                    (1, 4),
-                    (5, 1),
-                    (5, 4),
-                ],
-                key=lambda x: x[0],
-            ),  # number of start positions must match n_farmers
-            "start_budget": 1000,
-            "t_end": 50,  # Amount of time steps to be simulated
-            "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
-            "save_gif": False,  # Save the map each timestep and generate Gif in the end
-            "seed": 0,  # Use a new seed
-            # "seed" : b'\xad\x16\xf3\xa7\x116\x10\x05\xc7\x1f'      # Use a custom seed
-            # --'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--
-            "nr_ml_farmers": 1,
-            "n_farmers": 4,
-            "farmers": {Trader: 0, Introvert: 3, ML_Introvert: 1},
-            "ml_env": self,
-            "use_trained_model": False,
-            "max_stock": 2000,
-            "max_budget": 1e8,
-            "river_content": 12.0,
-            "market_base_demand": 10.0,
-            "market_demand_fraction": 0.7,
-        }
+        self.p = experiment_settings["ML_Introvert_vs_3_Trader"][
+            "base_parameters"
+        ]
+        self.p.update(
+            {
+                # FIXED for the ML Environment:
+                "crop_shop": self.crop_shop,
+                "amount_of_crops": self.crop_shop.amount_of_crops,
+                "ml_env": self,
+                "trainee_type": ML_Introvert,
+                "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
+            }
+        )
 
+        self.p = DotDict(self.p)
+        
         """ Infer Machine Learning Base-Personalty """
-        self.ml_type = [
-            k
-            for k, v in self.parameters["farmers"].items()
-            if k.__name__[:2] == "ML" and v > 0
-        ][0]
-        print(f"Info: The active ML model is of type {self.ml_type.__name__}")
+
+        print(f"Info: The active ML model is of type {self.p.trainee_type.__name__}")
+
 
         """Setup for RL"""
-        nr_stock_entries = self.parameters["amount_of_crops"]
+        nr_stock_entries = self.p.amount_of_crops
         nr_seeds = nr_stock_entries
-        nr_farmers = self.parameters["n_farmers"]
+        nr_farmers = sum(self.p.farmers.values())
+        self.trainee_type = self.p.trainee_type
 
         self.observation_space = spaces.Box(
             0.0,
             1.0,
-            shape=(self.ml_type.data.obs_dim(nr_stock_entries, nr_seeds, nr_farmers),),
+            shape=(self.trainee_type.data.obs_dim(nr_stock_entries, nr_seeds, nr_farmers),),
             dtype=np.float32,
         )
-        self.action_space = self.ml_type.data.action_space
+        self.action_space = self.trainee_type.data.action_space(nr_stock_entries)
 
     def step(self, action: np.array):
         """Use action to step the environment.
@@ -101,32 +82,23 @@ class CropwarEnv(gym.Env):
         """Steps and Updates"""
         self.ml_trainee.planned_action = action
 
-        self.model.step()
+        self.model.sim_step()
 
+        """Evaluate the Action"""
         state, done = self.ml_trainee.get_state()
+        reward = self.ml_trainee.rewarder()
 
         if (state > 1).any():
             # Ensure normailsed observation-states:
             print("LIMIT REACHED. Training episode STOPS.")
+            # time.sleep(2)
             done = True
 
         if self.model.running == False:
             # Reached end of simulation
+            # print("MODEL NOT running anymore ",self.model.t)
+            # time.sleep(2)
             done = True
-            
-        """Reward Calculation"""
-        reward = 0
-        # --.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--.--
-        # Idea: The farmer gets max reward if richest. Then quadratically less for lower places
-        _budgets = self.model.farmers.budget
-        budgets = np.array(_budgets)
-        budgets.sort()
-        ranking = np.where(budgets == self.ml_trainee.budget)[0][-1] / (
-            len(budgets) - 1
-        )
-        # print(ranking)  # for debug
-        reward = ranking ** 2
-        # --'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--'--
 
         info = {}
         return state, reward, done, info
@@ -150,7 +122,7 @@ class CropwarEnv(gym.Env):
         self._reset_Cropshop()
 
         """ Initialise the model"""
-        self.model = CropwarModel(self.parameters)
+        self.model = CropwarModel(dict(self.p))
         self.model.sim_setup()
 
         state, _ = self.ml_trainee.get_state()
@@ -175,6 +147,34 @@ class CropwarEnv(gym.Env):
         self.crop_shop.add_crop(1, 9, 1)
 
 
+def show_results(_model):
+    env.model.end()
+    env.model.create_output()
+    env.model.output.info["completed"] = True
+    env.model.output.info["created_objects"] = env.model._id_counter
+    env.model.output.info["completed_steps"] = env.model.t
+    env.model.output.info["run_time"] = "007"
+    results = env.model.output
+    print(results)
+    presenter = graph_class(_model, results)
+
+    presenter.crops()
+    presenter.cellcount()
+    presenter.stocks()
+    presenter.budget()
+    presenter.export()
+    # presenter.traits(model)
+    presenter.personalities()
+
+    print(f"SEED: {_model.p.seed}")
+
+    """ Display the Map with the farmers """
+    mapper = map_class(_model)
+    mapper.initialise_farmers()
+    mapper.place_farmers()
+    mapper.show()
+
+
 if __name__ == "__main__":
     """For specific Env tests execute this file"""
     env = CropwarEnv()
@@ -183,4 +183,24 @@ if __name__ == "__main__":
 
     # It will check environment and output additional warnings if needed
     check_env(env, warn=True)
+
+    env = CropwarEnv()
+    obs = env.reset()
+    print(f"obs: {obs}")
+    n_steps = 16
+    total_reward = 0
+    for _ in range(n_steps):
+        # Random action
+        action = env.action_space.sample()
+        print(f"action: {action}")
+        obs, reward, done, info = env.step(action)
+        _reward = env.model.rewarder()
+        print(_reward)
+        total_reward += _reward
+        if done:
+            break
+            obs = env.reset()
+    print("TOTAL rew", total_reward)
+    show_results(env.model)
+
 # %%

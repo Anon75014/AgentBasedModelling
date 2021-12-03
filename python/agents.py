@@ -69,6 +69,7 @@ class Trader(BaseFarmer):
         }
 
         self.buy_cell_threash = self.random.uniform(0, 1) # ALTERNATIVE
+        self.can_change_crop = True
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
@@ -95,7 +96,6 @@ class Trader(BaseFarmer):
         is positive.
         """
 
-
         dir = self.random.choice(self.model.headings)
         prob = self.random.uniform(0, 1)
         # Diese Personality expandiert (manchmal)!
@@ -105,8 +105,9 @@ class Trader(BaseFarmer):
 
         # Diese Personality kann crop wechseln!
 
-        self.market = self.model.market # get access to the CropWar market infos
+        self.market = self.model.market  # get access to the CropWar market infos
         # potentially change crop:
+        # if self.change_to_crop:
         self.check_crop_change(
             self.market.highest_price_id,
             self.market.highest_price,
@@ -132,7 +133,7 @@ class Trader(BaseFarmer):
             expected_profit = (
                 cost_seed_change + (current_demand - current_stock) * price
             )
-            print("Expected profit: ", expected_profit)
+            #print("Expected profit: ", expected_profit)
             if expected_profit > 0:
                 self.change_to_crop(crop_id)
 
