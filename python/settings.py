@@ -20,7 +20,7 @@ experiment_settings = {
             # ---- General Simulation Settings ----
             "crop_shop": None,
             "amount_of_crops": None,
-            "steps": 100,  # Amount of time steps
+            "steps": 50,  # Amount of time steps
             "diagonal expansion": False,  # Only expand along edges
             "save_gif": False,  # Save map as Gif
             "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
@@ -39,10 +39,10 @@ experiment_settings = {
             "market_base_supply": 50.0,
             "market_demand_fraction": 0.5,
             "market_max_price": 1.0,
-            "market_demand_growth_factor": 1e-2,
+            "market_demand_growth_factor": 1e-3,
             "market_price_sensitivity": 1.0,
             "farmer_price_elasticity": 10.0,
-            "farmer_starting_stock": 10.0,
+            "farmer_starting_stock": 20.0,
         },
     }
 }
