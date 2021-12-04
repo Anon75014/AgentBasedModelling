@@ -35,7 +35,7 @@ class Introvert(BaseFarmer):
         # Diese Personality schaut nicht auf den Markt!
         supplies = dict.fromkeys(self.model.crop_shop.crops.keys())
         for crop_id in self.model.crop_shop.crops.keys():
-            supplies[crop_id] = 0.1 * self._stock[crop_id]
+            supplies[crop_id] = 0.2 * self._stock[crop_id]
 
         self.supply = supplies
         return supplies
