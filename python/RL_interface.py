@@ -9,7 +9,7 @@ from main import run_full_simulation
 from ml_agents import *
 from RL_env import CropwarEnv
 
-name = "CropWar_PPO_vs_pretrained"
+name = "CropWar_PPO_expanding3"
 
 
 def run_trainer():
@@ -22,9 +22,9 @@ def run_trainer():
     """
     global name
     # Parallel environments
-    env = make_vec_env(CropwarEnv, n_envs=4)
+    env = make_vec_env(CropwarEnv, n_envs=5)
     model = PPO("MlpPolicy", env, verbose=1, tensorboard_log="python\log_ppo_vs_pretrained")
-    model.learn(total_timesteps=1e5)
+    model.learn(total_timesteps=2e5)
 
     model.save(name)
     print(
@@ -52,7 +52,7 @@ def run_interactive():
     print("done with model generation part...")
     if int(input("Do you want to see plots? 1:yes, 0:no")):
         training_parameters = {
-        "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
+                "farmers": {Trader: 3, Introvert: 0, ML_Stationary: 0, ML_Expander: 1},
         "use_trained_model" : ml_model
         }   
         run_full_simulation(custom_parameters=training_parameters)
@@ -71,14 +71,15 @@ def evaluate():
         raise FileNotFoundError
 
     evaluate_parameters = {
-        "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
-        "use_trained_model" : ml_model
+        "farmers": {Trader: 3, Introvert: 0, ML_Stationary: 0, ML_Expander: 1},
+        "use_trained_model" : ml_model,
+        "seed": 0,
     }
     run_full_simulation(custom_parameters=evaluate_parameters)
 
 
 if __name__ == "__main__":
-    run_trainer()
-    # run_interactive()
+    #run_trainer()
+    #run_interactive()
     evaluate()
 #%%

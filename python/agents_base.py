@@ -21,7 +21,7 @@ class Cell(ap.Agent):
         self.crop = None
         self.pos = self.model.free_cell_coords.pop(0)
         self.water = self.model.water_matrix[self.pos]  # in [0,1] interval
-        self.buy_cost = self.water * 10
+        self.buy_cost = self.water * 10.0
 
     def harvest(self):
         """Harvest the cells content into farmers stock
@@ -93,7 +93,7 @@ class BaseFarmer(ap.Agent):
         for crop_id in self.model.crop_shop.crops.keys():
             self._stock[crop_id] = self.model.p.farmer_starting_stock
         self.stock = copy.deepcopy(self._stock)  # this is recorded...
-        self.supply = dict.fromkeys(self.model.crop_shop.crops.keys())
+        self.supply = dict.fromkeys(self.model.crop_shop.crops.keys(), 0.0)
 
         """ Choose start position for Farmer"""
         if self.p.v0_pos and self.p.n_farmers == 4:
@@ -193,42 +193,36 @@ class BaseFarmer(ap.Agent):
         if _pos:
             self._buy_cell(_pos)
 
-        print(f"Farmer {self.id} bought new land at {_pos}.")
+        #print(f"Farmer {self.id} bought new land at {_pos}.")
 
     def change_to_crop(self, new_id: int):
-        """Farmer changes all his cells to new crop new_id.
+        """
+        Farmer changes all his cells to new crop new_id.
+
+        Implemented Rules:
+        He can only change to a new one,
+        if he can buy the new crop seeds for all his cells
+        if the new_id is the same as the current one, onnly for cells with currently
+        no crop (`crop_id == -1`) new ones will be bought and planted
 
         :param new_id: [description]
         :type new_id: int
         """
-
-        # Implemented Rules:
-        # He can only change to a new one,
-        # if he can buy the new crop seeds for all his cells
-        # if the new_id is the same as the current one, onnly for cells with currently
-        # no crop (crop_id == -1) new ones will be bought and planted
-
         _new_crop = self.model.crop_shop.crops[new_id]
 
         if new_id == self.crop._id:  # same as current
             active_cells = self.cells.select(self.cells.crop == None)
         else:  # farmer just changed crops
             active_cells = self.cells
-
             if self.budget < _new_crop.seed_cost * len(active_cells):
-                print("Not enough money to change crop.")
                 return
             else:
                 self.crop = _new_crop
-
-                # print(f"Farmer {self.id} changed crop to {self.crop._id}.")
 
         for _cell in active_cells:
             if self.budget >= _new_crop.seed_cost:
                 self.budget -= _new_crop.seed_cost
                 self.moneytracker["crop_change"] += _new_crop.seed_cost
-
-                # update cell properties ::
                 _cell.crop = self.crop
         self.water_need = len(self.aquired_land) * self.crop.water_need
 

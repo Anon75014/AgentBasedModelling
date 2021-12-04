@@ -20,18 +20,18 @@ experiment_settings = {
             # ---- General Simulation Settings ----
             "crop_shop": None,
             "amount_of_crops": None,
-            "steps": 100,  # Amount of time steps
+            "steps": 300,  # Amount of time steps
             "diagonal expansion": False,  # Only expand along edges
             "save_gif": False,  # Save map as Gif
             "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
             "nr_ml_farmers": 0,
-            "farmers": {Trader: 2, Introvert: 1, ML_Introvert: 1},
+            "farmers": {Trader: 3, Introvert: 0, ML_Stationary: 0, ML_Expander: 1},
             # ---- ML Parameters ----
             "ml_env": None,  # spec in RL_env
             "trainee_type" : None,
             "use_trained_model": False,
             # ---- Parameters ----
-            "max_stock": 2000.0,
+            "max_stock": 2e5,
             "max_budget": 1e8,
             "start_budget": 500.0,
             "river_content": 100.0,

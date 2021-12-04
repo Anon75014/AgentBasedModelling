@@ -123,7 +123,7 @@ class Trader(BaseFarmer):
                     * self.model.crop_shop.crops[self.crop_id].sell_price
                 )
                 if expected_profit > expected_profit_old:
-                    print(f"Expected profit of {self}: ", expected_profit - expected_profit_old)
+                    #print(f"Expected profit of {self}: ", expected_profit - expected_profit_old)
                     self.change_to_crop(crop_id)
 
 

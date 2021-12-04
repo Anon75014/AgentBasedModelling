@@ -39,8 +39,9 @@ class CropwarEnv(gym.Env):
                 "crop_shop": self.crop_shop,
                 "amount_of_crops": self.crop_shop.amount_of_crops,
                 "ml_env": self,
-                "trainee_type": ML_Introvert,
-                "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
+                "trainee_type": ML_Expander,
+                "farmers": {Trader: 3, Introvert: 0, ML_Stationary: 0, ML_Expander: 1},
+                "seed": 0,
             }
         )
 
@@ -89,6 +90,7 @@ class CropwarEnv(gym.Env):
         reward = self.ml_trainee.rewarder()
 
         if (state > 1).any():
+            print(state > 1)
             # Ensure normailsed observation-states:
             print("LIMIT REACHED. Training episode STOPS.")
             # time.sleep(2)
@@ -181,7 +183,7 @@ if __name__ == "__main__":
     print(env.action_space.sample())
 
     # It will check environment and output additional warnings if needed
-    check_env(env, warn=True)
+    #check_env(env, warn=True)
 
     env = CropwarEnv()
     obs = env.reset()
@@ -193,7 +195,7 @@ if __name__ == "__main__":
         action = env.action_space.sample()
         print(f"action: {action}")
         obs, reward, done, info = env.step(action)
-        _reward = env.model.rewarder()
+        _reward = env.model.ml_trainee.rewarder()
         print(_reward)
         total_reward += _reward
         if done:
