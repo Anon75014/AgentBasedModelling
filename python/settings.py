@@ -25,7 +25,7 @@ experiment_settings = {
             "save_gif": False,  # Save map as Gif
             "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
             "nr_ml_farmers": 0,
-            "farmers": {Trader: 3, Introvert: 0, ML_Introvert: 1},
+            "farmers": {Trader: 2, Introvert: 1, ML_Introvert: 1},
             # ---- ML Parameters ----
             "ml_env": None,  # spec in RL_env
             "trainee_type" : None,
@@ -33,7 +33,7 @@ experiment_settings = {
             # ---- Parameters ----
             "max_stock": 2000.0,
             "max_budget": 1e8,
-            "start_budget": 200.0,
+            "start_budget": 500.0,
             "river_content": 100.0,
             "market_base_demand": 90.0,
             "market_base_supply": 50.0,
@@ -42,7 +42,7 @@ experiment_settings = {
             "market_demand_growth_factor": 1e-2,
             "market_price_sensitivity": 1.0,
             "farmer_price_elasticity": 10.0,
-            "farmer_starting_stock": 15.0,
+            "farmer_starting_stock": 10.0,
         },
     }
 }

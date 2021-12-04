@@ -21,6 +21,7 @@ class Market:
         max_price: float,
         demand_growth_factor: float,
         price_sensitivity: float,
+        starting_stock: float,
     ) -> None:
         """
         Market model
@@ -43,6 +44,7 @@ class Market:
         self.demand_fraction = demand_fraction
         self.demand_growth_factor = demand_growth_factor
         self.price_sensitivity = price_sensitivity
+        self.farmer_starting_stock = starting_stock
 
         self.current_demand: Dict[int, int] = {
             k: self.base_demand for k in crop_sortiment.crops.keys()
@@ -95,7 +97,7 @@ class Market:
                         (
                             self.crop_sortiment.crops[crop_id].base_price
                             * crop_demand
-                            / self.current_stock[crop_id]
+                            / (self.farmer_starting_stock + self.current_stock[crop_id])
                         ),
                         self.max_price,
                     ]
