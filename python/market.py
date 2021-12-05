@@ -1,9 +1,7 @@
 from crops import CropSortiment
 import numpy as np
 import agentpy as ap
-from dataclasses import dataclass
-from typing import Dict, Optional
-from random import random
+from typing import Dict
 
 
 class Market:
@@ -17,7 +15,6 @@ class Market:
         agents: ap.AgentList,
         model: object,
         base_demand: float,
-        demand_fraction: float,
         max_price: float,
         demand_growth_factor: float,
         price_sensitivity: float,
@@ -26,22 +23,25 @@ class Market:
         """
         Market model
 
-        Parameters
-        ----------
-        crop_sortiment: CropSortiment
-            The CropSortiment that is used in the model
-        agents: ap.AgentList
-            List of agents that participate in the market
-        base_demand: float
-            Base line for the demand
-        demand_fraction: float
-            Expansion factor for the demand
+        :param crop_sortiment: The `CropSortiment` that is used in the model.
+        :type crop_sortiment: CropSortiment
+        :param agents: List of agents that participate in the market.
+        :type agents: ap.AgentList
+        :param base_demand: Base line for the demand.
+        :type base_demand: float
+        :param max_price: Maximal price of the market.
+        :type max_price: float
+        :param demand_growth_factor: Population growth factor of the demand.
+        :type demand_growth_factor: float
+        :param price_sensitivity: Senstivity of the demand on price devations from the base price.
+        :type price_sensitivity: float
+        :param starting_stock: Amount of stock that each farmer starts with.
+        :type starting_stock: float
         """
         self.crop_sortiment = crop_sortiment
         self.agents = agents
         self.model = model
         self.base_demand = base_demand
-        self.demand_fraction = demand_fraction
         self.demand_growth_factor = demand_growth_factor
         self.price_sensitivity = price_sensitivity
         self.farmer_starting_stock = starting_stock
@@ -62,22 +62,27 @@ class Market:
 
     def _calc_current_demand(self) -> None:
         """
-        Calculates the current demand using an expansive market model, i.e. the demand increases every iteration by a fixed fraction of the total stock.
+        Calculates the current demand using an expansive market model, i.e. the
+        demand increases every iteration by a fixed fraction of the total
+        stock.
         """
-        #self.current_demand = {
-        #    crop_id: (self.base_demand
-        #    + self.demand_fraction * (np.random.uniform(0.5,1.5) * self.current_stock[crop_id]))
-        #    for crop_id in self.crop_sortiment.crops.keys()
-        #}
         self.current_demand = {
-            crop_id: (self.base_demand + self.demand_growth_factor * self.model.t ** 2) * np.exp(-self.price_sensitivity * (self.current_prices[crop_id] - self.crop_sortiment.crops[crop_id].base_price))
+            crop_id: (self.base_demand + self.demand_growth_factor * self.model.t ** 2)
+            * np.exp(
+                -self.price_sensitivity
+                * (
+                    self.current_prices[crop_id]
+                    - self.crop_sortiment.crops[crop_id].base_price
+                )
+            )
             for crop_id in self.crop_sortiment.crops.keys()
         }
 
     def _calc_global_stock(self) -> None:
         """
-        Calculates all the available resources. Due to the assumption of symmetric information, the total stock will be aggregated
-        by adding the individual stocks of every agent for a certain commodity.
+        Calculates all the available resources. Due to the assumption of
+        symmetric information, the total stock will be aggregated by adding the
+        individual stocks of every agent for a certain commodity.
         """
         self.current_stock = {k: 0.0 for k in self.crop_sortiment.crops.keys()}
         for agent in self.agents:
@@ -86,10 +91,10 @@ class Market:
 
     def calc_global_price(self) -> Dict[int, float]:
         """
-        Calculates the global price according to supply and demand
+        Calculates the global price according to supply and demand.
         """
         self._calc_global_stock()
-        self._calc_current_demand()  # based on t-1 stock
+        self._calc_current_demand()
         for crop_id, crop_demand in self.current_demand.items():
             if self.current_stock[crop_id] != 0.0:
                 self.current_prices[crop_id] = np.min(
@@ -103,13 +108,13 @@ class Market:
                     ]
                 )
             else:
-                #pass
                 self.current_prices[crop_id] = self.max_price
         return self.current_prices
 
     def market_interaction(self) -> Dict[int, float]:
         """
-        Calculates the total supply that is provided by the agents. The agents act according to their specification, i.e. their supply function.
+        Calculates the total supply that is provided by the agents. The agents
+        act according to their specification, i.e. their supply function.
         """
         self.agents.calc_supply(self.current_prices)
         self.calc_global_price()
@@ -138,14 +143,11 @@ class Market:
         return self.current_supply
 
     def step(self):
+        """
+        Step function used in the model.
+        """
         self.market_interaction()
 
-        # Update prices of crops & get highest price
+        # Update prices of crops
         for crop_id, price in self.current_prices.items():
             self.crop_sortiment.crops[crop_id].sell_price = price
-
-        self.highest_price_id = max(
-            self.current_prices, key=self.current_prices.get
-        )
-        self.highest_price = max(self.current_prices.values())
-        self.crop_prices = self.current_prices.copy()

@@ -1,4 +1,6 @@
-""" Presentation File for the Results of the  CropWar Simulation. """
+"""
+Presentation file for the results of the CropWar simulation.
+"""
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -10,12 +12,15 @@ from model import CropwarModel
 
 
 class graph_class:
-    """Displayer Class to show the Agnetpy Run results."""
+    """
+    Displayer Class to show the Agnetpy Run results.
+    """
 
-    def __init__(self, model:CropwarModel, _results) -> None:
+    def __init__(self, model: CropwarModel, _results) -> None:
         """
-        Parameters:
-        -   _results: A pandas dataframe, containing the results of Model.run()
+        :param model: CropWar model that should be graphed
+        :type model: CropwarModel
+        :param _results: A pandas dataframe, containing the results of `model.run()`
         """
         self.model = model
         self.results = _results
@@ -50,7 +55,9 @@ class graph_class:
         print("OK: initialised Displayer instance")
 
     def new_plot(self, _parameter):
-        """Basic properties for a new plot."""
+        """
+        Basic properties for a new plot.
+        """
         fig = plt.figure()
 
         plt.title(self.titles[_parameter])
@@ -78,7 +85,9 @@ class graph_class:
     """ SPECIFIC FUNCTIONS """
 
     def preprocess_data(self):
-        """Convert the results-pd-series to a dataframe w/out dictionaries"""
+        """
+        Convert the results-pd-series to a dataframe w/out dictionaries
+        """
 
         _stock_as_df = df.from_records(self.data.stock)
         _stock_data_raw = pd.concat(
@@ -92,7 +101,9 @@ class graph_class:
         return _stock_data
 
     def stocks(self):
-        """Plot the stock evolution for all the farmers seperately."""
+        """
+        Plot the stock evolution for all the farmers seperately.
+        """
         g = sns.relplot(
             data=self.stock_data,
             x="t",
@@ -106,7 +117,9 @@ class graph_class:
         g.fig.subplots_adjust(top=0.86)
 
     def crops(self):
-        """Plot crop_id evolution for the different farmers."""
+        """
+        Plot crop_id evolution for the different farmers.
+        """
         g = self.show_solo_line("crop_id")
         g.set(yticks=list(range(self.results.parameters.constants["amount_of_crops"])))
         g.set_axis_labels("Time", "Crop ID")
@@ -114,17 +127,23 @@ class graph_class:
         g.fig.subplots_adjust(top=0.86)
 
     def budget(self):
-        """Plot budget data"""
+        """
+        Plot budget data
+        """
         self.new_plot("budget")
         self.show_evolution_line("budget")
 
     def cellcount(self):
-        """Cellcount data"""
+        """
+        Cellcount data
+        """
         self.new_plot("cellcount")
         self.show_evolution_line("cellcount")
 
     def traits(self, model):
-        """Personality traits"""
+        """
+        Personality traits
+        """
         fig, ax = plt.subplots()
         trait_data = list(model.farmers.buy_cell_threash)
         farmer_ids = list(model.farmers.id)
@@ -145,7 +164,8 @@ class graph_class:
         prices_df.to_csv('exported_prices.csv')
 
     def demand(self):
-        """Presents the evolution of the Market-influenced crop demand.
+        """
+        Presents the evolution of the Market-influenced crop demand.
         """
         print(f"demand have so many pars: {len(self.model.demand_history)}")
         demand_df = pd.DataFrame(self.model.demand_history)
@@ -163,7 +183,8 @@ class graph_class:
         supply_df.to_csv('exported_supply.csv')
 
     def global_stock(self):
-        """Presents the evolution of the Market-influenced crop global stock.
+        """
+        Presents the evolution of the Market-influenced crop global stock.
         """
         print(f"global_stock have so many pars: {len(self.model.global_stock_history)}")
         global_stock_df = pd.DataFrame(self.model.global_stock_history)
@@ -173,8 +194,9 @@ class graph_class:
 
 
     def personalities(self):
-        """show Personality database
-        
+        """
+        Show Personality database
+
         Pretty print a table into the Console with ID, Farmer Types and Buy threashold
         """
 
@@ -182,35 +204,44 @@ class graph_class:
         types = self.model.farmers.type
         buy_vals = [round(val,3) for val in self.model.farmers.buy_cell_threash]
 
-        data = {"IDs": ids,
-                "Farmer type": types,
-                "Buy Threashold\n(rounded)": buy_vals,    
-                }
+        data = {
+            "IDs": ids,
+            "Farmer type": types,
+            "Buy Threashold\n(rounded)": buy_vals,
+        }
         # source : https://pypi.org/project/tabulate/
         print(tabulate(data, headers="keys",tablefmt="fancy_grid",numalign='center',stralign='center'))
 
     def export_budget(self):
-        """export the relevant data for plotting in LaTeX"""
+        """
+        Export the relevant data for plotting in LaTeX
+        """
         budget_df = df.pivot(self.data, index="t", columns="Farmer ID", values="budget")
         budget_df.to_csv("exported_budget.csv")
 
     def export_cellcount(self):
-        """export the relevant data for plotting in LaTeX"""
+        """
+        Export the relevant data for plotting in LaTeX
+        """
         cellcount_df = df.pivot(
             self.data, index="t", columns="Farmer ID", values="cellcount"
         )
         cellcount_df.to_csv("exported_cellcount.csv")
 
     def export_stock(self):
-        """export the relevant data for plotting in LaTeX"""
+        """
+        Export the relevant data for plotting in LaTeX
+        """
         stock_df = df.pivot(
             self.stock_data, index="t", columns=["Crop", "Farmer ID"], values="Amount"
         )
         stock_df.to_csv("exported_stock.csv")
 
     def export(self):
-        """Export Stockdata and Budget&Crop_id data to
-        two .csv files for plotting in Latex."""
+        """
+        Export stock data and budget, `crop_id` data to two `.csv` files for
+        plotting in LaTex.
+        """
         # self.stock_data.to_csv("stock_results.csv")
         self.data.to_csv("data.csv")
         self.export_budget()

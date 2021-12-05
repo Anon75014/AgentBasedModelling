@@ -46,7 +46,7 @@ class CropwarEnv(gym.Env):
         )
 
         self.p = DotDict(self.p)
-        
+
         """ Infer Machine Learning Base-Personalty """
 
         print(f"Info: The active ML model is of type {self.p.trainee_type.__name__}")
@@ -93,13 +93,10 @@ class CropwarEnv(gym.Env):
             print(state > 1)
             # Ensure normailsed observation-states:
             print("LIMIT REACHED. Training episode STOPS.")
-            # time.sleep(2)
             done = True
 
         if self.model.running == False:
             # Reached end of simulation
-            # print("MODEL NOT running anymore ",self.model.t)
-            # time.sleep(2)
             done = True
 
         info = {}
@@ -203,5 +200,3 @@ if __name__ == "__main__":
             obs = env.reset()
     print("TOTAL rew", total_reward)
     show_results(env.model)
-
-# %%

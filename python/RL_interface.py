@@ -52,9 +52,9 @@ def run_interactive():
     print("done with model generation part...")
     if int(input("Do you want to see plots? 1:yes, 0:no")):
         training_parameters = {
-                "farmers": {Trader: 3, Introvert: 0, ML_Stationary: 0, ML_Expander: 1},
+                "farmers": {Trader: 3, Introvert: 0, ML_Expander: 1},
         "use_trained_model" : ml_model
-        }   
+        }
         run_full_simulation(custom_parameters=training_parameters)
 
 
@@ -71,7 +71,7 @@ def evaluate():
         raise FileNotFoundError
 
     evaluate_parameters = {
-        "farmers": {Trader: 3, Introvert: 0, ML_Stationary: 0, ML_Expander: 1},
+        "farmers": {Trader: 0, Introvert: 3, ML_Expander: 1},
         "use_trained_model" : ml_model,
         "seed": 0,
     }
@@ -82,4 +82,3 @@ if __name__ == "__main__":
     #run_trainer()
     #run_interactive()
     evaluate()
-#%%

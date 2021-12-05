@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
+
 class Crop:
     """Crop Super Class"""
 
@@ -17,6 +18,7 @@ class Crop:
         sell_price: float = 0.0,
         max_harvest_yield: float = 0.0,
         water_need: float = 0.0,
+        # The following are not used in the current version
         crop_factor: Optional[List[float]] = None,
         k_c_y: Optional[float] = None,
         manure_need: Optional[float] = None,
@@ -33,24 +35,21 @@ class Crop:
 
         :param crop_id: ID used to distinguish
         :type crop_id: int
-        :param seed_cost: Cost to buy seed for a single Cell, defaults to 0
+        :param seed_cost: Cost to buy seed for a single Cell, defaults to 0.0
         :type seed_cost: float, optional
-        :param sell_price: Sell price per unit, defaults to 0
+        :param sell_price: Sell price per unit, defaults to 0.0
         :type sell_price: float, optional
-        :param harvest_yield: [description], defaults to 0
-        :type harvest_yield: float, optional
-        :param water_need: [description], defaults to 0.0
+        :param max_harvest_yield:  Maximal yield of the crop, defaults to 0.0
+        :type max_harvest_yield: float, optional
+        :param water_need: Amount of water needed to grow this crop, defaults to 0.0
         :type water_need: float, optional
-        :yield: [description]
-        :rtype: [type]
         """
-        # basically its name, used to distinct in arrays, plots etc ::
         self._id = crop_id
         self.water_need = water_need
-        self.seed_cost = seed_cost  # cost for a farmer to change crops
-        self.sell_price = sell_price  # price at which a unit (1) crop can be sold. TODO: vary prices with market
+        self.seed_cost = seed_cost
+        self.sell_price = sell_price
         self.base_price = sell_price
-        self.max_harvest_yield = max_harvest_yield  # amount of units a harvest will yield
+        self.max_harvest_yield = max_harvest_yield
         self.crop_factor = crop_factor
         self.k_c_y = k_c_y
         self.manure_need = manure_need
@@ -63,39 +62,74 @@ class Crop:
         self.labor_need = labor_need
         self.machinery_hour = machinery_hour
 
-    def change_crop_id(self, new_id: int):
+    def change_crop_id(self, new_id: int) -> None:
+        """
+        Changes `crop_id` of the crop.
+
+        :param new_id: New `crop_id`.
+        :type new_id: int
+        """
         self._id = new_id
 
-    def get_harvest_yield(self, di: float) -> List[float]:
+    def get_harvest_yield(self, di: float) -> float:
+        """
+        Implements the FAO model.
+
+        :param di: Fraction of the necessary water supply to grow this crop
+        :type di: float
+        :return: Yields of the crop
+        :rtype: float
+        """
         s = 0.0
         for j, k_c_y in enumerate(self.k_c_y):
             s += k_c_y * (1.0 - (di / (self.crop_factor[j])))
         harvest_yield = np.max([self.max_harvest_yield * (1.0 - s), 0.0])
         return harvest_yield
 
-    def _get_gwp(self, area):
-        # TODO: Make actually work
-        #Area must be in ha
-        GWP_fertilizer = [(
-            self.manure_need[i] * 8.96384
-            + self.phosphorus_need[i] * 1.5
-            + self.potassium_need[i] * 0.98
-            + self.nitrogen_need[i] * 8.3
-        ) * area[i] for i in range(len(area))]
-        GWP_biocide = [(
-            self.herbicide_need[i] * 6.3 + self.insecticide_need[i] * 5.1 + self.fungicide_need[i] * 3.9
-        ) * area[i] for i in range(len(area))]
-        GWP_machinery = [93.38 * self.machinery_hour[i] * 2.6845 * 0.071 * area[i] for i in range(len(area))]
-        GWP_fuel = [self.machinery_hour[i] * 17.81 * 2.347 * area[i] for i in range(len(area))]
-        GWP_electricity = [self.water_need[i] * 10 * 0.2323 * 0.608 for i in range(len(area))]
-        GWP_total = [(
-            GWP_fertilizer[i]
-            + GWP_biocide[i]
-            + GWP_machinery[i]
-            + GWP_fuel[i]
-            + GWP_electricity[i]
-        ) for i in range(len(area))]
-        return GWP_total
+    def _get_gwp(self, area) -> float:
+        """
+        Calculates the Global Warming Potential (not used)
+        """
+        GWP_fertilizer = [
+            (
+                self.manure_need[i] * 8.96384
+                + self.phosphorus_need[i] * 1.5
+                + self.potassium_need[i] * 0.98
+                + self.nitrogen_need[i] * 8.3
+            )
+            * area[i]
+            for i in range(len(area))
+        ]
+        GWP_biocide = [
+            (
+                self.herbicide_need[i] * 6.3
+                + self.insecticide_need[i] * 5.1
+                + self.fungicide_need[i] * 3.9
+            )
+            * area[i]
+            for i in range(len(area))
+        ]
+        GWP_machinery = [
+            93.38 * self.machinery_hour[i] * 2.6845 * 0.071 * area[i]
+            for i in range(len(area))
+        ]
+        GWP_fuel = [
+            self.machinery_hour[i] * 17.81 * 2.347 * area[i] for i in range(len(area))
+        ]
+        GWP_electricity = [
+            self.water_need[i] * 10 * 0.2323 * 0.608 for i in range(len(area))
+        ]
+        GWP_total = [
+            (
+                GWP_fertilizer[i]
+                + GWP_biocide[i]
+                + GWP_machinery[i]
+                + GWP_fuel[i]
+                + GWP_electricity[i]
+            )
+            for i in range(len(area))
+        ]
+        return sum(GWP_total)
 
     def _info_dict(self) -> dict:
         """Used to generate a dict so that the config can be saved into a json file.
@@ -111,6 +145,7 @@ class Crop:
         info_dict = {var: self.__getattribute__(var) for var in crop_variables}
         return info_dict
 
+
 class CropSortiment:
     """Class for crop interaction and tracking"""
 
@@ -119,23 +154,30 @@ class CropSortiment:
         # number of available crops; to track and for ID-assignement
         self.amount_of_crops = 0
         self.crops = {}
-        # print("Done: Created Crop_sortiment instance.")
 
-    def add_crop(self, seed_cost: float, sell_price: float, max_harvest_yield: float, water_need: float):
+    def add_crop(
+        self,
+        seed_cost: float,
+        sell_price: float,
+        max_harvest_yield: float,
+        water_need: float,
+    ) -> None:
         """Add a new kind of Crop to the sortiment
 
-        :param area: [description]
-        :type area: float
-        :param crop_type: [description]
-        :type crop_type: float
-        :param di: [description]
-        :type di: float
+        :param seed_cost: Cost to buy seed for a single Cell
+        :type seed_cost: float
+        :param sell_price: Sell price per unit
+        :type sell_price: float
+        :param max_harvest_yield: Maximal yield of the crop
+        :type max_harvest_yield: float
+        :param water_need: Amount of water needed to grow this crop
+        :type water_need: float
         """
         crop_id = self.amount_of_crops
         self.amount_of_crops += 1
-        # generate new Crop-instance based on Crop-class and add to dict:
-        self.crops[crop_id] = Crop(crop_id, seed_cost, sell_price, max_harvest_yield, water_need)
-        # print(f"Done: added Crop{crop_id} to sortiment.")
+        self.crops[crop_id] = Crop(
+            crop_id, seed_cost, sell_price, max_harvest_yield, water_need
+        )
 
     def add_crop(self, new_crop: Crop):
         crop_id = self.amount_of_crops
@@ -151,6 +193,7 @@ class CropSortiment:
         """
         cropshop_dict = {crop._id: crop._info_dict() for crop in self.crops.values()}
         return cropshop_dict
+
 
 WinterWheat = Crop(
     crop_id=1,
@@ -230,7 +273,7 @@ Beans = Crop(
 
 Cucumbers = Crop(
     crop_id=5,
-    seed_cost=240.11,
+    seed_cost=240.11e-2,
     sell_price=0.065,
     max_harvest_yield=25.0,
     water_need=1.0,
@@ -249,7 +292,7 @@ Cucumbers = Crop(
 
 Tomatoes = Crop(
     crop_id=6,
-    seed_cost=292.44,
+    seed_cost=292.44e-2,
     sell_price=0.052,
     max_harvest_yield=35.0,
     water_need=1.0,
@@ -268,7 +311,7 @@ Tomatoes = Crop(
 
 Watermelons = Crop(
     crop_id=7,
-    seed_cost=208.96,
+    seed_cost=208.96e-2,
     sell_price=0.028,
     max_harvest_yield=40.0,
     water_need=1.0,
@@ -287,7 +330,7 @@ Watermelons = Crop(
 
 Alfalfa = Crop(
     crop_id=8,
-    seed_cost=101.47,
+    seed_cost=101.47e-2,
     sell_price=0.81,
     max_harvest_yield=3.5,
     water_need=1.0,
@@ -306,7 +349,7 @@ Alfalfa = Crop(
 
 Sorghum = Crop(
     crop_id=9,
-    seed_cost=150.67,
+    seed_cost=150.67e-2,
     sell_price=0.063,
     max_harvest_yield=8.0,
     water_need=1.0,
@@ -325,7 +368,7 @@ Sorghum = Crop(
 
 Rapeseed = Crop(
     crop_id=10,
-    seed_cost=81.03,
+    seed_cost=81.03e-2,
     sell_price=0.088,
     max_harvest_yield=4.0,
     water_need=1.0,
@@ -341,9 +384,3 @@ Rapeseed = Crop(
     labor_need=2.65,
     machinery_hour=0.0,
 )
-
-if __name__ == "__main__":
-    crop_shop = CropSortiment()
-    crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
-    crop_shop.add_crop(1, 9, 1)
-    pass
