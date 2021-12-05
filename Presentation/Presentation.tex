@@ -176,15 +176,15 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
       \column{0.48\linewidth}
          \centering
          \begin{figure}
-          \includegraphics[width=\textwidth]{Report/Figures/v11_Map.png}
+          \includegraphics[width=\textwidth]{Figures/v11_Map.png}
          \end{figure}
        \column{0.52\linewidth}
        In \tagg{v1.1} farmers only have access to one cell on which they can choose to grow one of two crops (A or B)
      \end{columns} 
 \end{frame}
 
-\pgfplotstableread[col sep=comma]{Report/Data/v11_exported_budget.csv}{\budgeta}
-\pgfplotstableread[col sep=comma, skip first n=3]{Report/Data/v11_exported_stock.csv}{\stocka}
+\pgfplotstableread[col sep=comma]{Data/v11_exported_budget.csv}{\budgeta}
+\pgfplotstableread[col sep=comma, skip first n=3]{Data/v11_exported_stock.csv}{\stocka}
 
 \begin{frame}{\aa}{\aaa}
   \begin{columns}
@@ -202,7 +202,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
     xmin=0,
     %ymin=350,
     legend pos=north west,
-    cycle list name=mycolorlist
+    cycle list name=farmerslist
   ]
     %plot 1: farmer ID 1
     \addplot+[] table[y index =1]{\stocka};
@@ -248,7 +248,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
 		  xmin=0,
 		  %ymin=350,
 		  legend pos=north west,
-		  cycle list name=mycolorlist
+		  cycle list name=farmerslist
 		]
 		  %plot 1: farmer ID 1
 		  \addplot+[] table[y index =1]{\budgeta};
@@ -308,9 +308,9 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
   \end{columns}
 \end{frame}
 
-\pgfplotstableread[col sep=comma]{Report/Data/v12_exported_budget.csv}{\budgetb}
-\pgfplotstableread[col sep=comma, skip first n=3]{Report/Data/v12_exported_stock.csv}{\stockb}
-\pgfplotstableread[col sep=comma, skip first n=1]{Report/Data/v12_exported_cellcount.csv}{\cellcountb}
+\pgfplotstableread[col sep=comma]{Data/v12_exported_budget.csv}{\budgetb}
+\pgfplotstableread[col sep=comma, skip first n=3]{Data/v12_exported_stock.csv}{\stockb}
+\pgfplotstableread[col sep=comma, skip first n=1]{Data/v12_exported_cellcount.csv}{\cellcountb}
 
 \begin{frame}{\aa}{\aab}
   \begin{columns}
@@ -325,7 +325,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
         ylabel=Farmer land count (cells),
         xmin=0,
         legend pos=north west,
-        cycle list name=mycolorlist
+        cycle list name=farmerslist
       ]
         %plot 1: farmer ID 1
         \addplot+[] 
@@ -359,7 +359,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
         xmin=0,
         ymin=0,
         legend pos=north west,
-        cycle list name=mycolorlist
+        cycle list name=farmerslist
       ]
         %plot 1: farmer ID 1
       \addplot+[dashed] table[y index =5]{\stockb};
@@ -399,7 +399,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
           xmin=0,
           ymax = 600,
           legend pos=north west,
-          cycle list name=mycolorlist
+          cycle list name=farmerslist
         ]
           %plot 1: farmer ID 1
           \addplot+[] 
@@ -427,9 +427,9 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
   \end{columns}
 \end{frame}
 
-\pgfplotstableread[col sep=comma]{Report/Data/v12_exported_budget_50t.csv}{\budgetc}
-\pgfplotstableread[col sep=comma, skip first n=3]{Report/Data/v12_exported_stock_50t.csv}{\stockc}
-\pgfplotstableread[col sep=comma, skip first n=1]{Report/Data/v12_exported_cellcount_50t.csv}{\cellcountc}
+\pgfplotstableread[col sep=comma]{Data/v12_exported_budget_50t.csv}{\budgetc}
+\pgfplotstableread[col sep=comma, skip first n=3]{Data/v12_exported_stock_50t.csv}{\stockc}
+\pgfplotstableread[col sep=comma, skip first n=1]{Data/v12_exported_cellcount_50t.csv}{\cellcountc}
 
 \begin{frame}{\aa}{\aab}
   \begin{columns}
@@ -456,7 +456,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
         ylabel=Farmer land count (cells),
         xmin=0,
         legend pos=north west,
-        cycle list name=mycolorlist
+        cycle list name=farmerslist
       ]
         %plot 1: farmer ID 1
         \addplot+[] 
@@ -490,7 +490,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
         xmin=0,
         ymin=0,
         legend pos=north west,
-        cycle list name=mycolorlist
+        cycle list name=farmerslist
       ]
         %plot 1: farmer ID 1
       \addplot+[dashed] table[y index =5]{\stockc};
@@ -529,7 +529,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
           ylabel=Farmer wealth (\$),
           xmin=0,
           legend pos=north west,
-          cycle list name=mycolorlist
+          cycle list name=farmerslist
         ]
           %plot 1: farmer ID 1
           \addplot+[] 
@@ -574,23 +574,22 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
 \begin{frame}{\aa}{\aac}
     Supply and demand are calculated as follows for a price $p_j$ of crop $j$ grown by farmer $i$:\\
     \begin{equation}
-        S_i(p_j) = A + c_i p_j
+      S_i(p_j) = A + c_i \cdot p_j
     \end{equation}
-    Where $c_i$ is the slope of supply (the willingness of an agent to supply the crop at a given price) and $A$ a surplus.
-    \begin{equation}
-    D_j(p_j) = d_j \cdot \left( B(p_j) + \delta \right)
-    \end{equation}
-    where $B(p_j)$ is a baseline demand for a product at a given price, $\delta \in [0,1]$ a random variable accounting for variability in demand, and $d_j$ a demand shift.\\
-    Since the market expands as production expands
+  Here $c_i$ is the willingness to supply crop $j$  at a given price $p_j$ by farmer $i$ and $A$ is the surplus or his willingness to supply crops for free.
+  \begin{equation}
+    D_j(p_j) = \left( D_0 + at^2 \right) e^{-\alpha (p_j-p_{j0})}
+  \end{equation}
+Where $D_0$ is a base demand, $at^2$ is a term representing population (and demand) growth as a function of time $t$, $p_j$ is the price of crop $j$ at time $t$, $p_{j,0}$ is the base price of crop $j$, and $\alpha$ is a demand slope, representing the fact that less and less people will be able to afford expensive crops.
 \end{frame}
 
-\pgfplotstableread[col sep=comma]{Report/Data/v13_exported_budget.csv}{\budgetc}
-\pgfplotstableread[col sep=comma, skip first n=3]{Report/Data/v13_exported_stock.csv}{\stockc}
-\pgfplotstableread[col sep=comma, skip first n=1]{Report/Data/v13_exported_cellcount.csv}{\cellcountc}
-\pgfplotstableread[col sep=comma]{Report/Data/v13_exported_demand.csv}{\demandc}
-\pgfplotstableread[col sep=comma]{Report/Data/v13_exported_prices.csv}{\pricesc}
-\pgfplotstableread[col sep=comma]{Report/Data/v13_exported_supply.csv}{\supplyc}
-\pgfplotstableread[col sep=comma]{Report/Data/v13_exported_global_stock.csv}{\globalstockc}
+\pgfplotstableread[col sep=comma]{Data/v13_exported_budget.csv}{\budgetc}
+\pgfplotstableread[col sep=comma, skip first n=3]{Data/v13_exported_stock.csv}{\stockc}
+\pgfplotstableread[col sep=comma, skip first n=1]{Data/v13_exported_cellcount.csv}{\cellcountc}
+\pgfplotstableread[col sep=comma]{Data/v13_exported_demand.csv}{\demandc}
+\pgfplotstableread[col sep=comma]{Data/v13_exported_prices.csv}{\pricesc}
+\pgfplotstableread[col sep=comma]{Data/v13_exported_supply.csv}{\supplyc}
+\pgfplotstableread[col sep=comma]{Data/v13_exported_global_stock.csv}{\globalstockc}
 
 
 \begin{frame}{\aa}{\aac}
@@ -772,8 +771,23 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
   \end{columns}
 \end{frame}
 
-\begin{frame}{\aa}{\aac}
+\subsection{\ab}
+\subsubsection{\aba}
+
+\begin{frame}{\ab}{\aba}
+  \centering
+  \textbf{v2.1: Reinforcement Learning}
 \end{frame}
+
+
+\begin{frame}{\ab}{\aba}
+  \centering
+    \begin{figure}
+      \includegraphics[width = .8\textwidth]{Figures/RL schematic.PNG}
+      \caption*{\tiny Feedback loop in RL. An agent decides to do a certain action $a_t$ based on his observation of the environment. This affects the environment, which yields a new state. The effect of the agents' action is then interpreted to update the strategy of the agent.}
+    \end{figure}
+\end{frame}
+
 
 \subsubsection{\aac}
 \subsubsection{\aad}
@@ -793,46 +807,46 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
 
 \begin{frame}{Crop war in perspectives}{FAO-based crop model}{}
 
-  \begin{figure*}
+  \begin{figure}
    \hfill
         \newline 
      \centering
      \begin{subfigure}[b]{0.45\textwidth}
 
          \centering
-         \includegraphics[width=\textwidth]{Presentation/Figures/Crop-coefficients-Kc-and-growing-period-of-tomato-source-Allen-et-al-1998.png}
+         \includegraphics[width=\textwidth]{Figures/Crop-coefficients-Kc-and-growing-period-of-tomato-source-Allen-et-al-1998.png}
          \label{fig:y equals x}
      \end{subfigure}
  \hfill
      \begin{subfigure}[b]{0.45\textwidth}
          \centering
-         \includegraphics[width=\linewidth]{Presentation/Figures/Y3655E01.jpeg}
+         \includegraphics[width=\linewidth]{Figures/Y3655E01.jpeg}
      \end{subfigure}
      \hfill
 
-\end{figure*}
+\end{figure}
  
     \begin{equation}
             1-\frac{Y_t^c}{Y^{m.c}}=\sum_{i=1}^{n} k_{y.i} \cdot(1-\frac{ET_{a.t}^c}{ET_{m.i}}) 
-         \end{equation}
+    \end{equation}
 
 \end{frame}
 
 \begin{frame}{Crop war in perspectives}{Global warming potential (GWP)}{}
 
-\begin{figure*}
+\begin{figure}
    \hfill
         \newline 
      \centering
      \begin{subfigure}[b]{0.40\textwidth}
 
          \centering
-         \includegraphics[width=\textwidth]{Presentation/Figures/Emissions-by-sector-–-pie-charts.png}
+         \includegraphics[width=\textwidth]{Figures/Emissions-by-sector-–-pie-charts.png}
      \end{subfigure}
  \hfill
      \begin{subfigure}[b]{0.50\textwidth}
          \centering
-         \includegraphics[width=\linewidth]{Presentation/Figures/GHG-emissions-from-agricultural-sector-by-practices-in-Mt-CO2-e.png}
+         \includegraphics[width=\linewidth]{Figures/GHG-emissions-from-agricultural-sector-by-practices-in-Mt-CO2-e.png}
      \end{subfigure}
      \hfill
      
@@ -840,7 +854,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
     GWP_{t}=GWP_{fertilizer}+GWP_{biocide}+GWP_{machinery}+GWP_{electricity}  
     \end{equation}
 
-\end{figure*}
+\end{figure}
  
 
 \end{frame}
