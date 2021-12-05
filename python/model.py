@@ -37,7 +37,7 @@ class CropwarModel(ap.Model):
         """Setting parameters and model properties"""
         self.crop_shop = self.p.crop_shop
         self.water_row = sum(self.p.water_levels)  # <- index of center row
-        self.river = River(water_content=self.p.river_content, model=self)
+        self.river = River(water_content=self.p.river_content)
         # because these water rows are symmetric
         m = 2 * sum(self.p.water_levels)
         n = m + 1  # and have one horizontal river (with thickness = 1)

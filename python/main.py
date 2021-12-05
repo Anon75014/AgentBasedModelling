@@ -61,7 +61,7 @@ def run_full_simulation(custom_parameters=None):
     presenter.cellcount()
     presenter.stocks()
     presenter.budget()
-    #presenter.export()
+    presenter.export()
     #presenter.traits(model)
     #presenter.personalities()
     presenter.prices()

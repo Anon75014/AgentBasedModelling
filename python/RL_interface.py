@@ -9,7 +9,7 @@ from main import run_full_simulation
 from ml_agents import *
 from RL_env import CropwarEnv
 
-name = "CropWar_PPO_expanding3"
+name = "CropWar_PPO_expanding_budgetreward"
 
 
 def run_trainer():
@@ -22,9 +22,9 @@ def run_trainer():
     """
     global name
     # Parallel environments
-    env = make_vec_env(CropwarEnv, n_envs=5)
+    env = make_vec_env(CropwarEnv, n_envs=8)
     model = PPO("MlpPolicy", env, verbose=1, tensorboard_log="python\log_ppo_vs_pretrained")
-    model.learn(total_timesteps=2e5)
+    model.learn(total_timesteps=1e6)
 
     model.save(name)
     print(
