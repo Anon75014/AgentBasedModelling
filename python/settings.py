@@ -1,5 +1,5 @@
 from agents import *
-from ml_agents import *
+from RL_agents import *
 
 experiment_settings = {
     "ML_Introvert_vs_3_Trader": {

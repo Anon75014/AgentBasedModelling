@@ -65,17 +65,21 @@ class graph_class:
         plt.ylabel(self.y_labels[_parameter])
 
     def show_evolution_bar(self, _parameter):
+        """Generate the category plotting part."""
         sns.catplot(data=self.data, kind="bar", x="t", y=_parameter, hue="Farmer ID")
 
     def show_evolution_line(self, _parameter):
+        """Generate an evolution line for one parameter."""
         sns.set_theme(style="whitegrid")
         sns.lineplot(data=self.data, x="t", y=_parameter, hue="Farmer ID")
 
     def show_evolution_scatter(self, _parameter):
+        """Generate a scatter plot for a parameter."""
         sns.set_theme(style="whitegrid")
         sns.scatterplot(data=self.data, x="t", y=_parameter, hue="Farmer ID")
 
     def show_solo_line(self, _parameter):
+        """Show only one parameter on y axis in a 'relplot'."""
         g = sns.relplot(
             data=self.data, x="t", y=_parameter, col="Farmer ID", kind="line"
         )

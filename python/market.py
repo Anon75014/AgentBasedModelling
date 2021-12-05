@@ -1,7 +1,9 @@
-from crops import CropSortiment
-import numpy as np
-import agentpy as ap
 from typing import Dict
+
+import agentpy as ap
+import numpy as np
+
+from crops import CropSortiment
 
 
 class Market:

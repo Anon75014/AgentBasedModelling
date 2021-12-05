@@ -9,7 +9,7 @@ from stable_baselines3.common.env_util import make_vec_env
 
 from agents import *
 from main import run_full_simulation
-from ml_agents import *
+from RL_agents import *
 from RL_env import CropwarEnv
 
 name = "CropWar_PPO_expanding_budgetreward"

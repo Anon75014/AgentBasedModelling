@@ -1,11 +1,12 @@
 """
 Contains all the information about the crops available in CropWar.
 """
-from typing import Optional, List
 from itertools import combinations
+from typing import List, Optional
+
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 
 class Crop:
@@ -180,6 +181,11 @@ class CropSortiment:
         )
 
     def add_crop(self, new_crop: Crop):
+        """Adds a new crop to the CropSortiment
+
+        :param new_crop: A new Crop instance to add to the sortiment
+        :type new_crop: Crop
+        """
         crop_id = self.amount_of_crops
         self.amount_of_crops += 1
         new_crop.change_crop_id(crop_id)
