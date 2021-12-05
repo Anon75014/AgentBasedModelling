@@ -143,7 +143,14 @@ class CropwarEnv(gym.Env):
         self.crop_shop.add_crop(Beans)
 
 
-def show_results(_model):
+def _ENV_TEST_show_results(_model):
+    """Show the state and analysis of the model.
+
+    Used in order to debug the environment with random samples of the action space.
+
+    :param _model: a model after some simulation steps
+    :type _model: CropwarModel
+    """    
     env.model.end()
     env.model.create_output()
     env.model.output.info["completed"] = True
@@ -172,14 +179,16 @@ def show_results(_model):
 
 
 if __name__ == "__main__":
-    """For specific Env tests execute this file"""
+    """For specific Environment tests execute this file."""
+    # Samle the spaces.
     env = CropwarEnv()
     print(env.observation_space.sample())
     print(env.action_space.sample())
 
-    ## It will check environment and output additional warnings if needed::
-    # check_env(env, warn=True)
+    # It will check environment and output additional warnings if needed::
+    check_env(env, warn=True)
 
+    # Test the environment by stepping with random action_space samples.
     env = CropwarEnv()
     obs = env.reset()
     print(f"obs: {obs}")
