@@ -25,7 +25,7 @@
 \usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry} %margins
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{hyperref}
+\usepackage{hyperref} %for external links
 \usepackage{multirow}
 \usepackage{tikz} %for the flow chart
 \usetikzlibrary{shapes,arrows}
@@ -142,7 +142,7 @@ The model featured in this coding project aims to illustrate the process behind 
 
 To guide the development of our illustrative model, a literature review was conducted to assess the state-of-the-art on agent-based modelling for water resources allocation and farming simulations. \\
 Our starting point was the thesis \textit{"Agricultural policies and farm structures: Agent-based modelling and application to EU-policy reform"} by Happe (2004) \cite{happeAgriculturalPoliciesFarm2004}, which outlines in details the development of an agent-based model (AgriPoliS) to assess the influence of agricultural policies at the farm level, which is applied to a case study in the region of Holenhole in Germany.\\
-To have an overview of more recent approaches. a seed review paper was selected, \textit{"A review of Agent Based Modeling for agricultural policy evaluation"} by Kremmydas et al.(2018) \cite{kremmydasReviewAgentBased2018} from which a literature graph was generated using the online tools \href{https://www.connectedpapers.com/main/35fac7b643317e5f48f5280fadec94051bf2401f/A-review-of-Agent-Based-Modeling-for-agricultural-policy-evaluation/graph}{Connected Papers}, and is analysed on figure \ref{fig:State_of_the_art}.\\
+To have an overview of more recent approaches. a seed review paper was selected, \textit{"A review of Agent Based Modeling for agricultural policy evaluation"} by Kremmydas et al.(2018) \cite{kremmydasReviewAgentBased2018} from which a literature graph was generated using the online tools \href{https://www.connectedpapers.com/main/35fac7b643317e5f48f5280fadec94051bf2401f/A-review-of-Agent-Based-Modeling-for-agricultural-policy-evaluation/graph}{Connected Papers}, and is analysed on figure \ref{State_of_the_art}.\\
 For completeness, the graphs generated through other seed papers were also analysed, including an older paper applying game theory to decision making in farmer cooperatives by Staatz (1983) \cite{staatzGametheoreticAnalysisDecision1983} and a case application of agent-based models to water allocation on the transboundary Nile river by Ding (2016) \cite{dingAgentBasedModelling2016}.\\
 One thing which became apparent through our literature review was that the parametrisation of the models with real-life data, calibration and sensitivity analysis, as well as the model validation through the analysis of existing agricultural systems was the most time and ressource-consuming part of the studies. As such, we decided to procedurally generate data related to externalities (crop price and availability, weather data, water resources availability) and to generate a virtual geography for our agent-based model, centering our study around the construction of the model itself and the analysis of the interactions between agents for a given set of externalities.
 
@@ -152,7 +152,7 @@ One thing which became apparent through our literature review was that the param
 	\includegraphics[width=.8\textwidth]{Figures/StateOfTheArt2.pdf}
 	\centering
 	\caption{\small Graph showing papers related to ref. \cite{kremmydasReviewAgentBased2018} generated on \href{https://www.connectedpapers.com/main/35fac7b643317e5f48f5280fadec94051bf2401f/A-review-of-Agent-Based-Modeling-for-agricultural-policy-evaluation/graph}{Connected Papers}. Circle radius is proportional to number of citation, color to publication date, dashed line refers to paper categories. ABM: agent-based modelling, ABA: agent-based agricultural simulations.}
-	\label{fig:State_of_the_art}
+	\label{State_of_the_art}
 \end{figure}
 
 \section{The Crop War model}
@@ -160,7 +160,7 @@ One thing which became apparent through our literature review was that the param
 \subsection{Concept}
 The Crop War model aims to visualise how farmers can compete with respect to water resources and crop profitability, given a geographical environment (procedurally generated) and a set of externalities including market dynamics (supply and demand impacting the price of crops), agent personalities and weather conditions.
 
-\subsection{Overview} \label{sec:overview}
+\subsection{Overview} \label{overview}
 In order to illustrate the development of our Crop Wars model, we organised the model in versions, starting from purely deterministic models with added layers of complexity, on top of which we implemented Reinforcement Learning (RL) to identify the best strategies for a given set of externalities and a specific reward function.
 
 In \tagg{v1.1}, the model is not spatially resolved, in the sense that each agent has a single cell (farm) on which it can grow a single crop (out of four different crops) and at each time step decides to sell or stock its yield.
@@ -176,7 +176,7 @@ These deterministic versions pave the way to the Reinforcement Learning (RL) mod
 In the next version \tagg{v2.2}, the RL agent will compete against the \href{https://n.ethz.ch/~cgolling/gess/html/code/agents.html#agents.Trader}{\texttt{Trader}} agent (see sec. \ref{sec:v13}). In this version, both spatial expansion and market decision play a role.
 
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{Report/Figures/version design.PNG}
+	\includegraphics[width=\textwidth]{Figures/version design.PNG}
 	\centering
 	\caption{\small Overview of the different model versions}
 	\label{fig:Overview}
@@ -228,7 +228,7 @@ Beans & 4 \\
 
 
 % crop development stages are vegetative stage, stem elongation stage, booting stage, heading stage, anthesis stage, milking stage, dough stage, ripe seed stage. Ky is empirically obtained and for the present study, the values of Ky are adopted from the FAO report \cite{Najarchi2011DeterminationOT}. Crop factor is another important factor that development stages time for each crop. The crop factor is empirically determined \cite{UCAN2007249}. Crop factors can consider how much different development stages of crops are vulnerable to water stress. These factors can be used in the FAO model to determine the actual harvest yield and therefore the realistic agricultural revenue. 
-These coefficients will be used in the FAO model \cite{doi:10.1061/(ASCE)0733-9437(1991)117:5(758)} as follows :
+These coefficients will be used in the FAO model \cite{allenFAO24Reference1991} as follows :
 
 \begin{equation}\label{eq:harvest_yield}
     1-\frac{Y_t}{Y^{m}} = \sum_{i=1}^{n} k_{y,i} \cdot(1-\frac{d_{i,t}}{ET_{m,i}}) 
@@ -365,7 +365,7 @@ The price of each crop is fixed and does not vary as a function of time, and the
 \subsubsection{Version 1.2}
 In the second version of the model \tagg{v1.2}, \href{https://n.ethz.ch/~cgolling/gess/html/VIS_map.html}{\texttt{Map}} class was created, so that agents can expand their farms in order to grow more crops. A \texttt{buy\_cell\_threshold} between 0 and 1 is defined for each agent, representing the tendency of agents to expand their farms (0 corresponding to agents expanding as much as possible, and 1 to agents remaining on their initial cell).
 \begin{figure}[H]
-	\includegraphics[width=.8\textwidth]{Report/Figures/v12_Map.png}
+	\includegraphics[width=.8\textwidth]{Figures/v12_Map.png}
 	\centering
 	\caption{\small Evolution of farmers' land count on the grid over 10 time steps. Number in brackets indicate the farmer's \texttt{buy\_cell\_threshold}}
 	\label{Mapv12}
@@ -547,18 +547,18 @@ Once the fundamental properties of the model and the \texttt{Map} class were def
 %     \label{fig:crop choice}
 % \end{figure}
 \paragraph{Commodity demand}
-From \cite{zulfiqar} in agriculture the demand is usually a strong function of population to feed, and a weak function of the price.
+From \cite{zulfiqarDevelopmentSupplyDemand2010} in agriculture the demand is usually a strong function of the population to feed, and a weak function of the price.
 
-We therefore define the global demand for crop $j$:
+We therefore define the global demand for crop $j$ as follows:
 \begin{equation}
     D_j(p_j) = \left( D_0 + at^2 \right) e^{-\alpha (p_j-p_{j0})}
 \end{equation}
 Where $D_0$ is a base demand, $at^2$ is a term representing population (and demand) growth as a function of time $t$, $p_j$ is the price of crop $j$ at time $t$, $p_{j,0}$ is the base price of crop $j$, and $\alpha$ is a demand slope, representing the fact that less and less people will be able to afford expensive crops.
 
 \paragraph{Commodity demand}
-The supply of crop $j$ by farmer $i$ is defined as:
+The supply of crop $j$ by farmer $i$ is limited by his stock of this crop $s_j$, plus the yield at time t $Y_j$, but more importantly is a function of the willingness of the agent to supply a crop at a given price:
 \begin{equation}
-    S_i(p_j) = A \left[ 1 + c_i \cdot p_j \right]
+    S_i(p_j) = A + c_i \cdot p_j
 \end{equation}
 Here $c_i$ is the willingness to supply crop $j$  at a given price $p_j$ by farmer $i$ and $A$ is the surplus or his willingness to supply crops for free.
 
@@ -817,7 +817,7 @@ The decision in RL are modelled with Markov chain processes (MC). The main const
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 1\textwidth]{Report/RL schematic.PNG}
+    \includegraphics[width = 1\textwidth]{RL schematic.PNG}
     \caption{Feedback loop in RL. An agent decides to do a certain action $a_t$ based on his observation of the environment. This affects the environment, which yields a new state. The effect of the agents' action is then interpreted to update the strategy of the agent.}
     \label{fig:RL schematic}
 \end{figure}
@@ -1023,7 +1023,7 @@ This can be seen in figure \ref{fig:stock evolve} below. In contrast to the othe
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 1\textwidth]{Report/Figures/stock evolution.PNG}
+    \includegraphics[width = 1\textwidth]{Figures/stock evolution.PNG}
     \caption{Stock evolution for the three \texttt{Trader} agents and the RL agent.}
     \label{fig:stock evolve}
 \end{figure}
