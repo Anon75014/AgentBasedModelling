@@ -1,6 +1,9 @@
 #%%
 from copy import deepcopy
 
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 
