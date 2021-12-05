@@ -879,7 +879,7 @@ This version employs the following setup:
 The evolution of the budget (i.e. the reward relevant quantity) in this setup is displayed in figure \ref{fig:budget MLvsIntros}.
 The trained RL agent generates a higher wealth from the first iteration on. 
 
-\pgfplotstableread[col sep=comma]{Data/MLvsIntroBudget.csv}{\budgetc}
+\pgfplotstableread[col sep=comma]{Data/MLvsIntroBudget.csv}{\budgetd}
 
 \begin{figure}[H]
     \centering
@@ -897,19 +897,19 @@ The trained RL agent generates a higher wealth from the first iteration on.
 		  cycle list name=farmerslist
 		]
 		  %plot 1: farmer ID 1
-		  \addplot+[] table[y index =1]{\budgetc};
+		  \addplot+[thick, no marks] table[y index =1]{\budgetd};
 		  \addlegendentry{Introvert}
 		  
 		  %plot 2: farmer ID 2
-		  \addplot+[]  table[y index =2]{\budgetc};
+		  \addplot+[thick,no marks]  table[y index =2]{\budgetd};
 		  \addlegendentry{Introvert}
   
 		  %plot 3: farmer ID 3
-		  \addplot+[] table[y index =3]{\budgetc};
+		  \addplot+[thick,no marks] table[y index =3]{\budgetd};
 		  \addlegendentry{RL agent}
   
 		  %plot 4: farmer ID 4
-		  \addplot+[] table[y index =4]{\budgetc};
+		  \addplot+[thick,no marks] table[y index =4]{\budgetd};
 		  \addlegendentry{Introvert}
   
 		\end{axis}
@@ -932,9 +932,9 @@ The three \texttt{Trader} types compete against an RL agent who applies a policy
 
 %seed b'I\x8b\x8f\x8a\x00\xa6\xc9!\xc5 '
 
-\pgfplotstableread[col sep=comma]{Data/MLvsTrader2Budget.csv}{\budgetc}
+\pgfplotstableread[col sep=comma]{Data/MLvsTrader2Budget.csv}{\budgete}
 
-\pgfplotstableread[col sep=comma]{Data/MLvsTrader2Cellcount.csv}{\cellcountc}
+\pgfplotstableread[col sep=comma]{Data/MLvsTrader2Cellcount.csv}{\cellcounte}
 
 
 \begin{figure}[H]
@@ -954,19 +954,19 @@ The three \texttt{Trader} types compete against an RL agent who applies a policy
 		  cycle list name=farmerslist
 		]
 		  %plot 1: farmer ID 1
-		  \addplot+[] table[y index =1]{\budgetc};
+		  \addplot+[] table[y index =1]{\budgete};
 		  \addlegendentry{Trader}
 		  
 		  %plot 2: farmer ID 2
-		  \addplot+[]  table[y index =2]{\budgetc};
+		  \addplot+[]  table[y index =2]{\budgete};
 		  \addlegendentry{RL agent}
   
 		  %plot 3: farmer ID 3
-		  \addplot+[] table[y index =3]{\budgetc};
+		  \addplot+[] table[y index =3]{\budgete};
 		  \addlegendentry{Trader}
   
 		  %plot 4: farmer ID 4
-		  \addplot+[] table[y index =4]{\budgetc};
+		  \addplot+[] table[y index =4]{\budgete};
 		  \addlegendentry{Trader}
   
 		\end{axis}
@@ -987,24 +987,24 @@ The three \texttt{Trader} types compete against an RL agent who applies a policy
 		  xlabel=Time step (years),
 		  ylabel=Farmer land count (cells),
 		  xmin=0,
-		  legend pos=north west,
+		  legend pos=south east,
 		  cycle list name=farmerslist
 		]
 		  %plot 1: farmer ID 1
 		  \addplot+[] 
-			  table[y index =1]{\cellcountc};
+			  table[y index =1]{\cellcounte};
 		  \addlegendentry{Trader}
 		  
 		  %plot 2: farmer ID 2
-		  \addplot+[]  table[y index =2]{\cellcountc};
+		  \addplot+[]  table[y index =2]{\cellcounte};
 		  \addlegendentry{RL agent}
   
 		  %plot 3: farmer ID 3
-		  \addplot+[] table[y index =3]{\cellcountc};
+		  \addplot+[] table[y index =3]{\cellcounte};
 		  \addlegendentry{Trader}
   
 		  %plot 4: farmer ID 4
-		  \addplot+[] table[y index =4]{\cellcountc};
+		  \addplot+[] table[y index =4]{\cellcounte};
 		  \addlegendentry{Trader}
   
 		\end{axis}
