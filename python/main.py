@@ -11,6 +11,7 @@ from stable_baselines3 import PPO
 
 from pandas import DataFrame as df
 
+
 def run_full_simulation(custom_parameters=None):
     """Run Simulation of the model and display results
 
@@ -53,8 +54,8 @@ def run_full_simulation(custom_parameters=None):
     presenter.stocks()
     presenter.budget()
     presenter.export()
-    #presenter.traits(model)
-    #presenter.personalities()
+    # presenter.traits(model)
+    # presenter.personalities()
     presenter.prices()
     presenter.demand()
     presenter.supply()
@@ -70,6 +71,7 @@ def run_full_simulation(custom_parameters=None):
     mapper.initialise_farmers()
     mapper.place_farmers()
     mapper.show()
+
 
 if __name__ == "__main__":
     run_full_simulation()

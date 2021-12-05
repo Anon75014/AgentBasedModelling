@@ -121,7 +121,7 @@ class CropwarModel(ap.Model):
             max_price=self.p.market_max_price,
             demand_growth_factor=self.p.market_demand_growth_factor,
             price_sensitivity=self.p.market_price_sensitivity,
-            starting_stock = self.p.farmer_starting_stock,
+            starting_stock=self.p.farmer_starting_stock,
         )
         self.crop_prices = self.market.current_prices.copy()
         self.price_history = []
@@ -183,9 +183,7 @@ class CropwarModel(ap.Model):
 
         return water_matrix
 
-    def _valid_root_cell(
-        self, farmer: BaseFarmer, pos: tuple, _dir: str
-    ):  
+    def _valid_root_cell(self, farmer: BaseFarmer, pos: tuple, _dir: str):
         """Check if one step into direction _dir the farmer ownes a cell"""
         for item in self._one_to_dir.values():
             if item(pos[0], pos[1]) in farmer.aquired_land:

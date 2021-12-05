@@ -20,7 +20,8 @@ def make_local_dir(folder: str = "log"):
 
     return folder_path
 
-def make_file_path(folder_path:str, file_str: str = "dqn"):
+
+def make_file_path(folder_path: str, file_str: str = "dqn"):
     """Creates new file path that does not yet exist"""
 
     dir_list = listdir(folder_path)
@@ -36,10 +37,11 @@ def make_file_path(folder_path:str, file_str: str = "dqn"):
 
 
 class DotDict(dict):
-    """Enables dot.notation access to dictionary attributes"""      
-    def __getattr__(*args):         
-        val = dict.get(*args)         
-        return DotDict(val) if type(val) is dict else val      
-        
-    __setattr__ = dict.__setitem__     
-    __delattr__ = dict.__delitem__ 
+    """Enables dot.notation access to dictionary attributes"""
+
+    def __getattr__(*args):
+        val = dict.get(*args)
+        return DotDict(val) if type(val) is dict else val
+
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__

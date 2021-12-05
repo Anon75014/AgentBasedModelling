@@ -1,8 +1,9 @@
 import numpy as np
 
+
 class River:
-    """This is the river class.
-    """
+    """This is the river class."""
+
     def __init__(self, water_content: float):
         """Initialisation
 

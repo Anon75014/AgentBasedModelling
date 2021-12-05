@@ -1,4 +1,3 @@
-
 import os
 
 import agentpy as ap
@@ -10,7 +9,6 @@ from agents_base import BaseFarmer, Cell
 from crops import CropSortiment
 from market import Market
 from river import River
-
 
 
 class AggressiveFarmer(BaseFarmer):
@@ -25,8 +23,9 @@ class AggressiveFarmer(BaseFarmer):
             0, len(self.model.crop_shop.crops) - 1
         )  # -1 since len is  >= 1 and crop id starts at 0
 
-if __name__ == '__main__':
-    
+
+if __name__ == "__main__":
+
     crop_shop = CropSortiment()
 
     crop_shop.add_crop(1, 1, 1)  # area, crop_type, available water
@@ -40,12 +39,15 @@ if __name__ == '__main__':
         "water_levels": [0, 0, 3],
         "n_farmers": 4,
         # "v0_pos" : None,
-        "v0_pos": sorted([
-            (1, 1),
-            (1, 4),
-            (5, 1),
-            (5, 4),
-        ], key=lambda x: x[0]),  # number of start positions must match n_farmers
+        "v0_pos": sorted(
+            [
+                (1, 1),
+                (1, 4),
+                (5, 1),
+                (5, 4),
+            ],
+            key=lambda x: x[0],
+        ),  # number of start positions must match n_farmers
         "start_budget": 1000,
         "t_end": 15,  # Amount of time steps to be simulated
         "diagonal expansion": False,  # Only expand along the owned edges. like + and not x
@@ -60,7 +62,6 @@ if __name__ == '__main__':
         "market_base_demand": 10.0,
         "market_demand_fraction": 0.7,
     }
-
 
     class ModelTest(ap.Model):
         def setup(self):
@@ -77,4 +78,3 @@ if __name__ == '__main__':
     X.test()
     print(X.farmers)
     print(X.farmers[0])
-

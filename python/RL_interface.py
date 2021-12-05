@@ -23,7 +23,9 @@ def run_trainer():
     global name
     # Parallel environments
     env = make_vec_env(CropwarEnv, n_envs=8)
-    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log="python\log_ppo_vs_pretrained")
+    model = PPO(
+        "MlpPolicy", env, verbose=1, tensorboard_log="python\log_ppo_vs_pretrained"
+    )
     model.learn(total_timesteps=1e6)
 
     model.save(name)
@@ -52,8 +54,8 @@ def run_interactive():
     print("done with model generation part...")
     if int(input("Do you want to see plots? 1:yes, 0:no")):
         training_parameters = {
-                "farmers": {Trader: 3, Introvert: 0, ML_Expander: 1},
-        "use_trained_model" : ml_model
+            "farmers": {Trader: 3, Introvert: 0, ML_Expander: 1},
+            "use_trained_model": ml_model,
         }
         run_full_simulation(custom_parameters=training_parameters)
 
@@ -72,13 +74,13 @@ def evaluate():
 
     evaluate_parameters = {
         "farmers": {Trader: 0, Introvert: 3, ML_Expander: 1},
-        "use_trained_model" : ml_model,
+        "use_trained_model": ml_model,
         "seed": 0,
     }
     run_full_simulation(custom_parameters=evaluate_parameters)
 
 
 if __name__ == "__main__":
-    #run_trainer()
-    #run_interactive()
+    # run_trainer()
+    # run_interactive()
     evaluate()

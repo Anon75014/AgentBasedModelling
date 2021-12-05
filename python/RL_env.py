@@ -30,9 +30,7 @@ class CropwarEnv(gym.Env):
         """Setup of Model"""
         self._reset_Cropshop()
 
-        self.p = experiment_settings["ML_Introvert_vs_3_Trader"][
-            "base_parameters"
-        ]
+        self.p = experiment_settings["ML_Introvert_vs_3_Trader"]["base_parameters"]
         self.p.update(
             {
                 # FIXED for the ML Environment:
@@ -51,7 +49,6 @@ class CropwarEnv(gym.Env):
 
         print(f"Info: The active ML model is of type {self.p.trainee_type.__name__}")
 
-
         """Setup for RL"""
         nr_stock_entries = self.p.amount_of_crops
         nr_seeds = nr_stock_entries
@@ -61,7 +58,9 @@ class CropwarEnv(gym.Env):
         self.observation_space = spaces.Box(
             0.0,
             1.0,
-            shape=(self.trainee_type.data.obs_dim(nr_stock_entries, nr_seeds, nr_farmers),),
+            shape=(
+                self.trainee_type.data.obs_dim(nr_stock_entries, nr_seeds, nr_farmers),
+            ),
             dtype=np.float32,
         )
         self.action_space = self.trainee_type.data.action_space(nr_stock_entries)
@@ -180,7 +179,7 @@ if __name__ == "__main__":
     print(env.action_space.sample())
 
     # It will check environment and output additional warnings if needed
-    #check_env(env, warn=True)
+    # check_env(env, warn=True)
 
     env = CropwarEnv()
     obs = env.reset()

@@ -23,11 +23,11 @@ experiment_settings = {
             "steps": 300,  # Amount of time steps
             "diagonal expansion": False,  # Only expand along edges
             "save_gif": False,  # Save map as Gif
-            "seed" : b'\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi' ,    # Use a custom seed
+            "seed": b"\x92\xbb\xce\x80\x03\x91\xfa\xa1\x7fi",  # Use a custom seed
             "farmers": {Trader: 4, Introvert: 0, ML_Expander: 0},
             # ---- ML Parameters ----
             "ml_env": None,  # spec in RL_env
-            "trainee_type" : None,
+            "trainee_type": None,
             "use_trained_model": False,
             # ---- Parameters ----
             "max_stock": 2e5,

@@ -12,8 +12,8 @@ from matplotlib.colors import from_levels_and_colors
 
 
 class map_class:
-    """This class is used to visualise the spatial map of CropWar.
-    """
+    """This class is used to visualise the spatial map of CropWar."""
+
     def __init__(self, _model):
         """Initialise Visualisation Class.
 
@@ -44,16 +44,15 @@ class map_class:
         print("Done: Initialised map_class.")
 
     def initialise_farmers(self):
-        """Assign colours and modify colourlimits.
-        """
+        """Assign colours and modify colourlimits."""
         for farmer in self.model.farmers:
             color_list = [
-            "#F28D11",
-            "#0E5DE8",
-            "#2BD941",
-            "#D41717",
-        ] # (left to right: orange, blue, green, red)
-            _color = color_list[farmer.id-44] #farmer ID starts at 44
+                "#F28D11",
+                "#0E5DE8",
+                "#2BD941",
+                "#D41717",
+            ]  # (left to right: orange, blue, green, red)
+            _color = color_list[farmer.id - 44]  # farmer ID starts at 44
             self.colours.append(_color)
             self.weights.append(farmer.id)
             self._plot_names.append(f"Farmer {farmer.id}")
@@ -81,7 +80,7 @@ class map_class:
         :type return_img: bool, optional
         :return: the PIL image at the current time step
         :rtype: PIL.image
-        """        
+        """
         # Generate Matplotlib figure
         fig = plt.figure()
         ax = plt.subplot(111)  # idk why 111, recommended in source
@@ -127,7 +126,7 @@ class map_class:
             dirname = os.path.dirname(os.path.abspath(__file__))
             filename = dirname + "/images/final_map.png"
             fig.savefig(filename)
-            img =  PIL.Image.frombytes(
+            img = PIL.Image.frombytes(
                 "RGB", fig.canvas.get_width_height(), fig.canvas.tostring_rgb()
             )
             plt.close()

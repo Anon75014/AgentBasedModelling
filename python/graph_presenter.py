@@ -155,13 +155,12 @@ class graph_class:
         ax.set_title("Buy Threashold for the farmers")
 
     def prices(self):
-        """Presents the evolution of the Market-influenced crop prices.
-        """
+        """Presents the evolution of the Market-influenced crop prices."""
         print(f"prices have so many pars: {len(self.model.price_history)}")
         prices_df = pd.DataFrame(self.model.price_history)
         self.new_plot("prices")
-        sns.lineplot(data = prices_df)
-        prices_df.to_csv('exported_prices.csv')
+        sns.lineplot(data=prices_df)
+        prices_df.to_csv("exported_prices.csv")
 
     def demand(self):
         """
@@ -170,17 +169,16 @@ class graph_class:
         print(f"demand have so many pars: {len(self.model.demand_history)}")
         demand_df = pd.DataFrame(self.model.demand_history)
         self.new_plot("demand")
-        sns.lineplot(data = demand_df)
-        demand_df.to_csv('exported_demand.csv')
+        sns.lineplot(data=demand_df)
+        demand_df.to_csv("exported_demand.csv")
 
     def supply(self):
-        """Presents the evolution of the Market-influenced crop supply.
-        """
+        """Presents the evolution of the Market-influenced crop supply."""
         print(f"supply have so many pars: {len(self.model.supply_history)}")
         supply_df = pd.DataFrame(self.model.supply_history)
         self.new_plot("supply")
-        sns.lineplot(data = supply_df)
-        supply_df.to_csv('exported_supply.csv')
+        sns.lineplot(data=supply_df)
+        supply_df.to_csv("exported_supply.csv")
 
     def global_stock(self):
         """
@@ -189,9 +187,8 @@ class graph_class:
         print(f"global_stock have so many pars: {len(self.model.global_stock_history)}")
         global_stock_df = pd.DataFrame(self.model.global_stock_history)
         self.new_plot("global_stock")
-        sns.lineplot(data = global_stock_df)
-        global_stock_df.to_csv('exported_global_stock.csv')
-
+        sns.lineplot(data=global_stock_df)
+        global_stock_df.to_csv("exported_global_stock.csv")
 
     def personalities(self):
         """
@@ -202,7 +199,7 @@ class graph_class:
 
         ids = self.model.farmers.id
         types = self.model.farmers.type
-        buy_vals = [round(val,3) for val in self.model.farmers.buy_cell_threash]
+        buy_vals = [round(val, 3) for val in self.model.farmers.buy_cell_threash]
 
         data = {
             "IDs": ids,
@@ -210,7 +207,15 @@ class graph_class:
             "Buy Threashold\n(rounded)": buy_vals,
         }
         # source : https://pypi.org/project/tabulate/
-        print(tabulate(data, headers="keys",tablefmt="fancy_grid",numalign='center',stralign='center'))
+        print(
+            tabulate(
+                data,
+                headers="keys",
+                tablefmt="fancy_grid",
+                numalign="center",
+                stralign="center",
+            )
+        )
 
     def export_budget(self):
         """

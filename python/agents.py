@@ -72,10 +72,11 @@ class Trader(BaseFarmer):
         self.ml_controlled = False
 
         self.c_agent = {
-            k: self.model.p.farmer_price_elasticity * self.model.random.random() for k in self.model.crop_shop.crops
+            k: self.model.p.farmer_price_elasticity * self.model.random.random()
+            for k in self.model.crop_shop.crops
         }
 
-        self.buy_cell_threash = self.random.uniform(0, 1) # ALTERNATIVE
+        self.buy_cell_threash = self.random.uniform(0, 1)  # ALTERNATIVE
         self.can_change_crop = True
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
@@ -91,7 +92,11 @@ class Trader(BaseFarmer):
         """
         for crop_id in self.model.crop_shop.crops.keys():
             self.supply[crop_id] = np.min(
-                [self.model.p.market_base_supply * (1.0 + self.c_agent[crop_id] * prices[crop_id]), self._stock[crop_id]]
+                [
+                    self.model.p.market_base_supply
+                    * (1.0 + self.c_agent[crop_id] * prices[crop_id]),
+                    self._stock[crop_id],
+                ]
             )
         return self.supply
 
@@ -120,19 +125,21 @@ class Trader(BaseFarmer):
         # Calculates the expected profit of a crop change for two randomly
         # chosen crops based on current market prices and executes the crop
         # changes if expected profit is positive
-        for crop_id in self.random.choices(list(self.model.crop_shop.crops.keys()), k=2):
+        for crop_id in self.random.choices(
+            list(self.model.crop_shop.crops.keys()), k=2
+        ):
             if crop_id != self.crop_id:
                 cost_seed_change = (
                     len(self.aquired_land)
                     * self.model.crop_shop.crops[crop_id].seed_cost
                 )
                 expected_profit = (
-                    (self.market.current_demand[crop_id] - self.market.current_stock[crop_id])
-                    * self.model.crop_shop.crops[crop_id].sell_price
-                )
+                    self.market.current_demand[crop_id]
+                    - self.market.current_stock[crop_id]
+                ) * self.model.crop_shop.crops[crop_id].sell_price
                 expected_profit_current = (
-                    (self.market.current_demand[self.crop_id] - self.market.current_stock[self.crop_id])
-                    * self.model.crop_shop.crops[self.crop_id].sell_price
-                )
+                    self.market.current_demand[self.crop_id]
+                    - self.market.current_stock[self.crop_id]
+                ) * self.model.crop_shop.crops[self.crop_id].sell_price
                 if expected_profit > expected_profit_current:
                     self.change_to_crop(crop_id)
