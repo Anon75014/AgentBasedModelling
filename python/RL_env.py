@@ -2,6 +2,9 @@
 import time
 from copy import deepcopy
 
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 import gym
 import numpy as np
 from gym import spaces
