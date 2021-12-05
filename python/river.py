@@ -6,31 +6,34 @@ class River:
     def __init__(self, water_content: float):
         """Initialisation
 
-        :param water_content: this is ? # TODO
+        :param water_content: Usual amount of water in the river.
         :type water_content: float
         """
         self.default_water_content = water_content
         self.water_content = water_content
 
     def change_water_content(self, new_content: float):
-        """Change the Content of the river
+        """Change the content of the river
 
-        :param new_content: [description]
+        :param new_content: Changes the current amount of water in the river.
         :type new_content: float
         """
-        self.change_water_content = new_content
+        self.water_content = new_content
 
     def refresh_water_content(self):
-        """[summary]
+        """
+        Resets the `water_content` of the river
         """
         self.water_content = self.default_water_content
 
     def get_water(self, a: float) -> float:
-        """[summary]
+        """
+        Gets `a` amount of water from the river, which is deducted from the
+        `water_content` of the river.
 
-        :param a: [description]
+        :param a: Amount of water that is requested from the river
         :type a: float
-        :return: [description]
+        :return: `min(a, water_content)` so if the river is empty, it will return `0.0`.
         :rtype: float
         """
         v = np.min([a, self.water_content])

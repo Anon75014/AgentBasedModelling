@@ -225,10 +225,12 @@ class ML_Expander(BaseFarmer):
             np.where(self.model.sorted_budgets == self.budget)[0][0]
             / (self.model.p.n_farmers-1)
         )
+        total_budget = sum(self.model.sorted_budgets)
+        budget_ranking = self.budget / total_budget
         # print(ranking)  # for debug
 
         total_supply = sum([self.model.market.current_supply[crop_id] for crop_id in self.model.crop_shop.crops.keys()])
         supply = sum([self.supply[crop_id] for crop_id in self.model.crop_shop.crops.keys()])
         supply_ranking = supply / total_supply if total_supply != 0.0 else 0.0
-        reward = (ranking ** 2.0 + 0.5 * supply_ranking) / 1.5
+        reward = (budget_ranking ** 2.0 + ranking ** 2.0 + supply_ranking ** 2) / 3.0
         return reward
