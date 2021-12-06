@@ -802,11 +802,11 @@ In order to see unpredictable, emerging behaviour, the agents would need to adju
 \begin{frame}{\ab}{\abb}
 \onslide<1->{\begin{equation}
   \underbrace{L(\theta)}_{\substack{\text{Policy}\\ \text{loss}\\ \text{function}}} = \underbrace{\hat{\mathbf{E}}_t}_{\substack{\text{expectation}\\ \text{at iteration}\\ t}} \left[ \log ( \underbrace{\pi_{\theta}(a_t|s_t))}_{\substack{\text{stochastic}\\ \text{policy}}} \underbrace{\hat{A_t}}_{\substack{\text{estimator of}\\ \text{advantage of} \\ \text{current action} }} \right]
-\end{equation}
-where:}
+\end{equation}}
+\onslide<1->{where:}
 \begin{itemize}
-  \item<2-> $\pi_{\theta}(a_t|s_t)$ is given as transition probabilities in the MC of taking action $a_t$ in state $s_t$. It is a neural network, that suggests an action for a given state based on previous training experience.
-  \item<3-> $\hat{A_t}$ is computed as a discounted reward. This neural net is updated with the experience (i.e. reward) that the agent collects in an environment.
+  \item<3-> $\pi_{\theta}(a_t|s_t)$ is given as transition probabilities in the MC of taking action $a_t$ in state $s_t$. It is a neural network, that suggests an action for a given state based on previous training experience.
+  \item<4-> $\hat{A_t}$ is computed as a discounted reward. This neural net is updated with the experience (i.e. reward) that the agent collects in an environment.
 \end{itemize}
 \end{frame}
 
