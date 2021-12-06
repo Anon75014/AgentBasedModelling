@@ -24,7 +24,7 @@ Report/Report.fdb_latexmk
 *.mtc1
 *.out
 *.synctex.gz
-*.csv
+
 map.gif
 python/images/*
 *.gif
