@@ -32,7 +32,7 @@ class ML_Stationary(BaseFarmer):
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
-        """Calculates how much the farmer wants to supply
+        """Calculates how much the farmer wants to supply.
 
         :param prices: Dictionary with the global prices for each `crop_id`
         :type prices: Dict[int, int]
@@ -49,7 +49,7 @@ class ML_Stationary(BaseFarmer):
         return supplies
 
     def get_state(self):
-        """returns Environment state for ML.
+        """Returns Environment state for ML.
 
         :return: state of env ; if done
         :rtype: np.array ; bool
@@ -74,7 +74,7 @@ class ML_Stationary(BaseFarmer):
         return state, bool(not self.model.running)
 
     def pre_market_step(self):
-        """Used to step the agent: eg. do the following: harvest -> define their supply"""
+        """Used to step the agent: eg. do the following: harvest -> define their supply."""
         self.harvest()
 
         if not self.ACTIVE_TRAINING:
@@ -98,7 +98,7 @@ class ML_Stationary(BaseFarmer):
         self.total_reward += self.rewarder()
 
     def rewarder(self) -> float:
-        """Calculate Reward for this ML Farmers
+        """Calculate Reward for this ML Farmers.
 
         :return: ranking**2
         :rtype: float
@@ -132,6 +132,7 @@ class ML_Expander(BaseFarmer):
     planned_action = [None, None]
 
     def personality_traits(self):
+        """Specify the specs for this personality."""
         self.ACTIVE_TRAINING = False
         self.total_reward = 0
         self.switch_action_index = self.model.p.amount_of_crops
@@ -142,7 +143,7 @@ class ML_Expander(BaseFarmer):
         self.crop_id_init = self.random.randint(0, len(self.model.crop_shop.crops) - 1)
 
     def calc_supply(self, prices: Dict[int, int]) -> Dict[int, int]:
-        """Calculates how much the farmer wants to supply
+        """Calculates how much the farmer wants to supply.
 
         :param prices: Dictionary with the global prices for each `crop_id`
         :type prices: Dict[int, int]
@@ -186,7 +187,7 @@ class ML_Expander(BaseFarmer):
         return state, bool(not self.model.running)
 
     def pre_market_step(self):
-        """Used to step the agent: eg. do the following: harvest -> define their supply"""
+        """Used to step the agent: eg. do the following: harvest -> define their supply."""
         self.harvest()
 
         if not self.ACTIVE_TRAINING:
@@ -217,9 +218,9 @@ class ML_Expander(BaseFarmer):
         self.total_reward += self.rewarder()
 
     def rewarder(self) -> float:
-        """Calculate Reward for this ML Farmers
+        """Calculate Reward for this ML Farmers.
 
-        :return: ranking**2
+        :return: Reward this agent gets at this environment state.
         :rtype: float
         """
         reward = 0

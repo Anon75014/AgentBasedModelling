@@ -52,7 +52,8 @@ class map_class:
                 "#2BD941",
                 "#D41717",
             ]  # (left to right: orange, blue, green, red)
-            _color = color_list[farmer.id - 44]  # farmer ID starts at 44
+            # _color = color_list[farmer.id - 44]  # farmer ID starts at 44
+            _color = color_list[farmer.id - self.model.farmers[0].id]  # farmer ID starts at 44
             self.colours.append(_color)
             self.weights.append(farmer.id)
             self._plot_names.append(f"Farmer {farmer.id}")
@@ -76,7 +77,7 @@ class map_class:
     def show(self, return_img=False):
         """Show the map in colours.
 
-        :param return_img: [description], defaults to False
+        :param return_img: returns an Image object, defaults to False
         :type return_img: bool, optional
         :return: the PIL image at the current time step
         :rtype: PIL.image
@@ -94,8 +95,6 @@ class map_class:
         for i, _label in enumerate(self._plot_names):
             _patch = mpatches.Patch(color=self.colours[i], label=_label)
             legend_patches.append(_patch)
-
-        # print(legend_patches)
 
         # Formatting source:https://stackoverflow.com/questions/4700614/
         # how-to-put-the-legend-out-of-the-plot
@@ -134,4 +133,3 @@ class map_class:
         else:
             plt.show()
 
-        # TODO : Idea put crop numbers or so inside of patches...

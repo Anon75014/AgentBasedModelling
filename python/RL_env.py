@@ -1,9 +1,9 @@
 #%%
+import os
 import time
 from copy import deepcopy
 
-import os
-os.environ['KMP_DUPLICATE_LIB_OK']='True'
+os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
 
 import gym
 import numpy as np
@@ -14,8 +14,8 @@ from agents import *
 from crops import *
 from graph_presenter import graph_class
 from map_presenter import map_class
-from ml_agents import *
 from model import CropwarModel
+from RL_agents import *
 from settings import experiment_settings
 
 
@@ -131,15 +131,11 @@ class CropwarEnv(gym.Env):
         return state
 
     def seed(self, seed):
-        """[summary]
-
-        :param seed: [description]
-        :type seed: [type]
-        """
+        """not used; seed set by model."""
         pass
 
     def _reset_Cropshop(self):
-        """Reset the CropShop used in the CropWar Model"""
+        """Reset the CropShop used in the CropWar Model."""
         self.crop_shop = CropSortiment()
         self.crop_shop.add_crop(WinterWheat)
         self.crop_shop.add_crop(Barley)
@@ -147,7 +143,14 @@ class CropwarEnv(gym.Env):
         self.crop_shop.add_crop(Beans)
 
 
-def show_results(_model):
+def _ENV_TEST_show_results(_model):
+    """Show the state and analysis of the model.
+
+    Used in order to debug the environment with random samples of the action space.
+
+    :param _model: a model after some simulation steps
+    :type _model: CropwarModel
+    """    
     env.model.end()
     env.model.create_output()
     env.model.output.info["completed"] = True
@@ -176,22 +179,23 @@ def show_results(_model):
 
 
 if __name__ == "__main__":
-    """For specific Env tests execute this file"""
+    """For specific Environment tests execute this file."""
+    # Samle the spaces.
     env = CropwarEnv()
     print(env.observation_space.sample())
     print(env.action_space.sample())
 
-    # It will check environment and output additional warnings if needed
-    # check_env(env, warn=True)
+    # It will check environment and output additional warnings if needed::
+    check_env(env, warn=True)
 
+    # Test the environment by stepping with random action_space samples.
     env = CropwarEnv()
     obs = env.reset()
     print(f"obs: {obs}")
     n_steps = 16
     total_reward = 0
     for _ in range(n_steps):
-        # Random action
-        action = env.action_space.sample()
+        action = env.action_space.sample()  # <- Random & valid action
         print(f"action: {action}")
         obs, reward, done, info = env.step(action)
         _reward = env.model.ml_trainee.rewarder()
