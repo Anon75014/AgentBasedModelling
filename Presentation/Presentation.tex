@@ -295,6 +295,19 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
   \end{columns}
 \end{frame}
 
+\begin{frame}{\aa}{\aab}
+  \begin{columns}
+    \column{0.48\linewidth}
+    \centering
+    \begin{figure}
+      \includegraphics[width=.8\textwidth]{Figures/v12_Map_start.png}
+     \end{figure}
+    \column{0.52\linewidth}
+    \centering
+    \animategraphics[loop,width=5.8cm]{1}{Figures/V12mapGIF/frame_}{00}{10}
+  \end{columns}
+\end{frame}
+
 
 
 \pgfplotstableread[col sep=comma]{Data/v12_exported_budget.csv}{\budgetb}
@@ -696,7 +709,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
 	  \end{tikzpicture}
 	  }
     \column{0.5\linewidth}
-    Farmer wealth as a function of time: expanding \texttt{Taders} agents take more risks, which seem to pay off on the long term
+    Farmer wealth as a function of time: expanding \texttt{Traders} agents take more risks, which seem to pay off on the long term
   \end{columns}
 \end{frame}
 
@@ -800,7 +813,7 @@ $0.0$ for last agent.
 
 \begin{frame}{\ab}{\abd}
   \centering
-  \textbf{v2.1: RL agent trained againt Trader farmers}
+  \textbf{v2.1: RL agent trained against Trader farmers}
 \end{frame}
 
 \pgfplotstableread[col sep=comma]{Data/MLvsTrader2Budget.csv}{\budgete}
