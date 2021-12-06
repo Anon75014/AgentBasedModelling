@@ -16,6 +16,14 @@ By using TensorBoard to track the learning, we could visually check the agent's 
 If no asymptote was reached, the number of steps were increased. By tweaking the learning rate over three orders of magnitudes, we found the default one of 0.0003 to be stable. 
 The number of parallel environments was increased to eight, in order to get a diverse set of initial seeds. This produced high rewards and interesting behaviour.
 
+
+The structure of the implemented reinforcement learning is very simple, thanks to the SB3 libraries. This way our code can be as simple as abstractly shown here:
+
+.. image:: img/RL_int.jpg
+   :width: 350pt
+
+
+
 Main Functions
 ----------------
 The main functions used to train and visualise the results are:

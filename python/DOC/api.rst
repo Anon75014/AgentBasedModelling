@@ -9,6 +9,10 @@ API Reference
    agents
    agents_base
    
+   RL_interface
+   RL_env
+   RL_agents
+
    crops
 
    river

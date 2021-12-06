@@ -99,7 +99,7 @@ Simulation Pseudo Code
 
    INFO_SB3 
    INFO_RL_env
-
+   INFO_RL_agents
 
 .. toctree::
    :maxdepth: 2

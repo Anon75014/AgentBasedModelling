@@ -7,6 +7,7 @@ Python Files
 
    RL_env
    RL_interface
+   RL_agents
    agents
    agents_base
    crops
