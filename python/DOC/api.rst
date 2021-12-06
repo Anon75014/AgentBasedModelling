@@ -10,7 +10,6 @@ API Reference
    agents_base
    
    crops
-   crop_model
 
    river
    market

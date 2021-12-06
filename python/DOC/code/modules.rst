@@ -6,10 +6,9 @@ Python Files
    :maxdepth:4
 
    RL_env
-   SB3_PPO_CropWar
+   RL_interface
    agents
    agents_base
-   crop_model
    crops
    graph_presenter
    helper_functions

@@ -1,7 +1,7 @@
-SB3\_PPO\_CropWar module
+RL_interface module
 ========================
 
-.. automodule:: SB3_PPO_CropWar
+.. automodule:: RL_interface
    :members:
    :undoc-members:
    :show-inheritance:
