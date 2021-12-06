@@ -52,7 +52,8 @@ class map_class:
                 "#2BD941",
                 "#D41717",
             ]  # (left to right: orange, blue, green, red)
-            _color = color_list[farmer.id - 44]  # farmer ID starts at 44
+            # _color = color_list[farmer.id - 44]  # farmer ID starts at 44
+            _color = color_list[farmer.id - self.model.farmers[0].id]  # farmer ID starts at 44
             self.colours.append(_color)
             self.weights.append(farmer.id)
             self._plot_names.append(f"Farmer {farmer.id}")
