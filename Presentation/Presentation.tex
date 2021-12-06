@@ -12,6 +12,7 @@
 %\setbeamercolor{frametitle}{fg=blue}
 % Change the normal text color background:
 %\setbeamercolor{normal text}{fg=black,bg=gray!10}
+\usepackage{hyperref} %for external links
 \usepackage[utf8]{inputenc} %default packages
 \usepackage[english]{babel}
 \usepackage[T1]{fontenc}
@@ -117,8 +118,7 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
 \def\abd{ML agent trained against traders}
 \def\b{Summary and Outlook}
 \def\ba{Crop War in perspective}
-\def\baa{FAO-based crop model}
-\def\bab{Global warming potential}
+\def\baa{Work Flow for model extension}
 
 %-------------------------------------------------------
 % START OF DOCUMENT
@@ -902,9 +902,28 @@ $0.0$ for last agent.
 
 \begin{frame}{\ba}
   \centering
-  \textbf{Outlook and Perspective}
+  \textbf{Work Flow to improve the model}
 \end{frame}
 
+\begin{frame}{\ba}{\baa}
+  \onslide<1->{We organised the model to allow for an easy code review and potential improvement by other people:}
+  \begin{itemize}
+    \item<2->{All relevant material is hosted in a \href{https://github.com/Anon75014/AgentBasedModellingGit}{Git repository} on Github.}
+    \item<3->{A \href{https://github.com/Anon75014/AgentBasedModelling/blob/main/Report/main.pdf}{pdf report} was created to offer a model overview.}
+    \item<4->{The \href{https://github.com/Anon75014/AgentBasedModelling/tree/main/python}{Python code} can be edited to play around with different parameters and equations and a Documentation was created to allow for an easier code review.}
+    %\item<6->{Some \href{https://n.ethz.ch/%7Ecgolling/gess/html/VIS_map.html}{Bigger maps} can be easily generated, and improved to yield more realistic spatial settings.}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{\ba}{\baa}
+  \onslide<1->{Possible extensions include:}
+  \begin{itemize}
+    \item<2->{More realistic spending of ressources: equipment investments, maintenance costs, etc...}
+    \item<3->{Bigger and more realistic maps}
+    \item<4->{Weather events}
+    \item<5->{Ecological impact of different crops}
+  \end{itemize}
+\end{frame}
  
 \end{document}
 
