@@ -867,7 +867,14 @@ As suggested in the documentation of SB3, training was initially performed using
 \newpage
 
 \subsubsection{RL model versions}
-As illustrated in fig. \ref{fig:Overview}, we implemented two scenarios. Both differ in the competing benchmark agents. The environment in which the RL agent is trained is defined in section \ref{sec:v13}. The RL agent was trained in this environment in 10000 iterations. 
+As illustrated in fig. \ref{fig:Overview}, we implemented two scenarios. Both differ in the competing benchmark agents. The environment in which the RL agent is trained is defined in section \ref{sec:v13}. The RL agent was trained in this environment in 10000 iterations. The reward function that was used for training is given by
+\begin{equation}
+    \frac{1}{3}(b^2 + r^2 + s^2)
+\end{equation}
+where $b$ is the fraction of the global budget that the agent possesses, $r$ is
+the current ranking (1 for first, $0.66$ for second, $0.33$ for third, and
+$0.0$ for last) and $s$ is the fraction of the global supply that the agent
+supplies. It was chosen so to maximize profit of each agent.
 
 \paragraph{Version 2.1}
 This version employs the following setup:

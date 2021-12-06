@@ -17,4 +17,4 @@ The folders contain the following:
   - `python`: Source code of the project
   - `Report`: The files for the report
 
-The report can be found here as `CSS_Crop_War.pdf` or in the `Report` folder.
+The report can be found in the report folder as `main.pdf`.
