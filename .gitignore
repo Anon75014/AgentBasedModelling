@@ -40,7 +40,6 @@ python/experimental/tst_DQN/log
 python/log/*
 python/log_ppo/*
 python/configs
-python/Doc
+python/Doc/_build/*
 *.zip
-*.rst
 *.html
