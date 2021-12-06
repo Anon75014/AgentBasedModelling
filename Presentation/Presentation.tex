@@ -820,6 +820,155 @@ This would increase the probability of taking the same action decision in the sa
 
 \subsubsection{\abc}
 
+\begin{frame}{\ab}{\abc}
+  \centering
+  \textbf{v2.1: RL agent trained againt Introvert farmers}
+\end{frame}
+
+\begin{frame}{\ab}{\abc}
+  The reward function that was used for training is given by
+\begin{equation}
+    \frac{1}{3}(b^2 + r^2 + s^2)
+\end{equation}
+where $b$ is the fraction of the global budget that the agent possesses, $r$ is the current ranking (1 for first, $0.66$ for second, $0.33$ for third, and
+$0.0$ for last) and $s$ is the fraction of the global supply that the agent
+supplies. It was chosen so to maximize profit of each agent.
+\end{frame}
+
+\pgfplotstableread[col sep=comma]{Data/MLvsIntroBudget.csv}{\budgetd}
+
+\begin{frame}{\ab}{\abc}
+\begin{figure}[H]
+    \centering
+    \resizebox{.55\linewidth}{!}{\begin{tikzpicture}
+		\pgfplotsset{
+			scale only axis,
+		}
+		%axis options:
+		\begin{axis}[
+		  xlabel=Time step (years),
+		  ylabel=Farmer wealth (\$),
+		  xmin=0,
+		  %ymin=350,
+		  legend pos=north west,
+		  cycle list name=farmerslist
+		]
+		  %plot 1: farmer ID 1
+		  \addplot+[thick, no marks] table[y index =1]{\budgetd};
+		  \addlegendentry{Introvert}
+		  
+		  %plot 2: farmer ID 2
+		  \addplot+[thick,no marks]  table[y index =2]{\budgetd};
+		  \addlegendentry{Introvert}
+  
+		  %plot 3: farmer ID 3
+		  \addplot+[thick,no marks] table[y index =3]{\budgetd};
+		  \addlegendentry{RL agent}
+  
+		  %plot 4: farmer ID 4
+		  \addplot+[thick,no marks] table[y index =4]{\budgetd};
+		  \addlegendentry{Introvert}
+  
+		\end{axis}
+	  \end{tikzpicture}
+	  }
+    \caption{Budget evolution over 300 iterations}
+    \label{fig:budget MLvsIntros}
+\end{figure}
+\end{frame}
+
+\subsubsection{\abd}
+
+\begin{frame}{\ab}{\abd}
+  \centering
+  \textbf{v2.1: RL agent trained againt Trader farmers}
+\end{frame}
+
+\pgfplotstableread[col sep=comma]{Data/MLvsTrader2Budget.csv}{\budgete}
+\pgfplotstableread[col sep=comma]{Data/MLvsTrader2Cellcount.csv}{\cellcounte}
+
+\begin{frame}{\ab}{\abd}
+  \begin{columns}
+      \column{0.5\linewidth}
+      \resizebox{\linewidth}{!}{\begin{tikzpicture}
+        \pgfplotsset{
+          scale only axis,
+        }
+        %axis options:
+        \begin{axis}[
+          xlabel=Time step (years),
+          ylabel=Farmer wealth (\$),
+          xmin=0,
+          %ymin=350,
+          legend pos=south west,
+          cycle list name=farmerslist
+        ]
+          %plot 1: farmer ID 1
+          \addplot+[] table[y index =1]{\budgete};
+          \addlegendentry{Trader}
+          
+          %plot 2: farmer ID 2
+          \addplot+[]  table[y index =2]{\budgete};
+          \addlegendentry{RL agent}
+      
+          %plot 3: farmer ID 3
+          \addplot+[] table[y index =3]{\budgete};
+          \addlegendentry{Trader}
+      
+          %plot 4: farmer ID 4
+          \addplot+[] table[y index =4]{\budgete};
+          \addlegendentry{Trader}
+      
+        \end{axis}
+        \end{tikzpicture}
+        }
+
+    \column{0.5\linewidth}
+      \resizebox{\linewidth}{!}{\begin{tikzpicture}
+        \pgfplotsset{
+          scale only axis,
+        }
+        %axis options:
+        \begin{axis}[
+          xlabel=Time step (years),
+          ylabel=Farmer land count (cells),
+          xmin=0,
+          legend pos=south east,
+          cycle list name=farmerslist
+        ]
+          %plot 1: farmer ID 1
+          \addplot+[] 
+            table[y index =1]{\cellcounte};
+          \addlegendentry{Trader}
+          
+          %plot 2: farmer ID 2
+          \addplot+[]  table[y index =2]{\cellcounte};
+          \addlegendentry{RL agent}
+      
+          %plot 3: farmer ID 3
+          \addplot+[] table[y index =3]{\cellcounte};
+          \addlegendentry{Trader}
+      
+          %plot 4: farmer ID 4
+          \addplot+[] table[y index =4]{\cellcounte};
+          \addlegendentry{Trader}
+      
+        \end{axis}
+        \end{tikzpicture}
+      }
+    \end{columns}
+  \end{frame}
+
+  
+  \begin{frame}{\ab}{\abd}
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width = 1\textwidth]{Figures/stock evolution.PNG}
+      \caption{Stock evolution for the three \texttt{Trader} agents and the RL agent.}
+      \label{fig:stock evolve}
+  \end{figure}
+  \end{frame}
+
 
 
 %-------------------------------------------------------
@@ -832,27 +981,32 @@ This would increase the probability of taking the same action decision in the sa
 \subsection{\ba}
 \subsubsection{\baa}
 
+\begin{frame}{\ba}
+  \centering
+  \textbf{Outlook and Perspective}
+\end{frame}
+
 \begin{frame}{\ba}{\baa}
     \begin{columns}
-      \column{0.48\linewidth}
+      \column{0.65\linewidth}
       \centering
         \begin{figure}
          \includegraphics[width=\textwidth]{Figures/Crop-coefficients-Kc-and-growing-period-of-tomato-source-Allen-et-al-1998.png}
          \label{fig:y equals x}
         \end{figure}
-        \column{0.48\linewidth}
+        \column{0.4\linewidth}
         comment
     \end{columns}
 \end{frame}
 
 \begin{frame}{\ba}{\baa}
   \begin{columns}
-    \column{0.48\linewidth}
+    \column{0.6\linewidth}
   \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{Figures/Y3655E01.jpeg}
   \end{figure}
-  \column{0.48\linewidth}
+  \column{0.4\linewidth}
   \begin{equation}
     1-\frac{Y_t^c}{Y^{m.c}}=\sum_{i=1}^{n} k_{y.i} \cdot(1-\frac{ET_{a.t}^c}{ET_{m.i}}) 
   \end{equation}
