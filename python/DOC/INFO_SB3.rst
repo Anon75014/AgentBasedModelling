@@ -21,6 +21,7 @@ The structure of the implemented reinforcement learning is very simple, thanks t
 
 .. image:: img/RL_int.jpg
    :width: 350pt
+   :align: center
 
 
 

@@ -20,9 +20,9 @@ and hence infer the market prices. The transparency of stocks is incorporated vi
 The global prices is determined as follows:
 
 .. math::
-
     p_j = p_{j,0} \cdot \frac{D_j(p_{j-1})}{K + \sum_i s_i}
 ​
+
 Here :math:`p_{j,0}` is the base price of commodity :math:`j`, :math:`D_j(p_j)` the demand and :math:`\sum_i s_j` the total stock available of crop :math:`j` across all farmers. 
 The constant :math:`K` represents a residual stock of a commodity and is equal for all :math:`j`.
 ​
@@ -37,6 +37,7 @@ The linear supply :math:`S_i(p_j)` of an agent :math:`i` for a commodity :math:`
 .. math::
 
     S_i(p_j) = A \left[ 1 + c_i \cdot p_j \right]
+
 ​
 where :math:`A` is a surplus supply (willingness to supply for :math:`p_j=0`), :math:`p_j` the global commodity price and :math:`c_i` the slope of supply (which is connected to the inverse price elasticity of supply).
 The supply function is implemented within :class:`market.Market.market_interaction`.
@@ -48,6 +49,7 @@ The demand for a commodity :math:`j` is globally defined as:
 
     D_j(p_j) = \left( D_0 + at^2 \right) e^{-\alpha (p_j-p_{j,0})}
 ​
+
 Where :math:`D_0` is a base demand, :math:`at^2` is a term representing population (and demand) growth as a function of time :math:`t`, :math:`p_j` is the price of crop :math:`j` at time :math:`t`, :math:`p_{j,0}` is the base price of crop :math:`j`, 
 and :math:`\alpha` is a demand slope, representing the fact that less and less people will be able to afford expensive crops.
 ​
