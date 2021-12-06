@@ -9,6 +9,38 @@ Welcome to CropWar's documentation!
 Here you can find instructions on how to simulate the interactions of spatially and economically competing farmers : :guilabel:`The CropWar`
 
 
+.. image:: img/map.gif
+   :width: 255pt
+
+.. image:: img/10.jpg
+   :width: 255pt
+
+.. image:: img/04.jpg
+   :width: 255pt
+
+.. image:: img/02.jpg
+   :width: 255pt
+
+.. image:: img/01.jpg
+   :width: 510pt
+
+.. image:: img/03.jpg
+   :width: 510pt
+
+.. image:: img/09.jpg
+   :width: 255pt
+
+.. image:: img/07.jpg
+   :width: 255pt
+
+.. image:: img/08.jpg
+   :width: 255pt
+
+.. image:: img/06.jpg
+   :width: 255pt
+
+
+
 Simulation Pseudo Code
 ----------------------
 
