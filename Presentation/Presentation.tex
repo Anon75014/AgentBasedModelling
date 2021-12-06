@@ -120,6 +120,9 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
 \def\abb{Tests with different personalities}
 
 \def\b{Summary and Outlook}
+\def\ba{Crop War in perspective}
+\def\baa{FAO-based crop model}
+\def\bab{Global warming potential}
 
 %-------------------------------------------------------
 % START OF DOCUMENT
@@ -805,59 +808,56 @@ Where $D_0$ is a base demand, $at^2$ is a term representing population (and dema
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\begin{frame}{Crop war in perspectives}{FAO-based crop model}{}
+\subsection{\ba}
+\subsubsection{\baa}
 
-  \begin{figure}
-   \hfill
-        \newline 
-     \centering
-     \begin{subfigure}[b]{0.45\textwidth}
-
-         \centering
+\begin{frame}{\ba}{\baa}
+    \begin{columns}
+      \column{0.48\linewidth}
+      \centering
+        \begin{figure}
          \includegraphics[width=\textwidth]{Figures/Crop-coefficients-Kc-and-growing-period-of-tomato-source-Allen-et-al-1998.png}
          \label{fig:y equals x}
-     \end{subfigure}
- \hfill
-     \begin{subfigure}[b]{0.45\textwidth}
-         \centering
-         \includegraphics[width=\linewidth]{Figures/Y3655E01.jpeg}
-     \end{subfigure}
-     \hfill
-
-\end{figure}
- 
-    \begin{equation}
-            1-\frac{Y_t^c}{Y^{m.c}}=\sum_{i=1}^{n} k_{y.i} \cdot(1-\frac{ET_{a.t}^c}{ET_{m.i}}) 
-    \end{equation}
-
+        \end{figure}
+        \column{0.48\linewidth}
+        comment
+    \end{columns}
 \end{frame}
 
-\begin{frame}{Crop war in perspectives}{Global warming potential (GWP)}{}
+\begin{frame}{\ba}{\baa}
+  \begin{columns}
+    \column{0.48\linewidth}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Y3655E01.jpeg}
+  \end{figure}
+  \column{0.48\linewidth}
+  \begin{equation}
+    1-\frac{Y_t^c}{Y^{m.c}}=\sum_{i=1}^{n} k_{y.i} \cdot(1-\frac{ET_{a.t}^c}{ET_{m.i}}) 
+  \end{equation}
+\end{columns} 
+\end{frame}
 
-\begin{figure}
-   \hfill
-        \newline 
-     \centering
-     \begin{subfigure}[b]{0.40\textwidth}
+\subsubsection{\bab}
 
-         \centering
-         \includegraphics[width=\textwidth]{Figures/Emissions-by-sector-–-pie-charts.png}
-     \end{subfigure}
- \hfill
-     \begin{subfigure}[b]{0.50\textwidth}
-         \centering
-         \includegraphics[width=\linewidth]{Figures/GHG-emissions-from-agricultural-sector-by-practices-in-Mt-CO2-e.png}
-     \end{subfigure}
-     \hfill
-     
-    \begin{equation}
+\begin{frame}{\ba}{\bab}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{Figures/Emissions-by-sector-–-pie-charts.png}
+  \end{figure} 
+\end{frame}
+
+
+\begin{frame}{\ba}{\bab}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.6\textwidth]{Figures/GHG-emissions-from-agricultural-sector-by-practices-in-Mt-CO2-e}
+  \end{figure}
+  \begin{equation}
     GWP_{t}=GWP_{fertilizer}+GWP_{biocide}+GWP_{machinery}+GWP_{electricity}  
     \end{equation}
-
-\end{figure}
- 
-
 \end{frame}
+ 
 
 \subsubsection{\aac}
 \subsubsection{\aad}
