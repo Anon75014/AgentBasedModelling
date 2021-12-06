@@ -1,0 +1,90 @@
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
+\headcommand {\beamer@framepages {2}{2}}
+\headcommand {\beamer@sectionpages {1}{2}}
+\headcommand {\beamer@subsectionpages {1}{2}}
+\headcommand {\sectionentry {1}{Introduction and motivation}{3}{Introduction and motivation}{0}}
+\headcommand {\slideentry {1}{0}{1}{3/9}{}{0}}
+\headcommand {\beamer@framepages {3}{9}}
+\headcommand {\beamer@sectionpages {3}{9}}
+\headcommand {\beamer@subsectionpages {3}{9}}
+\headcommand {\sectionentry {2}{The CropWar model}{10}{The CropWar model}{0}}
+\headcommand {\beamer@subsectionpages {10}{9}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{10}{Deterministic versions}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{1}{1}{10}{Basic version: selling and stocking}}
+\headcommand {\slideentry {2}{1}{1}{10/10}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {10}{10}}
+\headcommand {\slideentry {2}{1}{2}{11/11}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {11}{11}}
+\headcommand {\slideentry {2}{1}{3}{12/12}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {12}{12}}
+\headcommand {\slideentry {2}{1}{4}{13/13}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{1}{2}{14}{The Map class: expansion}}
+\headcommand {\slideentry {2}{1}{5}{14/14}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\slideentry {2}{1}{6}{15/15}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {15}{15}}
+\headcommand {\slideentry {2}{1}{7}{16/16}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {16}{16}}
+\headcommand {\slideentry {2}{1}{8}{17/17}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {17}{17}}
+\headcommand {\slideentry {2}{1}{9}{18/18}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {18}{18}}
+\headcommand {\slideentry {2}{1}{10}{19/19}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {19}{19}}
+\headcommand {\slideentry {2}{1}{11}{20/20}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {20}{20}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{1}{3}{21}{The Market model: dynamic pricing}}
+\headcommand {\slideentry {2}{1}{12}{21/21}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {21}{21}}
+\headcommand {\slideentry {2}{1}{13}{22/25}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {22}{25}}
+\headcommand {\slideentry {2}{1}{14}{26/31}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {26}{31}}
+\headcommand {\slideentry {2}{1}{15}{32/32}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {32}{32}}
+\headcommand {\slideentry {2}{1}{16}{33/33}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {33}{33}}
+\headcommand {\slideentry {2}{1}{17}{34/34}{Deterministic versions}{0}}
+\headcommand {\beamer@framepages {34}{34}}
+\headcommand {\beamer@subsectionpages {10}{34}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{35}{Reinforcement Learning versions}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{1}{35}{Introduction}}
+\headcommand {\slideentry {2}{2}{1}{35/35}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {35}{35}}
+\headcommand {\slideentry {2}{2}{2}{36/36}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {36}{36}}
+\headcommand {\slideentry {2}{2}{3}{37/37}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {37}{37}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{2}{38}{Proximal Policy Optimization}}
+\headcommand {\slideentry {2}{2}{4}{38/41}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {38}{41}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{3}{42}{ML agent trained against introverts}}
+\headcommand {\slideentry {2}{2}{5}{42/42}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {42}{42}}
+\headcommand {\slideentry {2}{2}{6}{43/43}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {43}{43}}
+\headcommand {\slideentry {2}{2}{7}{44/44}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {44}{44}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{4}{45}{ML agent trained against traders}}
+\headcommand {\slideentry {2}{2}{8}{45/45}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {45}{45}}
+\headcommand {\slideentry {2}{2}{9}{46/46}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {46}{46}}
+\headcommand {\slideentry {2}{2}{10}{47/47}{Reinforcement Learning versions}{0}}
+\headcommand {\beamer@framepages {47}{47}}
+\headcommand {\beamer@sectionpages {10}{47}}
+\headcommand {\beamer@subsectionpages {35}{47}}
+\headcommand {\sectionentry {3}{Summary and Outlook}{48}{Summary and Outlook}{0}}
+\headcommand {\beamer@subsectionpages {48}{47}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{48}{Crop War in perspective}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{1}{1}{48}{FAO-based crop model}}
+\headcommand {\slideentry {3}{1}{1}{48/48}{Crop War in perspective}{0}}
+\headcommand {\beamer@framepages {48}{48}}
+\headcommand {\beamer@partpages {1}{48}}
+\headcommand {\beamer@subsectionpages {48}{48}}
+\headcommand {\beamer@sectionpages {48}{48}}
+\headcommand {\beamer@documentpages {48}}
+\headcommand {\gdef \inserttotalframenumber {30}}

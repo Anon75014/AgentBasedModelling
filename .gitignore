@@ -35,7 +35,6 @@ python/experimental/tst_DQN_Multidiscrete/log
 .vscode
 .venv_ml_baselines
 Literature/*
-Presentation
 python/experimental/tst_DQN/log
 python/log/*
 python/log_ppo/*
