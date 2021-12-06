@@ -573,11 +573,15 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
 \end{frame}
 
 \begin{frame}{\aa}{\aac}
-    Supply and demand are calculated as follows for a price $p_j$ of crop $j$ grown by farmer $i$:\\
+    Supply of crop $j$ for a price $p_j$ grown by farmer $i$ is considered to depend on the willingness of the agent to supply crops at a given price:
     \begin{equation}
       S_i(p_j) = A + c_i \cdot p_j
     \end{equation}
   Here $c_i$ is the willingness to supply crop $j$  at a given price $p_j$ by farmer $i$ and $A$ is the surplus or his willingness to supply crops for free.
+\end{frame}
+
+\begin{frame}{\aa}{\aac}
+Demand is considered to be a function of the population growth and the price:
   \begin{equation}
     D_j(p_j) = \left( D_0 + at^2 \right) e^{-\alpha (p_j-p_{j0})}
   \end{equation}
