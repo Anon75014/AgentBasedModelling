@@ -1,15 +1,15 @@
 """ Main File for the CropWar agent Based Simulation. """
 
+from pandas import DataFrame as df
+from stable_baselines3 import PPO
+
 from agents import *
-from ml_agents import *
 from crops import *
 from graph_presenter import graph_class
 from map_presenter import map_class
 from model import CropwarModel
+from RL_agents import *
 from settings import experiment_settings
-from stable_baselines3 import PPO
-
-from pandas import DataFrame as df
 
 
 def run_full_simulation(custom_parameters=None):

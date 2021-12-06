@@ -61,11 +61,8 @@
 \pgfplotscreateplotcyclelist{farmerslist}{
 %Farmer 1
 farmer1,every mark/.append style={farmer1},mark=triangle*\\
-%Farmer 2
 farmer2,every mark/.append style={farmer2},mark=diamond*\\
-%Farmer 3
 farmer3,every mark/.append style={farmer3},mark=otimes\\
-%Farmer 4
 farmer4,every mark/.append style={farmer4},mark=star\\
 %etc...
 }
@@ -116,10 +113,14 @@ crop4, densely dashed,every mark/.append style={crop4},mark=square*\\
 \def\aad{Agent personalities}
 \def\aae{Weather events}
 \def\ab{Reinforcement Learning versions}
-\def\aba{Tianshu basics}
-\def\abb{Tests with different personalities}
-
+\def\aba{Introduction}
+\def\abb{Proximal Policy Optimization}
+\def\abc{ML agent trained against introverts}
+\def\abd{ML agent trained against traders}
 \def\b{Summary and Outlook}
+\def\ba{Crop War in perspective}
+\def\baa{FAO-based crop model}
+\def\bab{Global warming potential}
 
 %-------------------------------------------------------
 % START OF DOCUMENT
@@ -776,7 +777,14 @@ Where $D_0$ is a base demand, $at^2$ is a term representing population (and dema
 
 \begin{frame}{\ab}{\aba}
   \centering
-  \textbf{v2.1: Reinforcement Learning}
+  \textbf{Reinforcement Learning}
+\end{frame}
+
+\begin{frame}{\ab}{\aba}
+  \centering
+The preceding versions \tagg{v1.1 - v1.3} defined the deterministic agents and the model of the environment in which actions take place.
+
+In order to see unpredictable, emerging behaviour, the agents would need to adjust to evolutions of the market and learn.
 \end{frame}
 
 
@@ -788,15 +796,31 @@ Where $D_0$ is a base demand, $at^2$ is a term representing population (and dema
     \end{figure}
 \end{frame}
 
-
-\subsubsection{\aac}
-\subsubsection{\aad}
-\subsubsection{\aae}
-
-\subsection{\ab}
-
-
 \subsubsection{\abb}
+
+
+\begin{frame}{\ab}{\abb}
+\onslide<1->{\begin{equation}
+  \underbrace{L(\theta)}_{\substack{\text{Policy}\\ \text{loss}\\ \text{function}}} = \underbrace{\hat{\mathbf{E}}_t}_{\substack{\text{expectation}\\ \text{at iteration}\\ t}} \left[ \log ( \underbrace{\pi_{\theta}(a_t|s_t))}_{\substack{\text{stochastic}\\ \text{policy}}} \underbrace{\hat{A_t}}_{\substack{\text{estimator of}\\ \text{advantage of} \\ \text{current action} }} \right]
+\end{equation}
+where:}
+\begin{itemize}
+  \item<2-> $\pi_{\theta}(a_t|s_t)$ is given as transition probabilities in the MC of taking action $a_t$ in state $s_t$. It is a neural network, that suggests an action for a given state based on previous training experience.
+  \item<3-> $\hat{A_t}$ is computed as a discounted reward. This neural net is updated with the experience (i.e. reward) that the agent collects in an environment.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\ab}{\abb}
+\begin{equation}
+  \hat{g} = \hat{\mathbf{E}}_t \left[ \nabla_{\theta} \log(\pi_{\theta}(a_t|s_t)) \hat{A_t} \right]
+\end{equation}
+This would increase the probability of taking the same action decision in the same or similar state. Vice versa, the gradient is negative if the advantage is negative, which reduces the probability of taking the corresponding action.
+\end{frame}
+
+
+\subsubsection{\abc}
+
+
 
 %-------------------------------------------------------
 \section{\b}
@@ -805,59 +829,56 @@ Where $D_0$ is a base demand, $at^2$ is a term representing population (and dema
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\begin{frame}{Crop war in perspectives}{FAO-based crop model}{}
+\subsection{\ba}
+\subsubsection{\baa}
 
-  \begin{figure}
-   \hfill
-        \newline 
-     \centering
-     \begin{subfigure}[b]{0.45\textwidth}
-
-         \centering
+\begin{frame}{\ba}{\baa}
+    \begin{columns}
+      \column{0.48\linewidth}
+      \centering
+        \begin{figure}
          \includegraphics[width=\textwidth]{Figures/Crop-coefficients-Kc-and-growing-period-of-tomato-source-Allen-et-al-1998.png}
          \label{fig:y equals x}
-     \end{subfigure}
- \hfill
-     \begin{subfigure}[b]{0.45\textwidth}
-         \centering
-         \includegraphics[width=\linewidth]{Figures/Y3655E01.jpeg}
-     \end{subfigure}
-     \hfill
-
-\end{figure}
- 
-    \begin{equation}
-            1-\frac{Y_t^c}{Y^{m.c}}=\sum_{i=1}^{n} k_{y.i} \cdot(1-\frac{ET_{a.t}^c}{ET_{m.i}}) 
-    \end{equation}
-
+        \end{figure}
+        \column{0.48\linewidth}
+        comment
+    \end{columns}
 \end{frame}
 
-\begin{frame}{Crop war in perspectives}{Global warming potential (GWP)}{}
+\begin{frame}{\ba}{\baa}
+  \begin{columns}
+    \column{0.48\linewidth}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Y3655E01.jpeg}
+  \end{figure}
+  \column{0.48\linewidth}
+  \begin{equation}
+    1-\frac{Y_t^c}{Y^{m.c}}=\sum_{i=1}^{n} k_{y.i} \cdot(1-\frac{ET_{a.t}^c}{ET_{m.i}}) 
+  \end{equation}
+\end{columns} 
+\end{frame}
 
-\begin{figure}
-   \hfill
-        \newline 
-     \centering
-     \begin{subfigure}[b]{0.40\textwidth}
+\subsubsection{\bab}
 
-         \centering
-         \includegraphics[width=\textwidth]{Figures/Emissions-by-sector-–-pie-charts.png}
-     \end{subfigure}
- \hfill
-     \begin{subfigure}[b]{0.50\textwidth}
-         \centering
-         \includegraphics[width=\linewidth]{Figures/GHG-emissions-from-agricultural-sector-by-practices-in-Mt-CO2-e.png}
-     \end{subfigure}
-     \hfill
-     
-    \begin{equation}
+\begin{frame}{\ba}{\bab}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{Figures/Emissions-by-sector-–-pie-charts.png}
+  \end{figure} 
+\end{frame}
+
+
+\begin{frame}{\ba}{\bab}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.6\textwidth]{Figures/GHG-emissions-from-agricultural-sector-by-practices-in-Mt-CO2-e}
+  \end{figure}
+  \begin{equation}
     GWP_{t}=GWP_{fertilizer}+GWP_{biocide}+GWP_{machinery}+GWP_{electricity}  
     \end{equation}
-
-\end{figure}
- 
-
 \end{frame}
+ 
 
 \subsubsection{\aac}
 \subsubsection{\aad}
