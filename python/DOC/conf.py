@@ -72,4 +72,5 @@ html_context = {
     "display_github": True,
     "github_user": "Anon75014", # Username
     "github_repo": "AgentBasedModelling", # Repo name
+    "conf_py_path": "main/python/DOC/",
 }
