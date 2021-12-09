@@ -171,9 +171,7 @@ In \tagg{v1.3}, we implement a \href{https://n.ethz.ch/~cgolling/gess/html/INFO_
 
 The market also incorporates agent personalities, where different personalities may have different tendencies to expand spatially or sell and/or stock commodities.
 
-These deterministic versions pave the way to the Reinforcement Learning (RL) model, which is implemented in \tagg{v2}. In \tagg{v2.1}, a RL agent will play against an expanding agent (i.e. \href{https://n.ethz.ch/~cgolling/gess/html/code/agents.html#agents.Introvert}{\texttt{Introvert}}, see section \ref{sec:v13}). The reward function, which the RL agent tries to maximize, is the budget evolution.
-
-In the next version \tagg{v2.2}, the RL agent will compete against the \href{https://n.ethz.ch/~cgolling/gess/html/code/agents.html#agents.Trader}{\texttt{Trader}} agent (see sec. \ref{sec:v13}). In this version, both spatial expansion and market decision play a role.
+These deterministic versions pave the way to the Reinforcement Learning (RL) model, which is implemented in \tagg{v2}. In \tagg{v2.1}, a RL agent will play against an expanding agent (i.e. \href{https://n.ethz.ch/~cgolling/gess/html/code/agents.html#agents.Introvert}{\texttt{Introvert}}, see section \ref{sec:v13}). The reward function, which the RL agent tries to maximize, is the budget evolution. In the next version \tagg{v2.2}, the RL agent will compete against the \href{https://n.ethz.ch/~cgolling/gess/html/code/agents.html#agents.Trader}{\texttt{Trader}} agent (see sec. \ref{sec:v13}). In this version, both spatial expansion and market decision play a role.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{Figures/version design.PNG}
@@ -183,22 +181,22 @@ In the next version \tagg{v2.2}, the RL agent will compete against the \href{htt
 \end{figure}
 
 \subsection{Software}
-In order to build the model, we decided to use the python library \href{https://agentpy.readthedocs.io/en/stable/overview.html}{\texttt{agentpy}} which conveniently introduces the \texttt{Agent}, \texttt{Grid}, \texttt{Model}, and \texttt{Experiment} classes, allowing to create our model with minimal prerequisite work.
+In order to build the model, we decided to use the python library \href{https://agentpy.readthedocs.io/en/stable/overview.html}{\texttt{agentpy}} which conveniently introduces the \texttt{Agent}, \texttt{Grid}, \texttt{Model}, and \texttt{Experiment} classes, allowing to create our model with minimal prerequisite work. A \href{https://n.ethz.ch/~cgolling/gess/html/index.html}{documentation} of the CropWar model was created, to define functions and variables, and make the code more readable. Verbatim text indicates used function or classes. Exact and extensive descriptions of these objects can then be found in this documentation.
 
-A \href{https://n.ethz.ch/~cgolling/gess/html/index.html}{documentation} of the CropWar model was created, to define functions and variables, and make the code more readable. Verbatim text indicates used function or classes. Exact and extensive descriptions of these objects can then be found in this documentation.
+All relevant programs and files were hosted on a \href{https://github.com/Anon75014/AgentBasedModelling}{GitHub repository}, with which our team interacted using Visual Studio Code and GitHub Desktop to navigate between different model versions (hosted on different branches of the GitHub tree).The report and presentation were generated via LaTeX and hosted on the \href{https://github.com/Anon75014/AgentBasedModelling}{GitHub repository}.
 
-All relevant programs and files were hosted on a \href{https://github.com/Anon75014/AgentBasedModelling}{GitHub repository}, with which our team interacted using Visual Studio Code and GitHub Desktop to navigate between different model versions (hosted on different branches of the GitHub tree).
+\subsubsection{Team members and workflow}
 
-The report and presentation were generated via LaTeX and hosted on  \href{https://www.overleaf.com/project/6194c8fcca8840f65bb0ee02}{Overleaf}.
+The Python developers were Christopher Golling and Aaron Moser. They implemented the first iterations of the deterministic model, before Aaron focused on the market and personalities, and Chritopher implemented the Reinforcement Learning model.\\
+Otto Schmidt and Ga\"el Mourouga designed the market model, tested the Python model in order to issue the best values for each parameters. They were also in charge of the report and the presentation, and were the main LaTeX developers.\\
+Amirhassan Keshavarzzadeh proposed the idea of a project revolving around water ressources and farming, and was in charge of the \texttt{crops.py} file and the FAO model, where realistic values for the seed costs and yields should have been entered and implemented in the Crop Wars model.
+
 
 
 %At each time step $dt$, all agents collect their crop yields and are faced with the choice of selling it at market price or stocking it for later use. Agents can also change the crops they are growing, or leave their land idle for replenishment of its nutritive properties, where the respective probabilities of these choices can be influenced by agent personalities.\\
 %The wealth $W_i$ of each agent is then plotted as a function of time $t$, and an analyis is carried out to explain the success rate of different strategies, given a set of externalities such as weather conditions or government policies.
 
 
-
-
-\newpage
 \subsection{Deterministic model development}
 
 \subsubsection{Crop factors}
